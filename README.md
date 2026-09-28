@@ -1,10 +1,35 @@
 # ColdDDI
 
-**A cold-start drug-drug interaction benchmark stratified by pharmacological mechanism (PK/PD) and KG-mediated evidence.**
+![NeurIPS 2026](https://img.shields.io/badge/NeurIPS-2026-8a2be2?style=flat)
+![arXiv Preprint](https://img.shields.io/badge/arXiv-Preprint-b31b1b?style=flat)
+![OpenReview Paper](https://img.shields.io/badge/OpenReview-Paper-0969da?style=flat)
+[![Code License MIT](https://img.shields.io/badge/Code_License-MIT-4c9c2a?style=flat)](LICENSE)
 
-> **Public code release** for NeurIPS 2026 Evaluations & Datasets Track. Every component the paper describes is functional end-to-end: the data pipeline (XML → splits), 8 conventional baselines, the LLM stack (L1 prompts → L6 KPS/KSAI diagnostics), and a one-click runner that reproduces a single (model × dataset × prompt × seed) cell. Tested at paper scale on both the 800-drug and 1,900-drug DrugBank datasets.
+ColdDDI is a diagnostic benchmark for evaluating knowledge utilization in cold-start drug–drug interaction prediction.
 
-## Overview
+## 🔔 News
+
+- [x] **[2026.09.24]** ColdDDI was accepted to **NeurIPS 2026 (Poster)**! 🎉
+
+## 📑 Contents
+
+- [🔍 Overview](#overview)
+- [📥 Data Access Notice](#data-access-notice)
+- [🗂️ Data Layout](#data-layout)
+- [🛠️ Environment](#reference-environment)
+- [⚡ Quick Start](#quick-start)
+- [🔁 Reproducing](#reproducing-on-the-full-drugbank-xml)
+- [🤖 Pipeline](#llm-stack-l1-l6)
+  - [🚀 Running the LLM Pipeline](#running-the-llm-pipeline)
+  - [📊 Indicator Coverage](#l6-indicator-coverage)
+- [📁 Repository Structure](#repository-structure)
+- [⚖️ License](#license)
+- [✉️ Contact](#contact)
+- [📄 Citation](#citation)
+
+<a id="overview"></a>
+
+## 🔍 Overview
 
 ColdDDI is a benchmark for evaluating drug-drug interaction (DDI) prediction methods under **cold-start** settings, where one or both drugs have no recorded interaction history. It comprises:
 
@@ -15,7 +40,11 @@ ColdDDI is a benchmark for evaluating drug-drug interaction (DDI) prediction met
 
 On this benchmark, we evaluate 8 conventional baselines and 13 LLMs across 5 prompt patterns, revealing that the same KG context is exploited in opposite directions across architectures—a failure mode that aggregate metrics cannot surface.
 
-## Data Access Notice
+<a id="data-access-notice"></a>
+
+## 📥 Data Access Notice
+
+> ⚠️ **Temporary download pause.** DrugBank has temporarily paused academic downloads while updating its data distribution process. Please check the [official download page](https://go.drugbank.com/releases/5-1-13) for updates on when access will resume. In the meantime, you can try adapting the pipeline to your own DDI dataset.
 
 ColdDDI is derived from **DrugBank version 5.1.13** (released January 2025). DrugBank's academic license **prohibits redistribution** of the underlying records. Consequently, this repository ships only:
 
@@ -31,11 +60,11 @@ To reproduce the full benchmark, users must:
 2. Download the DrugBank 5.1.13 XML release
 3. Create the local-only directory: `mkdir -p data/private/raw`
 4. Place the XML at `data/private/raw/drugbank_5.1.13.xml`
-5. Run the single command under [Reproducing on the Full DrugBank XML](#reproducing-on-the-full-drugbank-xml) below.
+5. Run the single command under [Reproducing](#reproducing-on-the-full-drugbank-xml) below.
 
----
+<a id="data-layout"></a>
 
-## Data Layout
+## 🗂️ Data Layout
 
 ```
 data/
@@ -50,9 +79,9 @@ data/
 └── private/                          # create this by yourself (git-ignored, user-local only)
 ```
 
----
+<a id="reference-environment"></a>
 
-## Reference Environment
+## 🛠️ Environment
 
 - **OS**: Linux (also tested under WSL2 / Ubuntu)
 - **Python**: 3.10
@@ -61,12 +90,14 @@ data/
 
 Full dependency list: `requirements.txt`.
 
-## Quick Start
+<a id="quick-start"></a>
+
+## ⚡ Quick Start
 
 ```bash
 # 1. Clone & install (Linux / Python 3.10)
-git clone https://anonymous.4open.science/r/ColdDDI-101A/
-cd ColdDDI
+git clone https://github.com/0217ljh/ColdDDI-NeurIPS2026.git
+cd ColdDDI-NeurIPS2026
 pip install -r requirements.txt
 
 # 2. Smoke tests
@@ -75,9 +106,9 @@ python -m pytest tests/ -v
 
 Expected toy numbers: **86 drugs / 1,383 edges / 24 ddi_types after Step 7**, **523 Type-A pairs** with mediating-entity coverage.
 
----
+<a id="reproducing-on-the-full-drugbank-xml"></a>
 
-## Reproducing on the Full DrugBank XML
+## 🔁 Reproducing
 
 After placing your licensed `drugbank_5.1.13.xml` at `data/private/raw/`:
 
@@ -102,9 +133,9 @@ Expected full numbers (paper Table A.1, 100% match):
 
 Type-A coverage: **189,404 / 565,731 = 33.5%** (167,697 PK + 21,686 PD + 21 Mixed).
 
----
+<a id="llm-stack-l1-l6"></a>
 
-## LLM Stack (L1-L6)
+## 🤖 Pipeline
 
 The LLM pipeline is layered so each stage can be tested in isolation and chained end-to-end. Layer responsibilities:
 
@@ -117,7 +148,9 @@ The LLM pipeline is layered so each stage can be tested in isolation and chained
 | L5 select-best | `coldddi.llm.select_best` | `parse_candidate_ckpts → score_candidate_ckpts → select_best` — picks the best LoRA per split via val AUC |
 | L6 diagnostics | `coldddi.diagnostics` | KPS / KSAI indicators (byte-exact port of upstream `sec5-3/2_indicators/`), `compute_ab_gap`, drug-replacement swap candidate builder |
 
-### Running the LLM Pipeline
+<a id="running-the-llm-pipeline"></a>
+
+### 🚀 Running the LLM Pipeline
 
 `run_llm.py` is the canonical runner. Single cells reproduce by varying CLI flags:
 
@@ -165,7 +198,9 @@ runs/qwen__qwen2-5-0-5b__800-drug__P4__seed42/
 If crashed mid-run, just re-run the same command. Training picks up from the latest checkpoint in `ckpts/`, and test inference skips pairs already in `test_predictions.parquet`. No flags needed.
 
 
-### L6 Indicator Coverage
+<a id="l6-indicator-coverage"></a>
+
+### 📊 Indicator Coverage
 
 | Model class | KPS-F | KPS-Name | KPS-KG | KPS-KG-Masked | KPS-Name-KGMasked | KSAI | KPS-mol | KPS-KG (channel) |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -176,9 +211,9 @@ If crashed mid-run, just re-run the same command. Training picks up from the lat
 A dash (`—`) means the model has no separable channel to mask; the indicator returns NaN rows per bucket. Buckets are `PK-A`, `PK-B`, `PD-A`, `PD-B`, plus an `ALL` aggregate over positive base pairs only (matches upstream's `_agg_buckets` convention). The headline A-B gap is `(PK-A + PD-A)/2 - (PK-B + PD-B)/2`.
 
 
----
+<a id="repository-structure"></a>
 
-## Repository Structure
+## 📁 Repository Structure
 
 ```
 coldddi/
@@ -195,32 +230,33 @@ scripts/run_llm.py   # Paper-grade one-click runner
 tests/               # pytest suite
 ```
 
-### Note on upstream script names
+**Note:** Several baselines were ported from per-baseline upstream training scripts named `train_custom_bundle.py` (and `train_custom_bundle_neg_edges.py` for TIGER). The release package consolidates them under `coldddi/baselines/<name>/` and exposes a single unified entry point through `evaluate.py`.
 
-Several baselines were ported from per-baseline upstream training scripts named `train_custom_bundle.py` (and `train_custom_bundle_neg_edges.py` for TIGER). The release package consolidates them under `coldddi/baselines/<name>/` and exposes a single unified entry point through `evaluate.py`. 
----
+<a id="license"></a>
 
-## License
+## ⚖️ License
 
 - **Code**: MIT License (see [LICENSE](LICENSE)).
 - **Mechanism annotations and split indices**: CC BY-SA 4.0.
 - **Underlying DrugBank data**: governed by the DrugBank academic license (CC-BY-NC 4.0); the 100-drug toy subset shipped under `data/public/` and the `_sample.parquet` files under `annotations/` are redistributed under DrugBank's small-scale non-commercial reproducibility clause with attribution.
 
----
+<a id="contact"></a>
 
-## Citation
+## ✉️ Contact
+
+- **Name:** Jiheng Liang
+- **Affiliation:** Data Science, William & Mary
+- **Email:** [jliang09@wm.edu](mailto:jliang09@wm.edu)
+
+<a id="citation"></a>
+
+## 📄 Citation
 
 ```bibtex
-@misc{coldddi2026,
-  title  = {ColdDDI: Evaluating Knowledge Utilization in Cold-Start Drug-Drug Interaction Prediction},
-  author = {Anonymous},
-  year   = {2026},
-  note   = {Under review at NeurIPS 2026 Evaluations \& Datasets Track}
+@inproceedings{liang2026coldddi,
+  author = {Jiheng Liang and Chen Zhao and Di Wu and Chenyang Bu and Yunpeng Hong and Xingquan Zhu and Yi He},
+  title  = {{ColdDDI}: Evaluating Knowledge Utilization in Cold-Start Drug-Drug Interaction Prediction},
+  booktitle = {NeurIPS 2026 Evaluations \& Datasets Track},
+  year   = {2026}
 }
 ```
-
----
-
-## Contact
-
-For questions during the review period, please post on the paper's OpenReview thread.
