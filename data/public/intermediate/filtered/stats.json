@@ -1,0 +1,58 @@
+[
+  {
+    "step": 0,
+    "name": "DrugBank raw",
+    "n_drugs": 100,
+    "n_edges": 1540,
+    "n_types": null
+  },
+  {
+    "step": 1,
+    "name": "Retain small molecules",
+    "n_drugs": 100,
+    "n_edges": 1540,
+    "n_types": null
+  },
+  {
+    "step": 2,
+    "name": "Require valid RDKit SMILES",
+    "n_drugs": 100,
+    "n_edges": 1540,
+    "n_types": null
+  },
+  {
+    "step": 3,
+    "name": "Restrict to approved",
+    "n_drugs": 100,
+    "n_edges": 1540,
+    "n_types": null
+  },
+  {
+    "step": 4,
+    "name": "Extract DDI + normalize descriptions",
+    "n_drugs": 100,
+    "n_edges": 1540,
+    "n_types": 54
+  },
+  {
+    "step": 5,
+    "name": "Remove low-frequency types (<10)",
+    "n_drugs": 98,
+    "n_edges": 1436,
+    "n_types": 24
+  },
+  {
+    "step": 6,
+    "name": "Remove inorganic & metal-containing drugs",
+    "n_drugs": 98,
+    "n_edges": 1436,
+    "n_types": 24
+  },
+  {
+    "step": 7,
+    "name": "Remove low-degree drugs (<10 edges)",
+    "n_drugs": 86,
+    "n_edges": 1383,
+    "n_types": 24
+  }
+]

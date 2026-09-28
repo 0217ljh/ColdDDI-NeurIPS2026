@@ -1,0 +1,501 @@
+pair_id,drug_a_id,drug_a_name,drug_b_id,drug_b_name,ddi_type,auto_pk_pd,auto_AorB,judge_decision,consensus_pk_pd,consensus_AorB
+P0001,DB00091,Cyclosporine,DB00384,Triamterene,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0002,DB00246,Ziprasidone,DB00997,Doxorubicin,The serum concentration of can be increased when it is combined with,PK,A,,PD,B
+P0003,DB00273,Topiramate,DB00683,Midazolam,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,B,,PD,B
+P0004,DB00774,Hydroflumethiazide,DB00842,Oxazepam,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PD,B
+P0005,DB00295,Morphine,DB00758,Clopidogrel,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,,PK,B
+P0006,DB00612,Bisoprolol,DB00777,Propiomazine,may increase the orthostatic hypotensive activities of,PD,B,,PD,B
+P0007,DB00683,Midazolam,DB00801,Halazepam,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,A,,PD,A
+P0008,DB00625,Efavirenz,DB00701,Amprenavir,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,A,,PK,A
+P0009,DB09280,Lumacaftor,DB11689,Selumetinib,The serum concentration of can be decreased when it is combined with,PK,A,,PK,A
+P0010,DB01105,Sibutramine,DB13139,Levosalbutamol,may increase the tachycardic activities of,PD,B,,PD,B
+P0011,DB00209,Trospium,DB01235,Levodopa,The absorption of can be decreased when combined with,PK,B,,PK,B
+P0012,DB00927,Famotidine,DB06710,Methyltestosterone,The excretion of can be increased when combined with,PK,A,,PK,A
+P0013,DB00387,Procyclidine,DB06204,Tapentadol,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,B,,PD,B
+P0014,DB00623,Fluphenazine,DB01242,Clomipramine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,A,auto_wrong,PD,B
+P0015,DB00679,Thioridazine,DB00683,Midazolam,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,B,,PD,B
+P0016,DB00880,Chlorothiazide,DB06292,Dapagliflozin,The therapeutic efficacy of can be decreased when used in combination with,PD,B,,PD,B
+P0017,DB00176,Fluvoxamine,DB01247,Isocarboxazid,may increase the serotonergic activities of,PD,B,,PD,B
+P0018,DB00243,Ranolazine,DB01096,Oxamniquine,The metabolism of can be decreased when combined with,PK,A,,PK,A
+P0019,DB00881,Quinapril,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,B,,PD,B
+P0020,DB01591,Solifenacin,DB06204,Tapentadol,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,B,,PD,B
+P0021,DB00321,Amitriptyline,DB00780,Phenelzine,may increase the serotonergic activities of,PD,B,,PD,B
+P0022,DB00370,Mirtazapine,DB01403,Methotrimeprazine,may increase the serotonergic activities of,PD,A,,PK,B
+P0023,DB00476,Duloxetine,DB01037,Selegiline,The risk or severity of serotonin syndrome can be increased when is combined with,PD,B,,PD,B
+P0024,DB00539,Toremifene,DB00880,Chlorothiazide,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_correct,PD,B
+P0025,DB06448,Lonafarnib,DB12825,Lefamulin,The serum concentration of can be increased when it is combined with,PK,A,,PK,A
+P0026,DB00322,Floxuridine,DB00363,Clozapine,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PD,B
+P0027,DB00813,Fentanyl,DB09241,Methylene blue,may increase the serotonergic activities of,PD,B,,PD,B
+P0028,DB00570,Vinblastine,DB01045,Rifampin,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0029,DB00762,Irinotecan,DB08873,Boceprevir,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,,PK,A
+P0030,DB00261,Anagrelide,DB09082,Vilanterol,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,,PD,B
+P0031,DB00741,Hydrocortisone,DB11827,Ertugliflozin,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0032,DB09082,Vilanterol,DB12141,Gilteritinib,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,,PD,B
+P0033,DB00246,Ziprasidone,DB00925,Phenoxybenzamine,may increase the antihypertensive activities of,PD,A,,PD,A
+P0034,DB01035,Procainamide,DB09149,Florbetapir F-18,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0035,DB01142,Doxepin,DB01235,Levodopa,The absorption of can be decreased when combined with,PK,B,,PK,B
+P0036,DB00757,Dolasetron,DB09082,Vilanterol,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,,PD,B
+P0037,DB06204,Tapentadol,DB11315,Methscopolamine,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,B,,PD,B
+P0038,DB08865,Crizotinib,DB14975,Voxelotor,The serum concentration of can be increased when it is combined with,PK,A,,PK,A
+P0039,DB00213,Pantoprazole,DB00847,Cysteamine,The bioavailability of can be decreased when combined with,PK,B,,PK,B
+P0040,DB00472,Fluoxetine,DB09330,Osimertinib,The serum concentration of can be decreased when it is combined with,PK,A,,PD,B
+P0041,DB00372,Thiethylperazine,DB00800,Fenoldopam,The therapeutic efficacy of can be decreased when used in combination with,PD,B,,PD,B
+P0042,DB01232,Saquinavir,DB01255,Lisdexamfetamine,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0043,DB00755,Tretinoin,DB00759,Tetracycline,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0044,DB09148,Florbetaben F-18,DB12615,Plazomicin,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0045,DB00586,Diclofenac,DB00779,Nalidixic acid,The metabolism of can be decreased when combined with,PK,A,,PD,B
+P0046,DB00976,Telithromycin,DB08931,Riociguat,The serum concentration of can be increased when it is combined with,PK,A,,PK,A
+P0047,DB01235,Levodopa,DB01591,Solifenacin,The absorption of can be decreased when combined with,PK,B,,PK,B
+P0048,DB00727,Nitroglycerin,DB01253,Ergometrine,The bioavailability of can be increased when combined with,PK,B,,PK,B
+P0049,DB00861,Diflunisal,DB00959,Methylprednisolone,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0050,DB00213,Pantoprazole,DB00641,Simvastatin,The excretion of can be decreased when combined with,PK,A,,PK,A
+P0051,DB01058,Praziquantel,DB08881,Vemurafenib,The serum concentration of can be increased when it is combined with,PK,A,auto_correct,PK,A
+P0052,DB09148,Florbetaben F-18,DB09488,Acrivastine,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0053,DB00501,Cimetidine,DB06616,Bosutinib,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,auto_correct,PK,A
+P0054,DB00959,Methylprednisolone,DB01399,Salsalate,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0055,DB00595,Oxytetracycline,DB13944,Testosterone enanthate,The excretion of can be increased when combined with,PK,A,,PK,A
+P0056,DB00812,Phenylbutazone,DB01067,Glipizide,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0057,DB00688,Mycophenolate mofetil,DB01413,Cefepime,may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0058,DB00957,Norgestimate,DB01037,Selegiline,The bioavailability of can be increased when combined with,PK,A,,PK,A
+P0059,DB00847,Cysteamine,DB11739,Vonoprazan,The bioavailability of can be decreased when combined with,PK,B,,PK,B
+P0060,DB08864,Rilpivirine,DB09054,Idelalisib,The serum concentration of can be increased when it is combined with,PK,A,,PD,B
+P0061,DB00574,Fenfluramine,DB09241,Methylene blue,may increase the serotonergic activities of,PD,B,,PD,B
+P0062,DB00195,Betaxolol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_wrong,PK,B
+P0063,DB00358,Mefloquine,DB00489,Sotalol,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0064,DB00755,Tretinoin,DB12035,Sarecycline,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0065,DB01100,Pimozide,DB14975,Voxelotor,The serum concentration of can be increased when it is combined with,PK,B,,PK,B
+P0066,DB00224,Indinavir,DB00346,Alfuzosin,The metabolism of can be decreased when combined with,PK,A,,PK,A
+P0067,DB00285,Venlafaxine,DB09080,Olodaterol,may increase the tachycardic activities of,PD,B,,PD,B
+P0068,DB00361,Vinorelbine,DB01351,Amobarbital,The metabolism of can be increased when combined with,PK,B,,PK,B
+P0069,DB01045,Rifampin,DB09053,Ibrutinib,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0070,DB00187,Esmolol,DB04946,Iloperidone,may increase the orthostatic hypotensive activities of,PD,A,,PD,A
+P0071,DB00539,Toremifene,DB00562,Benzthiazide,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_wrong,PK,B
+P0072,DB00841,Dobutamine,DB00983,Formoterol,may increase the sympathomimetic activities of,PD,A,,PD,A
+P0073,DB00834,Mifepristone,DB01041,Thalidomide,may increase the thrombogenic activities of,PD,B,,PD,B
+P0074,DB03619,Deoxycholic acid,DB09075,Edoxaban,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0075,DB00584,Enalapril,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,B,,PD,B
+P0076,DB00146,Calcifediol,DB01396,Digitoxin,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0077,DB00489,Sotalol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_wrong,PK,B
+P0078,DB06016,Cariprazine,DB06119,Cenobamate,The serum concentration of can be decreased when it is combined with,PK,A,,PK,A
+P0079,DB06700,Desvenlafaxine,DB09082,Vilanterol,may increase the tachycardic activities of,PD,B,,PD,B
+P0080,DB00762,Irinotecan,DB08896,Regorafenib,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PK,B
+P0081,DB00277,Theophylline,DB00754,Ethotoin,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PK,B
+P0082,DB00372,Thiethylperazine,DB01242,Clomipramine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,B,auto_correct,PK,B
+P0083,DB00443,Betamethasone,DB01016,Glyburide,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0084,DB09149,Florbetapir F-18,DB09488,Acrivastine,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0085,DB00358,Mefloquine,DB01359,Penbutolol,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0086,DB01255,Lisdexamfetamine,DB06708,Lumefantrine,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0087,DB09148,Florbetaben F-18,DB09477,Enalaprilat,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0088,DB00443,Betamethasone,DB00573,Fenoprofen,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0089,DB01193,Acebutolol,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,B,,PD,B
+P0090,DB00302,Tranexamic acid,DB09389,Norgestrel,may increase the thrombogenic activities of,PD,B,,PD,B
+P0091,DB00414,Acetohexamide,DB00451,Levothyroxine,The therapeutic efficacy of can be decreased when used in combination with,PD,B,,PD,B
+P0092,DB00491,Miglitol,DB00687,Fludrocortisone,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0093,DB00421,Spironolactone,DB00580,Valdecoxib,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0094,DB00358,Mefloquine,DB00612,Bisoprolol,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0095,DB00508,Triflupromazine,DB01255,Lisdexamfetamine,may decrease the stimulatory activities of,PD,B,,PD,B
+P0096,DB00816,Orciprenaline,DB00983,Formoterol,may increase the sympathomimetic activities of,PD,A,,PD,A
+P0097,DB00420,Promazine,DB01242,Clomipramine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,A,auto_correct,PK,A
+P0098,DB00502,Haloperidol,DB09065,Cobicistat,The serum concentration of can be increased when it is combined with,PK,A,auto_correct,PK,A
+P0099,DB00191,Phentermine,DB00623,Fluphenazine,may decrease the stimulatory activities of,PD,B,,PD,B
+P0100,DB00196,Fluconazole,DB01395,Drospirenone,The bioavailability of can be increased when combined with,PK,A,,PK,A
+P0101,DB00384,Triamterene,DB09149,Florbetapir F-18,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0102,DB00933,Mesoridazine,DB01579,Phendimetrazine,may decrease the stimulatory activities of,PD,B,,PD,B
+P0103,DB00727,Nitroglycerin,DB01200,Bromocriptine,The bioavailability of can be increased when combined with,PK,B,,PK,B
+P0104,DB00187,Esmolol,DB00358,Mefloquine,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0105,DB00818,Propofol,DB09082,Vilanterol,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,,PD,B
+P0106,DB00839,Tolazamide,DB01050,Ibuprofen,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0107,DB00136,Calcitriol,DB00390,Digoxin,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0108,DB01001,Albuterol,DB13954,Estradiol cypionate,Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0109,DB00207,Azithromycin,DB01100,Pimozide,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,auto_correct,PD,B
+P0110,DB00338,Omeprazole,DB01319,Fosamprenavir,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,auto_correct,PK,A
+P0111,DB00705,Delavirdine,DB01129,Rabeprazole,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,auto_correct,PK,A
+P0112,DB04946,Iloperidone,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,A,,PD,A
+P0113,DB00889,Granisetron,DB09082,Vilanterol,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,,PD,B
+P0114,DB00879,Emtricitabine,DB12978,Pexidartinib,The excretion of can be decreased when combined with,PK,A,,PD,B
+P0115,DB00363,Clozapine,DB00859,Penicillamine,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PD,B
+P0116,DB00285,Venlafaxine,DB00313,Valproic acid,The risk or severity of serotonin syndrome can be increased when is combined with,PD,B,,PD,B
+P0117,DB00635,Prednisone,DB09149,Florbetapir F-18,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0118,DB00916,Metronidazole,DB01045,Rifampin,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0119,DB01026,Ketoconazole,DB06287,Temsirolimus,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,,PK,B
+P0120,DB00564,Carbamazepine,DB08816,Ticagrelor,The metabolism of can be increased when combined with,PK,A,,PK,A
+P0121,DB01001,Albuterol,DB09136,Isosulfan blue,Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0122,DB09149,Florbetapir F-18,DB09320,Procaine benzylpenicillin,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0123,DB00358,Mefloquine,DB01193,Acebutolol,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0124,DB00321,Amitriptyline,DB00594,Amiloride,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PD,B
+P0125,DB01045,Rifampin,DB11636,Nomegestrol,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0126,DB01001,Albuterol,DB13156,Inosine pranobex,Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0127,DB00860,Prednisolone,DB00991,Oxaprozin,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0128,DB00091,Cyclosporine,DB06791,Lanreotide,The bioavailability of can be decreased when combined with,PK,A,auto_correct,PK,A
+P0129,DB00703,Methazolamide,DB06799,Methenamine,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,B,,PK,B
+P0130,DB00358,Mefloquine,DB00598,Labetalol,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0131,DB00705,Delavirdine,DB12267,Brigatinib,The metabolism of can be decreased when combined with,PK,A,,PK,A
+P0132,DB01012,Cinacalcet,DB12161,Deutetrabenazine,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,,PK,A
+P0133,DB00280,Disopyramide,DB00687,Fludrocortisone,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0134,DB01041,Thalidomide,DB01395,Drospirenone,may increase the thrombogenic activities of,PD,B,,PD,B
+P0135,DB00186,Lorazepam,DB00887,Bumetanide,may decrease the excretion rate of which could result in a higher serum level,PK,B,,PD,B
+P0136,DB00749,Etodolac,DB01067,Glipizide,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0137,DB01327,Cefazolin,DB06710,Methyltestosterone,The excretion of can be increased when combined with,PK,B,,PK,B
+P0138,DB00703,Methazolamide,DB00908,Quinidine,The excretion of can be decreased when combined with,PK,B,,PK,B
+P0139,DB00196,Fluconazole,DB00783,Estradiol,The bioavailability of can be increased when combined with,PK,A,,PK,A
+P0140,DB00335,Atenolol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_wrong,PK,B
+P0141,DB00270,Isradipine,DB08912,Dabrafenib,The serum concentration of can be decreased when it is combined with,PK,A,,PK,A
+P0142,DB00196,Fluconazole,DB00501,Cimetidine,The bioavailability of can be decreased when combined with,PK,A,,PK,B
+P0143,DB00687,Fludrocortisone,DB00912,Repaglinide,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0144,DB01087,Primaquine,DB01255,Lisdexamfetamine,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0145,DB00193,Tramadol,DB01579,Phendimetrazine,may increase the analgesic activities of,PD,B,,PD,B
+P0146,DB00264,Metoprolol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_correct,PD,B
+P0147,DB01072,Atazanavir,DB11979,Elagolix,The excretion of can be decreased when combined with,PK,A,auto_correct,PK,A
+P0148,DB01001,Albuterol,DB08910,Pomalidomide,Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0149,DB01136,Carvedilol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_correct,PD,B
+P0150,DB00831,Trifluoperazine,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,A,,PD,A
+P0151,DB00508,Triflupromazine,DB01235,Levodopa,The absorption of can be decreased when combined with,PK,B,,PD,B
+P0152,DB01403,Methotrimeprazine,DB12161,Deutetrabenazine,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,,PK,A
+P0153,DB01174,Phenobarbital,DB11800,Tivozanib,The metabolism of can be increased when combined with,PK,A,,PK,A
+P0154,DB00353,Methylergometrine,DB00727,Nitroglycerin,The bioavailability of can be increased when combined with,PK,B,,PK,B
+P0155,DB00363,Clozapine,DB01262,Decitabine,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PD,B
+P0156,DB00169,Cholecalciferol,DB01021,Trichlormethiazide,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_wrong,PK,B
+P0157,DB00804,Dicyclomine,DB01235,Levodopa,The absorption of can be decreased when combined with,PK,B,,PK,B
+P0158,DB01045,Rifampin,DB11757,Istradefylline,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0159,DB04843,Mepenzolate,DB06204,Tapentadol,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,B,,PD,B
+P0160,DB00651,Dyphylline,DB01064,Isoprenaline,The serum concentration of can be decreased when it is combined with,PK,B,auto_correct,PK,B
+P0161,DB00701,Amprenavir,DB06414,Etravirine,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,,PK,A
+P0162,DB04861,Nebivolol,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,B,,PD,B
+P0163,DB01403,Methotrimeprazine,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,A,,PD,A
+P0164,DB00319,Piperacillin,DB01032,Probenecid,The excretion of can be decreased when combined with,PK,A,,PK,A
+P0165,DB00372,Thiethylperazine,DB00937,Diethylpropion,may decrease the stimulatory activities of,PD,B,,PD,B
+P0166,DB00197,Troglitazone,DB00860,Prednisolone,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0167,DB00595,Oxytetracycline,DB00695,Furosemide,The excretion of can be decreased when combined with,PK,A,,PK,A
+P0168,DB01148,Flavoxate,DB01235,Levodopa,The absorption of can be decreased when combined with,PK,B,,PK,B
+P0169,DB00285,Venlafaxine,DB06707,Levonordefrin,may increase the tachycardic activities of,PD,B,,PD,B
+P0170,DB00762,Irinotecan,DB01118,Amiodarone,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,,PK,A
+P0171,DB01062,Oxybutynin,DB01203,Nadolol,The metabolism of can be decreased when combined with,PK,B,auto_wrong,PD,B
+P0172,DB00285,Venlafaxine,DB00562,Benzthiazide,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PD,B
+P0173,DB00254,Doxycycline,DB00755,Tretinoin,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0174,DB11963,Dacomitinib,DB12161,Deutetrabenazine,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,,PK,A
+P0175,DB00273,Topiramate,DB01320,Fosphenytoin,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,auto_wrong,PK,B
+P0176,DB09149,Florbetapir F-18,DB12615,Plazomicin,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0177,DB00683,Midazolam,DB01221,Ketamine,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,B,,PD,B
+P0178,DB00314,Capreomycin,DB09148,Florbetaben F-18,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0179,DB00243,Ranolazine,DB01015,Sulfamethoxazole,may decrease the excretion rate of which could result in a higher serum level,PK,A,,PD,B
+P0180,DB00421,Spironolactone,DB00812,Phenylbutazone,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0181,DB01088,Iloprost,DB01247,Isocarboxazid,may increase the orthostatic hypotensive activities of,PD,B,,PD,B
+P0182,DB01324,Polythiazide,DB06710,Methyltestosterone,The excretion of can be increased when combined with,PK,A,,PK,A
+P0183,DB00782,Propantheline,DB06204,Tapentadol,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,B,,PD,B
+P0184,DB00351,Megestrol acetate,DB01041,Thalidomide,may increase the thrombogenic activities of,PD,B,,PD,B
+P0185,DB01291,Pirbuterol,DB04896,Milnacipran,may increase the tachycardic activities of,PD,B,,PD,B
+P0186,DB00580,Valdecoxib,DB00829,Diazepam,may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0187,DB00594,Amiloride,DB00722,Lisinopril,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0188,DB06119,Cenobamate,DB12941,Darolutamide,The serum concentration of can be decreased when it is combined with,PK,A,,PK,A
+P0189,DB01045,Rifampin,DB12548,Sparsentan,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0190,DB00804,Dicyclomine,DB09148,Florbetaben F-18,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0191,DB01242,Clomipramine,DB06654,Safinamide,may increase the serotonergic activities of,PD,B,,PD,B
+P0192,DB00628,Clorazepic acid,DB00683,Midazolam,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,A,,PD,A
+P0193,DB00209,Trospium,DB06204,Tapentadol,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,B,,PD,B
+P0194,DB00302,Tranexamic acid,DB00977,Ethinylestradiol,may increase the thrombogenic activities of,PD,B,,PD,B
+P0195,DB00503,Ritonavir,DB00762,Irinotecan,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,,PK,A
+P0196,DB00264,Metoprolol,DB09149,Florbetapir F-18,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0197,DB00706,Tamsulosin,DB00842,Oxazepam,may decrease the excretion rate of which could result in a higher serum level,PK,B,,PD,B
+P0198,DB01255,Lisdexamfetamine,DB05812,Abiraterone,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0199,DB00703,Methazolamide,DB01149,Nefazodone,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PD,B
+P0200,DB00594,Amiloride,DB01197,Captopril,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0201,DB00363,Clozapine,DB01073,Fludarabine,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PD,B
+P0202,DB00850,Perphenazine,DB01242,Clomipramine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,A,auto_correct,PK,A
+P0203,DB00398,Sorafenib,DB09149,Florbetapir F-18,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0204,DB01333,Cefradine,DB09148,Florbetaben F-18,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0205,DB00330,Ethambutol,DB09148,Florbetaben F-18,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0206,DB06710,Methyltestosterone,DB16335,Sulopenem etzadroxil,The excretion of can be increased when combined with,PK,A,,PK,A
+P0207,DB01001,Albuterol,DB09133,Iothalamic acid,Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0208,DB00530,Erlotinib,DB12070,Letermovir,The serum concentration of can be increased when it is combined with,PK,A,,PK,A
+P0209,DB00197,Troglitazone,DB11921,Deflazacort,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0210,DB00774,Hydroflumethiazide,DB06410,Doxercalciferol,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_correct,PD,B
+P0211,DB00813,Fentanyl,DB01576,Dextroamphetamine,may increase the analgesic activities of,PD,B,,PD,B
+P0212,DB00285,Venlafaxine,DB01151,Desipramine,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,,PD,B
+P0213,DB00691,Moexipril,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,B,,PD,B
+P0214,DB00682,Warfarin,DB06777,Chenodeoxycholic acid,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0215,DB00652,Pentazocine,DB01577,Metamfetamine,may increase the analgesic activities of,PD,B,,PD,B
+P0216,DB00153,Ergocalciferol,DB01021,Trichlormethiazide,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_wrong,PK,B
+P0217,DB00323,Tolcapone,DB09241,Methylene blue,may increase the orthostatic hypotensive activities of,PD,B,,PD,B
+P0218,DB01001,Albuterol,DB01129,Rabeprazole,Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0219,DB00146,Calcifediol,DB01324,Polythiazide,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_correct,PD,B
+P0220,DB00518,Albendazole,DB01045,Rifampin,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0221,DB00327,Hydromorphone,DB01183,Naloxone,The therapeutic efficacy of can be decreased when used in combination with,PD,A,,PD,A
+P0222,DB00255,Diethylstilbestrol,DB01041,Thalidomide,may increase the thrombogenic activities of,PD,B,,PD,B
+P0223,DB00196,Fluconazole,DB00906,Tiagabine,The metabolism of can be decreased when combined with,PK,A,,PK,A
+P0224,DB02659,Cholic Acid,DB06626,Axitinib,The excretion of can be increased when combined with,PK,A,,PK,A
+P0225,DB00736,Esomeprazole,DB11963,Dacomitinib,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,auto_correct,PK,A
+P0226,DB00421,Spironolactone,DB00876,Eprosartan,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0227,DB09149,Florbetapir F-18,DB13682,Cefpirome,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0228,DB00182,Amphetamine,DB00508,Triflupromazine,may decrease the stimulatory activities of,PD,A,auto_correct,PD,A
+P0229,DB00715,Paroxetine,DB00918,Almotriptan,The risk or severity of serotonin syndrome can be increased when is combined with,PD,B,,PD,B
+P0230,DB00252,Phenytoin,DB00451,Levothyroxine,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0231,DB00615,Rifabutin,DB00932,Tipranavir,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,,PK,A
+P0232,DB00831,Trifluoperazine,DB01242,Clomipramine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,A,auto_wrong,PD,B
+P0233,DB00182,Amphetamine,DB00850,Perphenazine,may decrease the stimulatory activities of,PD,A,auto_wrong,PD,B
+P0234,DB01235,Levodopa,DB04843,Mepenzolate,The absorption of can be decreased when combined with,PK,B,,PK,B
+P0235,DB00421,Spironolactone,DB00960,Pindolol,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0236,DB00983,Formoterol,DB06706,Isometheptene,may increase the sympathomimetic activities of,PD,B,,PD,B
+P0237,DB01218,Halofantrine,DB09082,Vilanterol,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,,PD,B
+P0238,DB00231,Temazepam,DB01144,Diclofenamide,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PK,B
+P0239,DB00703,Methazolamide,DB01249,Iodixanol,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PK,B
+P0240,DB00552,Pentostatin,DB09149,Florbetapir F-18,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0241,DB01037,Selegiline,DB01115,Nifedipine,may increase the orthostatic hypotensive activities of,PD,B,,PD,B
+P0242,DB00908,Quinidine,DB09148,Florbetaben F-18,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0243,DB00246,Ziprasidone,DB01116,Trimethaphan,may increase the antihypertensive activities of,PD,B,,PD,B
+P0244,DB00196,Fluconazole,DB00367,Levonorgestrel,The bioavailability of can be increased when combined with,PK,A,,PK,A
+P0245,DB00252,Phenytoin,DB00414,Acetohexamide,The therapeutic efficacy of can be decreased when used in combination with,PD,B,auto_wrong,PK,B
+P0246,DB00762,Irinotecan,DB05521,Telaprevir,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,,PK,A
+P0247,DB00933,Mesoridazine,DB01242,Clomipramine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,A,,PD,B
+P0248,DB00446,Chloramphenicol,DB09034,Suvorexant,The metabolism of can be decreased when combined with,PK,A,,PK,A
+P0249,DB00519,Trandolapril,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,B,,PD,B
+P0250,DB09148,Florbetaben F-18,DB09212,Loxoprofen,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0251,DB00363,Clozapine,DB00531,Cyclophosphamide,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PD,B
+P0252,DB00266,Dicoumarol,DB03619,Deoxycholic acid,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0253,DB00620,Triamcinolone,DB01067,Glipizide,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0254,DB00198,Oseltamivir,DB06710,Methyltestosterone,The excretion of can be increased when combined with,PK,A,,PK,A
+P0255,DB03619,Deoxycholic acid,DB12364,Betrixaban,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0256,DB00443,Betamethasone,DB00482,Celecoxib,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0257,DB00695,Furosemide,DB01068,Clonazepam,may decrease the excretion rate of which could result in a higher serum level,PK,B,,PD,B
+P0258,DB00540,Nortriptyline,DB00612,Bisoprolol,may increase the orthostatic hypotensive activities of,PD,B,,PD,B
+P0259,DB00264,Metoprolol,DB00743,Gadobenic acid,may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0260,DB00862,Vardenafil,DB00999,Hydrochlorothiazide,may increase the antihypertensive activities of,PD,B,,PD,B
+P0261,DB04871,Lorcaserin,DB08918,Levomilnacipran,The risk or severity of serotonin syndrome can be increased when is combined with,PD,B,,PD,B
+P0262,DB01174,Phenobarbital,DB11256,Levomefolic acid,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,B,,PK,B
+P0263,DB00091,Cyclosporine,DB00700,Eplerenone,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0264,DB01195,Flecainide,DB01255,Lisdexamfetamine,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0265,DB00327,Hydromorphone,DB12161,Deutetrabenazine,may decrease the excretion rate of which could result in a higher serum level,PK,B,auto_wrong,PD,B
+P0266,DB00635,Prednisone,DB01045,Rifampin,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0267,DB00203,Sildenafil,DB01203,Nadolol,may increase the antihypertensive activities of,PD,B,,PD,B
+P0268,DB00908,Quinidine,DB01255,Lisdexamfetamine,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0269,DB01062,Oxybutynin,DB06204,Tapentadol,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,B,,PD,B
+P0270,DB00176,Fluvoxamine,DB00758,Clopidogrel,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,A,auto_correct,PK,A
+P0271,DB01035,Procainamide,DB09148,Florbetaben F-18,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0272,DB00448,Lansoprazole,DB00847,Cysteamine,The bioavailability of can be decreased when combined with,PK,B,,PK,B
+P0273,DB00624,Testosterone,DB09149,Florbetapir F-18,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0274,DB00146,Calcifediol,DB00390,Digoxin,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0275,DB00278,Argatroban,DB03619,Deoxycholic acid,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0276,DB00136,Calcitriol,DB01021,Trichlormethiazide,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_wrong,PK,B
+P0277,DB01319,Fosamprenavir,DB11827,Ertugliflozin,The therapeutic efficacy of can be decreased when used in combination with,PD,B,,PD,B
+P0278,DB00903,Etacrynic acid,DB01247,Isocarboxazid,may increase the orthostatic hypotensive activities of,PD,B,,PD,B
+P0279,DB00215,Citalopram,DB00652,Pentazocine,The risk or severity of serotonin syndrome can be increased when is combined with,PD,B,,PD,B
+P0280,DB00564,Carbamazepine,DB00776,Oxcarbazepine,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,A,,PK,A
+P0281,DB00910,Paricalcitol,DB01396,Digitoxin,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0282,DB01001,Albuterol,DB08872,Gabapentin enacarbil,Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0283,DB00687,Fludrocortisone,DB01050,Ibuprofen,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0284,DB00559,Bosentan,DB01045,Rifampin,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0285,DB00446,Chloramphenicol,DB00758,Clopidogrel,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,A,auto_correct,PK,A
+P0286,DB00508,Triflupromazine,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,A,,PD,A
+P0287,DB00285,Venlafaxine,DB00934,Maprotiline,The risk or severity of serotonin syndrome can be increased when is combined with,PD,A,,PD,A
+P0288,DB00695,Furosemide,DB00862,Vardenafil,may increase the antihypertensive activities of,PD,B,,PD,B
+P0289,DB00683,Midazolam,DB01065,Melatonin,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,B,,PD,B
+P0290,DB03619,Deoxycholic acid,DB06605,Apixaban,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0291,DB00910,Paricalcitol,DB01324,Polythiazide,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_correct,PD,B
+P0292,DB00569,Fondaparinux,DB03619,Deoxycholic acid,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0293,DB01020,Isosorbide mononitrate,DB01367,Rasagiline,may increase the orthostatic hypotensive activities of,PD,B,,PD,B
+P0294,DB00983,Formoterol,DB09080,Olodaterol,may increase the sympathomimetic activities of,PD,A,,PD,A
+P0295,DB00615,Rifabutin,DB01232,Saquinavir,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,,PK,A
+P0296,DB09149,Florbetapir F-18,DB13944,Testosterone enanthate,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0297,DB00153,Ergocalciferol,DB01396,Digitoxin,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0298,DB00508,Triflupromazine,DB01576,Dextroamphetamine,may decrease the stimulatory activities of,PD,B,,PD,B
+P0299,DB00307,Bexarotene,DB12329,Eravacycline,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0300,DB00459,Acitretin,DB12455,Omadacycline,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0301,DB00206,Reserpine,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,B,,PD,B
+P0302,DB01045,Rifampin,DB04854,Febuxostat,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0303,DB00797,Tolazoline,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,A,,PD,A
+P0304,DB06203,Alogliptin,DB09148,Florbetaben F-18,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0305,DB00705,Delavirdine,DB05351,Dexlansoprazole,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,auto_wrong,PK,B
+P0306,DB00624,Testosterone,DB01415,Ceftibuten,The excretion of can be increased when combined with,PK,A,,PK,A
+P0307,DB00652,Pentazocine,DB00865,Benzphetamine,may increase the analgesic activities of,PD,B,,PD,B
+P0308,DB00715,Paroxetine,DB01045,Rifampin,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0309,DB00531,Cyclophosphamide,DB01319,Fosamprenavir,The serum concentration of the active metabolites of can be increased when is used in combination with,PK,A,,PK,A
+P0310,DB00549,Zafirlukast,DB00758,Clopidogrel,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,A,auto_wrong,PK,B
+P0311,DB00938,Salmeterol,DB00983,Formoterol,may increase the sympathomimetic activities of,PD,A,,PD,A
+P0312,DB01001,Albuterol,DB09502,Fludeoxyglucose (18F),Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0313,DB00986,Glycopyrronium,DB06204,Tapentadol,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,B,,PD,B
+P0314,DB01020,Isosorbide mononitrate,DB01168,Procarbazine,may increase the orthostatic hypotensive activities of,PD,B,,PD,B
+P0315,DB00208,Ticlopidine,DB00758,Clopidogrel,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,A,auto_wrong,PK,B
+P0316,DB00574,Fenfluramine,DB00889,Granisetron,The risk or severity of serotonin syndrome can be increased when is combined with,PD,B,,PD,B
+P0317,DB00500,Tolmetin,DB00898,Ethanol,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0318,DB00661,Verapamil,DB00776,Oxcarbazepine,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,,PK,A
+P0319,DB00405,Dexbrompheniramine,DB00683,Midazolam,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,B,,PD,B
+P0320,DB00358,Mefloquine,DB01182,Propafenone,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0321,DB00736,Esomeprazole,DB08931,Riociguat,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,auto_correct,PK,A
+P0322,DB00938,Salmeterol,DB08918,Levomilnacipran,may increase the tachycardic activities of,PD,B,,PD,B
+P0323,DB01234,Dexamethasone,DB08875,Cabozantinib,The metabolism of can be increased when combined with,PK,A,,PK,A
+P0324,DB00242,Cladribine,DB00363,Clozapine,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PD,B
+P0325,DB00829,Diazepam,DB12015,Alpelisib,The serum concentration of can be decreased when it is combined with,PK,A,auto_wrong,PK,B
+P0326,DB01104,Sertraline,DB01367,Rasagiline,The risk or severity of serotonin syndrome can be increased when is combined with,PD,B,,PD,B
+P0327,DB00433,Prochlorperazine,DB01242,Clomipramine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,A,auto_correct,PK,A
+P0328,DB00788,Naproxen,DB09149,Florbetapir F-18,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0329,DB09148,Florbetaben F-18,DB09320,Procaine benzylpenicillin,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0330,DB00334,Olanzapine,DB08941,Isoxsuprine,The therapeutic efficacy of can be decreased when used in combination with,PD,B,,PD,B
+P0331,DB00962,Zaleplon,DB01324,Polythiazide,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PD,B
+P0332,DB00717,Norethisterone,DB01037,Selegiline,The bioavailability of can be increased when combined with,PK,A,auto_correct,PK,A
+P0333,DB00238,Nevirapine,DB09039,Eliglustat,The metabolism of can be decreased when combined with,PK,A,,PK,A
+P0334,DB00520,Caspofungin,DB00563,Methotrexate,The excretion of can be decreased when combined with,PK,A,,PD,B
+P0335,DB09149,Florbetapir F-18,DB09477,Enalaprilat,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0336,DB06228,Rivaroxaban,DB12141,Gilteritinib,may decrease the excretion rate of which could result in a higher serum level,PK,A,,PK,A
+P0337,DB00195,Betaxolol,DB00590,Doxazosin,may increase the orthostatic hypotensive activities of,PD,B,,PD,B
+P0338,DB00983,Formoterol,DB05039,Indacaterol,may increase the sympathomimetic activities of,PD,A,,PD,A
+P0339,DB01001,Albuterol,DB06800,Methylnaltrexone,Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0340,DB01255,Lisdexamfetamine,DB08864,Rilpivirine,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0341,DB01032,Probenecid,DB01124,Tolbutamide,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0342,DB00681,Amphotericin B,DB09149,Florbetapir F-18,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0343,DB00254,Doxycycline,DB00459,Acitretin,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0344,DB00508,Triflupromazine,DB00683,Midazolam,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,B,,PD,B
+P0345,DB09149,Florbetapir F-18,DB11691,Naldemedine,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0346,DB06201,Rufinamide,DB12267,Brigatinib,The metabolism of can be increased when combined with,PK,A,,PK,A
+P0347,DB00540,Nortriptyline,DB00780,Phenelzine,may increase the serotonergic activities of,PD,B,,PD,B
+P0348,DB01069,Promethazine,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,A,,PD,A
+P0349,DB06210,Eltrombopag,DB09400,Selenomethionine Se-75,The bioavailability of can be decreased when combined with,PK,B,,PK,B
+P0350,DB01175,Escitalopram,DB09068,Vortioxetine,The risk or severity of serotonin syndrome can be increased when is combined with,PD,A,,PD,A
+P0351,DB00802,Alfentanil,DB01576,Dextroamphetamine,may increase the analgesic activities of,PD,B,,PD,B
+P0352,DB00328,Indomethacin,DB00898,Ethanol,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0353,DB00501,Cimetidine,DB09073,Palbociclib,The absorption of can be decreased when combined with,PK,A,auto_correct,PK,A
+P0354,DB00182,Amphetamine,DB00647,Dextropropoxyphene,may increase the analgesic activities of,PD,B,,PD,B
+P0355,DB09026,Aliskiren,DB12010,Fostamatinib,may increase the antihypertensive activities of,PD,B,,PK,B
+P0356,DB00762,Irinotecan,DB01026,Ketoconazole,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,,PK,A
+P0357,DB01001,Albuterol,DB09134,Ioversol,Salbutamol may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0358,DB00433,Prochlorperazine,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,A,,PD,A
+P0359,DB01045,Rifampin,DB09063,Ceritinib,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0360,DB00314,Capreomycin,DB09149,Florbetapir F-18,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0361,DB00675,Tamoxifen,DB01255,Lisdexamfetamine,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0362,DB00006,Bivalirudin,DB03619,Deoxycholic acid,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0363,DB00490,Buspirone,DB01045,Rifampin,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0364,DB01236,Sevoflurane,DB11642,Pitolisant,The serum concentration of can be decreased when it is combined with,PK,A,,PD,B
+P0365,DB06237,Avanafil,DB14568,Ivosidenib,The metabolism of can be increased when combined with,PK,A,,PK,A
+P0366,DB01118,Amiodarone,DB15035,Zanubrutinib,The metabolism of can be decreased when combined with,PK,A,,PK,A
+P0367,DB01203,Nadolol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_correct,PD,B
+P0368,DB00195,Betaxolol,DB00358,Mefloquine,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0369,DB00091,Cyclosporine,DB06663,Pasireotide,The bioavailability of can be decreased when combined with,PK,A,auto_correct,PK,A
+P0370,DB00275,Olmesartan,DB00862,Vardenafil,may increase the antihypertensive activities of,PD,B,,PD,B
+P0371,DB00175,Pravastatin,DB08912,Dabrafenib,The excretion of can be decreased when combined with,PK,A,,PK,B
+P0372,DB00679,Thioridazine,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,A,,PD,A
+P0373,DB00983,Formoterol,DB01045,Rifampin,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0374,DB01193,Acebutolol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_correct,PD,B
+P0375,DB00191,Phentermine,DB00579,Mazindol,The risk or severity of serotonin syndrome can be increased when is combined with,PD,A,auto_correct,PD,A
+P0376,DB00800,Fenoldopam,DB09148,Florbetaben F-18,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0377,DB00543,Amoxapine,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,A,,PD,A
+P0378,DB00956,Hydrocodone,DB08816,Ticagrelor,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,,PK,B
+P0379,DB06119,Cenobamate,DB09065,Cobicistat,The serum concentration of can be decreased when it is combined with,PK,A,,PK,A
+P0380,DB00900,Didanosine,DB01165,Ofloxacin,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,auto_wrong,PK,B
+P0381,DB01144,Diclofenamide,DB06799,Methenamine,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,B,,PK,B
+P0382,DB00959,Methylprednisolone,DB06203,Alogliptin,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0383,DB00572,Atropine,DB01235,Levodopa,The absorption of can be decreased when combined with,PK,B,,PK,B
+P0384,DB00264,Metoprolol,DB00358,Mefloquine,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0385,DB00363,Clozapine,DB00552,Pentostatin,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PD,B
+P0386,DB11901,Apalutamide,DB12500,Fedratinib,The serum concentration of can be decreased when it is combined with,PK,A,,PK,A
+P0387,DB00169,Cholecalciferol,DB00390,Digoxin,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0388,DB00248,Cabergoline,DB00727,Nitroglycerin,The bioavailability of can be increased when combined with,PK,B,,PD,B
+P0389,DB00703,Methazolamide,DB04896,Milnacipran,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PD,B
+P0390,DB09048,Netupitant,DB13867,Fluticasone,The metabolism of can be increased when combined with,PK,A,,PK,A
+P0391,DB00683,Midazolam,DB01069,Promethazine,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,B,,PD,B
+P0392,DB00363,Clozapine,DB08910,Pomalidomide,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PD,B
+P0393,DB00245,Benzatropine,DB06204,Tapentadol,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,A,,PD,A
+P0394,DB01045,Rifampin,DB06589,Pazopanib,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0395,DB00480,Lenalidomide,DB00655,Estrone,may increase the thrombogenic activities of,PD,B,,PD,B
+P0396,DB00850,Perphenazine,DB00937,Diethylpropion,may decrease the stimulatory activities of,PD,B,,PD,B
+P0397,DB00933,Mesoridazine,DB00937,Diethylpropion,may decrease the stimulatory activities of,PD,B,,PD,B
+P0398,DB00714,Apomorphine,DB09082,Vilanterol,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,,PD,B
+P0399,DB00918,Almotriptan,DB01045,Rifampin,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0400,DB00704,Naltrexone,DB04948,Lofexidine,The bioavailability of can be decreased when combined with,PK,B,,PK,B
+P0401,DB01045,Rifampin,DB08864,Rilpivirine,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0402,DB00266,Dicoumarol,DB05990,Obeticholic acid,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0403,DB00289,Atomoxetine,DB13139,Levosalbutamol,may increase the tachycardic activities of,PD,B,,PD,B
+P0404,DB00899,Remifentanil,DB01577,Metamfetamine,may increase the analgesic activities of,PD,B,,PD,B
+P0405,DB00982,Isotretinoin,DB12329,Eravacycline,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0406,DB00595,Oxytetracycline,DB00982,Isotretinoin,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0407,DB01396,Digitoxin,DB06410,Doxercalciferol,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0408,DB00136,Calcitriol,DB00436,Bendroflumethiazide,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_correct,PD,B
+P0409,DB00612,Bisoprolol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_correct,PD,B
+P0410,DB00847,Cysteamine,DB01129,Rabeprazole,The bioavailability of can be decreased when combined with,PK,B,,PK,B
+P0411,DB00665,Nilutamide,DB09148,Florbetaben F-18,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0412,DB00252,Phenytoin,DB04854,Febuxostat,The metabolism of can be increased when combined with,PK,A,auto_correct,PK,A
+P0413,DB01045,Rifampin,DB11712,Tezacaftor,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0414,DB00496,Darifenacin,DB06204,Tapentadol,The risk or severity of urinary retention and constipation can be increased when is combined with,PD,B,,PD,B
+P0415,DB00300,Tenofovir disoproxil,DB13944,Testosterone enanthate,The excretion of can be increased when combined with,PK,A,,PK,A
+P0416,DB00153,Ergocalciferol,DB00390,Digoxin,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0417,DB00295,Morphine,DB00780,Phenelzine,may increase the analgesic activities of,PD,B,,PD,B
+P0418,DB00762,Irinotecan,DB01263,Posaconazole,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,,PK,A
+P0419,DB00252,Phenytoin,DB14006,Choline salicylate,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0420,DB00672,Chlorpropamide,DB01119,Diazoxide,The therapeutic efficacy of can be decreased when used in combination with,PD,B,,PD,B
+P0421,DB00777,Propiomazine,DB01235,Levodopa,The absorption of can be decreased when combined with,PK,B,,PD,B
+P0422,DB00862,Vardenafil,DB04861,Nebivolol,may increase the antihypertensive activities of,PD,B,,PD,B
+P0423,DB00755,Tretinoin,DB12329,Eravacycline,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0424,DB00220,Nelfinavir,DB01609,Deferasirox,The metabolism of can be increased when combined with,PK,A,,PK,A
+P0425,DB00620,Triamcinolone,DB00991,Oxaprozin,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0426,DB01069,Promethazine,DB01242,Clomipramine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,A,auto_correct,PK,A
+P0427,DB00335,Atenolol,DB00415,Ampicillin,The bioavailability of can be decreased when combined with,PK,B,,PK,B
+P0428,DB00490,Buspirone,DB04871,Lorcaserin,The metabolism of can be decreased when combined with,PK,A,,PD,B
+P0429,DB00960,Pindolol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_wrong,PK,B
+P0430,DB00246,Ziprasidone,DB06288,Amisulpride,may increase the antipsychotic activities of,PD,A,,PD,A
+P0431,DB00700,Eplerenone,DB00876,Eprosartan,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0432,DB00997,Doxorubicin,DB01255,Lisdexamfetamine,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0433,DB00280,Disopyramide,DB09082,Vilanterol,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,,PD,B
+P0434,DB00620,Triamcinolone,DB06203,Alogliptin,The risk or severity of hyperglycemia can be increased when is combined with,PD,B,,PD,B
+P0435,DB00414,Acetohexamide,DB00554,Piroxicam,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0436,DB00983,Formoterol,DB01577,Metamfetamine,may increase the sympathomimetic activities of,PD,B,,PD,B
+P0437,DB00571,Propranolol,DB06709,Methacholine,may increase the bronchoconstrictory activities of,PD,B,auto_wrong,PK,B
+P0438,DB01212,Ceftriaxone,DB09149,Florbetapir F-18,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0439,DB00196,Fluconazole,DB00603,Medroxyprogesterone acetate,The bioavailability of can be increased when combined with,PK,A,,PK,A
+P0440,DB01018,Guanfacine,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,B,,PD,B
+P0441,DB00508,Triflupromazine,DB01242,Clomipramine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,A,auto_wrong,PD,B
+P0442,DB01403,Methotrimeprazine,DB08907,Canagliflozin,The therapeutic efficacy of can be decreased when used in combination with,PD,B,,PD,B
+P0443,DB00783,Estradiol,DB01041,Thalidomide,may increase the thrombogenic activities of,PD,B,,PD,B
+P0444,DB08910,Pomalidomide,DB09148,Florbetaben F-18,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0445,DB00358,Mefloquine,DB00373,Timolol,The risk or severity of QTc prolongation can be decreased when is combined with,PD,B,,PD,B
+P0446,DB01149,Nefazodone,DB01367,Rasagiline,may increase the serotonergic activities of,PD,B,,PD,B
+P0447,DB00334,Olanzapine,DB01254,Dasatinib,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,auto_correct,PK,A
+P0448,DB00390,Digoxin,DB06410,Doxercalciferol,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0449,DB00459,Acitretin,DB00759,Tetracycline,The risk or severity of pseudotumor cerebri can be increased when is combined with,PD,B,,PD,B
+P0450,DB00542,Benazepril,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,B,,PD,B
+P0451,DB06824,Triethylenetetramine,DB09149,Florbetapir F-18,may decrease the excretion rate of Florbetapir (18F) which could result in a higher serum level,PK,B,,PK,B
+P0452,DB00451,Levothyroxine,DB00564,Carbamazepine,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0453,DB00347,Trimethadione,DB01219,Dantrolene,The risk or severity of hyperkalemia can be increased when is combined with,PD,B,,PD,B
+P0454,DB00554,Piroxicam,DB01067,Glipizide,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0455,DB06707,Levonordefrin,DB08918,Levomilnacipran,may increase the tachycardic activities of,PD,B,,PD,B
+P0456,DB00908,Quinidine,DB09149,Florbetapir F-18,Florbetapir (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0457,DB00246,Ziprasidone,DB00657,Mecamylamine,may increase the antihypertensive activities of,PD,B,,PD,B
+P0458,DB09148,Florbetaben F-18,DB13944,Testosterone enanthate,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0459,DB00543,Amoxapine,DB01367,Rasagiline,may increase the serotonergic activities of,PD,B,,PD,B
+P0460,DB00552,Pentostatin,DB09148,Florbetaben F-18,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0461,DB04812,Benoxaprofen,DB09148,Florbetaben F-18,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0462,DB00586,Diclofenac,DB01067,Glipizide,The protein binding of can be decreased when combined with,PK,B,,PK,B
+P0463,DB06413,Armodafinil,DB09237,Levamlodipine,The metabolism of can be increased when combined with,PK,A,,PK,A
+P0464,DB00871,Terbutaline,DB00983,Formoterol,may increase the sympathomimetic activities of,PD,A,,PD,A
+P0465,DB00976,Telithromycin,DB01045,Rifampin,The metabolism of can be increased when combined with Rifampicin,PK,A,,PK,A
+P0466,DB00182,Amphetamine,DB00899,Remifentanil,may increase the analgesic activities of,PD,B,,PD,B
+P0467,DB00331,Metformin,DB12267,Brigatinib,The excretion of can be decreased when combined with,PK,A,auto_wrong,PD,B
+P0468,DB01162,Terazosin,DB06207,Silodosin,The risk or severity of orthostatic hypotension and dizziness can be increased when is combined with,PD,A,,PD,A
+P0469,DB00388,Phenylephrine,DB06700,Desvenlafaxine,may increase the tachycardic activities of,PD,B,,PD,B
+P0470,DB00328,Indomethacin,DB09148,Florbetaben F-18,may decrease the excretion rate of Florbetaben (18F) which could result in a higher serum level,PK,B,,PK,B
+P0471,DB00480,Lenalidomide,DB04575,Quinestrol,may increase the thrombogenic activities of,PD,B,,PD,B
+P0472,DB00203,Sildenafil,DB01089,Deserpidine,may increase the antihypertensive activities of,PD,B,,PD,B
+P0473,DB00177,Valsartan,DB02659,Cholic Acid,The excretion of can be increased when combined with,PK,A,auto_correct,PK,A
+P0474,DB00921,Buprenorphine,DB09020,Bisacodyl,The therapeutic efficacy of can be decreased when used in combination with,PD,B,,PD,B
+P0475,DB03619,Deoxycholic acid,DB06228,Rivaroxaban,The risk or severity of bleeding and bruising can be increased when is combined with,PD,B,,PD,B
+P0476,DB00741,Hydrocortisone,DB00814,Meloxicam,The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,B,,PD,B
+P0477,DB00983,Formoterol,DB04948,Lofexidine,may increase the sympathomimetic activities of,PD,B,,PD,B
+P0478,DB00708,Sufentanil,DB00865,Benzphetamine,may increase the analgesic activities of,PD,B,,PD,B
+P0479,DB00390,Digoxin,DB01070,Dihydrotachysterol,The risk or severity of ventricular arrhythmias and Cardiac Arrhythmia can be increased when is combined with,PD,B,,PD,B
+P0480,DB01030,Topotecan,DB08826,Deferiprone,may decrease the excretion rate of which could result in a higher serum level,PK,B,auto_correct,PK,B
+P0481,DB00213,Pantoprazole,DB11963,Dacomitinib,can cause a decrease in the absorption of resulting in a reduced serum concentration and potentially a decrease in efficacy,PK,A,auto_wrong,PK,B
+P0482,DB00231,Temazepam,DB00977,Ethinylestradiol,may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,B,,PK,B
+P0483,DB00146,Calcifediol,DB01021,Trichlormethiazide,The risk or severity of hypercalcemia can be increased when is combined with,PD,B,auto_wrong,PK,B
+P0484,DB01118,Amiodarone,DB01255,Lisdexamfetamine,"The serum concentration of dextroamphetamine, an active metabolite of , can be increased when used in combination with",PK,B,,PD,B
+P0485,DB00683,Midazolam,DB08883,Perampanel,The risk or severity of sedation and CNS depression can be increased when is combined with,PD,B,,PD,B
+P0486,DB01242,Clomipramine,DB01246,Alimemazine,"The serum concentration of desmethyl, an active metabolite of , can be increased when used in combination with",PK,B,auto_correct,PK,B
+P0487,DB00841,Dobutamine,DB08918,Levomilnacipran,may increase the tachycardic activities of,PD,B,,PD,B
+P0488,DB01403,Methotrimeprazine,DB09082,Vilanterol,The risk or severity of QTc prolongation and ventricular arrhythmias can be increased when is combined with,PD,B,,PD,B
+P0489,DB01045,Rifampin,DB08899,Enzalutamide,The serum concentration of can be decreased when it is combined with Rifampicin,PK,A,,PK,A
+P0490,DB00363,Clozapine,DB04845,Ixabepilone,The risk or severity of neutropenia can be increased when is combined with,PD,B,,PD,B
+P0491,DB00758,Clopidogrel,DB06413,Armodafinil,The serum concentration of the active metabolites of can be reduced when is used in combination with resulting in a loss in efficacy,PK,A,auto_wrong,PK,B
+P0492,DB00579,Mazindol,DB09241,Methylene blue,may increase the serotonergic activities of,PD,B,auto_wrong,PK,B
+P0493,DB00242,Cladribine,DB12001,Abemaciclib,The excretion of can be decreased when combined with,PK,A,auto_wrong,PD,B
+P0494,DB09148,Florbetaben F-18,DB11691,Naldemedine,Florbetaben (18F) may decrease the excretion rate of which could result in a higher serum level,PK,B,,PK,B
+P0495,DB09039,Eliglustat,DB12095,Telotristat ethyl,The serum concentration of can be increased when it is combined with,PK,A,auto_correct,PK,A
+P0496,DB00762,Irinotecan,DB06595,Midostaurin,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,auto_correct,PK,A
+P0497,DB00302,Tranexamic acid,DB01395,Drospirenone,may increase the thrombogenic activities of,PD,B,,PD,B
+P0498,DB00697,Tizanidine,DB00983,Formoterol,may increase the sympathomimetic activities of,PD,B,,PD,B
+P0499,DB00933,Mesoridazine,DB01576,Dextroamphetamine,may decrease the stimulatory activities of,PD,B,,PD,B
+P0500,DB00762,Irinotecan,DB09118,Stiripentol,The serum concentration of the active metabolites of can be decreased when is used in combination with,PK,A,,PK,A

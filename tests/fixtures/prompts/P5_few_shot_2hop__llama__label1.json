@@ -1,0 +1,164 @@
+{
+  "paper_name": "P5_few_shot_2hop",
+  "method_internal": "Few_Shot_2hop",
+  "model_family": "llama",
+  "model_name": "/tmp/mydata/Models/Hub/Llama-3.2-1B",
+  "label": 1,
+  "ke_variant": "A",
+  "sample": {
+    "drug_a_id": "DB00001",
+    "drug_b_id": "DB00002",
+    "drug_a_name": "Lepirudin",
+    "drug_b_name": "Cetuximab",
+    "drugA_name": "Lepirudin",
+    "drugB_name": "Cetuximab",
+    "label": 1,
+    "fewshot_samples": [
+      [
+        0.91,
+        "DB00003",
+        "DB00004",
+        "1"
+      ],
+      [
+        0.85,
+        "DB00005",
+        "DB00006",
+        "0"
+      ],
+      [
+        0.8,
+        "DB00003",
+        "DB00006",
+        "1"
+      ]
+    ],
+    "fewshot_metadata": [
+      {
+        "shared_QA_CA": [
+          [
+            "F2",
+            "targets"
+          ]
+        ],
+        "shared_QB_CB": [
+          [
+            "EGFR",
+            "targets"
+          ]
+        ],
+        "shared_QA_CB": [],
+        "shared_QB_CA": []
+      },
+      {
+        "shared_QA_CA": [],
+        "shared_QB_CB": [],
+        "shared_QA_CB": [
+          [
+            "CYP3A4",
+            "enzymes"
+          ]
+        ],
+        "shared_QB_CA": [
+          [
+            "ALB",
+            "carriers"
+          ]
+        ]
+      },
+      {
+        "shared_QA_CA": [],
+        "shared_QB_CB": [],
+        "shared_QA_CB": [],
+        "shared_QB_CA": []
+      }
+    ]
+  },
+  "kb": {
+    "drug_id2name": {
+      "DB00001": "Lepirudin",
+      "DB00002": "Cetuximab",
+      "DB00003": "Aspirin",
+      "DB00004": "Warfarin",
+      "DB00005": "Metformin",
+      "DB00006": "Ibuprofen"
+    },
+    "drug_id2smiles": {
+      "DB00001": "CC[C@H](C)[C@H](NC(=O)C)C(=O)O",
+      "DB00002": "CN(C)CCC(=O)O",
+      "DB00003": "CC(=O)OC1=CC=CC=C1C(=O)O",
+      "DB00004": "CC(=O)CC(c1ccccc1)c1c(O)c2ccccc2oc1=O",
+      "DB00005": "CN(C)C(=N)N=C(N)N",
+      "DB00006": "CC(C)Cc1ccc(C(C)C(=O)O)cc1"
+    }
+  },
+  "key_entity_map": {
+    "DB00001|DB00002": {
+      "key_entity_name": "F2",
+      "key_entity_type": "targets",
+      "has_key_entity": true
+    }
+  },
+  "fewshot_samples": [
+    [
+      0.91,
+      "DB00003",
+      "DB00004",
+      "1"
+    ],
+    [
+      0.85,
+      "DB00005",
+      "DB00006",
+      "0"
+    ],
+    [
+      0.8,
+      "DB00003",
+      "DB00006",
+      "1"
+    ]
+  ],
+  "fewshot_metadata": [
+    {
+      "shared_QA_CA": [
+        [
+          "F2",
+          "targets"
+        ]
+      ],
+      "shared_QB_CB": [
+        [
+          "EGFR",
+          "targets"
+        ]
+      ],
+      "shared_QA_CB": [],
+      "shared_QB_CA": []
+    },
+    {
+      "shared_QA_CA": [],
+      "shared_QB_CB": [],
+      "shared_QA_CB": [
+        [
+          "CYP3A4",
+          "enzymes"
+        ]
+      ],
+      "shared_QB_CA": [
+        [
+          "ALB",
+          "carriers"
+        ]
+      ]
+    },
+    {
+      "shared_QA_CA": [],
+      "shared_QB_CB": [],
+      "shared_QA_CB": [],
+      "shared_QB_CA": []
+    }
+  ],
+  "np_seed": 20260511,
+  "prompt": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\nTask: Binary Classification of Drug-Drug Interactions (DDI)\nYou are an expert pharmacologist and clinical research assistant. Your objective is to determine whether a clinically significant drug-drug interaction (DDI) exists between the two provided drugs identified by the '[Prediction]' tag. Consider potential pharmacokinetic interactions and pharmacodynamic interactions in your assessment.<|eot_id|>\n\n<|start_header_id|>user<|end_header_id|>\nThis task utilizes a Mechanism-Aware Few-Shot strategy. The provided reference examples are not selected randomly, they are retrieved based on shared biological entities (targets, transporters, enzymes) from a biomedical Knowledge Graph. Specifically, the reference drugs share critical protein associations with the query drugs (with tag '[Prediction]'), implying a potential 2nd-order mechanistic similarity (Query Drug -> Shared Protein <- Reference Drug). Use these mechanistically related examples to infer the interaction status of the target pair.\n### Reference Examples (Mechanism-Aware):\n\n### [Example 1]\nDrug A: Metformin\nDrug B: Ibuprofen\nMatching Evidence: (Query Drug A -> {enzymes: CYP3A4} <- Ibuprofen); (Query Drug B -> {carriers: ALB} <- Metformin)\n### Answer: No\n\n### [Example 2]\nDrug A: Aspirin\nDrug B: Ibuprofen\nMatching Evidence: (Query Drug A -> {Structural Similarity} <- Aspirin); (Query Drug B -> {Structural Similarity} <- Ibuprofen)\n### Answer: Yes\n\n### [Example 3]\nDrug A: Aspirin\nDrug B: Warfarin\nMatching Evidence: (Query Drug A -> {targets: F2} <- Aspirin); (Query Drug B -> {targets: EGFR} <- Warfarin)\n### Answer: Yes\n\nOutput Constraint: Respond strictly with exactly one token: ' Yes' or ' No'. Do not provide any explanations, confidence scores, punctuation, or additional text.\n### [Prediction]:\nQuery Drug A: Lepirudin\nQuery Drug B: Cetuximab\n### Answer:<|eot_id|>\n\n<|start_header_id|>assistant<|end_header_id|> Yes"
+}

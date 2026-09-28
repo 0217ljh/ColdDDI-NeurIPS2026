@@ -1,0 +1,331 @@
+drugbank_id,target_id,target_name,organism,action
+DB00231,BE0000736,Translocator protein,Humans,modulator
+DB00231,BE0004797,GABA(A) Receptor,Humans,positive allosteric modulator
+DB00231,BE0008668,GABA(A) Receptor Benzodiazepine Binding Site,Humans,ligand
+DB00276,BE0004796,DNA,Humans,intercalation
+DB00276,BE0002425,DNA topoisomerase 2-beta,Humans,inhibitor
+DB00276,BE0000742,DNA topoisomerase 2-alpha,Humans,inhibitor
+DB00276,BE0000090,Voltage-gated inwardly rectifying potassium channel KCNH2,Humans,inhibitor
+DB00276,BE0000925,Alpha-1-acid glycoprotein 1,Humans,
+DB00276,BE0000530,Albumin,Humans,
+DB00284,BE0000837,Maltase-glucoamylase,Humans,inhibitor
+DB00284,BE0001176,"Sucrase-isomaltase, intestinal",Humans,inhibitor
+DB00284,BE0002639,Pancreatic alpha-amylase,Humans,inhibitor
+DB00284,BE0000876,Lysosomal alpha-glucosidase,Humans,inhibitor
+DB00303,BE0000588,Penicillin-binding protein 1A,Escherichia coli (strain K12),inhibitor
+DB00303,BE0000488,Penicillin-binding protein 1B,Escherichia coli (strain K12),inhibitor
+DB00303,BE0000103,Penicillin-binding protein 2,Haemophilus influenzae (strain ATCC 51907 / DSM 11121 / KW20 / Rd),inhibitor
+DB00303,BE0003579,Penicillin-binding protein 2,Escherichia coli (strain K12),inhibitor
+DB00303,BE0000001,Peptidoglycan synthase FtsI,Haemophilus influenzae (strain ATCC 51907 / DSM 11121 / KW20 / Rd),inhibitor
+DB00303,BE0002393,Peptidoglycan synthase FtsI,Escherichia coli (strain K12),inhibitor
+DB00303,BE0000744,D-alanyl-D-alanine carboxypeptidase DacB,Escherichia coli (strain K12),inhibitor
+DB00303,BE0003685,D-alanyl-D-alanine carboxypeptidase DacC,Escherichia coli (strain K12),inhibitor
+DB00318,BE0000770,Mu-type opioid receptor,Humans,agonist
+DB00318,BE0000770,Mu-type opioid receptor,Humans,regulator
+DB00318,BE0000632,Kappa-type opioid receptor,Humans,agonist
+DB00318,BE0000420,Delta-type opioid receptor,Humans,agonist
+DB00324,BE0000794,Glucocorticoid receptor,Humans,agonist
+DB00335,BE0000172,Beta-1 adrenergic receptor,Humans,antagonist
+DB00335,BE0000694,Beta-2 adrenergic receptor,Humans,antagonist
+DB00338,BE0000349,Potassium-transporting ATPase alpha chain 1,Humans,inhibitor
+DB00338,BE0000619,Potassium-transporting ATPase subunit beta,Humans,modulator
+DB00338,BE0003721,Aryl hydrocarbon receptor,Humans,agonist
+DB00352,BE0004796,DNA,Humans,intercalation
+DB00411,BE0000092,Muscarinic acetylcholine receptor M1,Humans,agonist
+DB00411,BE0000560,Muscarinic acetylcholine receptor M2,Humans,agonist
+DB00411,BE0000738,Neuronal acetylcholine receptor subunit alpha-2,Humans,agonist
+DB00411,BE0000045,Muscarinic acetylcholine receptor M3,Humans,agonist
+DB00411,BE0000405,Muscarinic acetylcholine receptor M4,Humans,agonist
+DB00423,BE0000267,Carbonic anhydrase 1,Humans,inhibitor
+DB00449,BE0000172,Beta-1 adrenergic receptor,Humans,antagonist
+DB00449,BE0000501,Alpha-1A adrenergic receptor,Humans,agonist
+DB00449,BE0000289,Alpha-2A adrenergic receptor,Humans,agonist
+DB00449,BE0000694,Beta-2 adrenergic receptor,Humans,agonist
+DB00449,BE0002180,Cholinesterase,Humans,substrate
+DB00449,BE0000426,Acetylcholinesterase,Humans,inhibitor
+DB00479,BE0000279,30S ribosomal protein S12,Escherichia coli (strain K12),inhibitor
+DB00495,BE0000147,Receptor-type tyrosine-protein kinase FLT3,Humans,binder
+DB00495,BE0004136,Reverse transcriptase/RNaseH,Human immunodeficiency virus 1,inhibitor
+DB00495,BE0002050,Gag-Pol polyprotein,,inhibitor
+DB00495,BE0002449,Telomerase reverse transcriptase,Humans,inhibitor
+DB00497,BE0000770,Mu-type opioid receptor,Humans,agonist
+DB00497,BE0000632,Kappa-type opioid receptor,Humans,agonist
+DB00497,BE0000420,Delta-type opioid receptor,Humans,agonist
+DB00539,BE0000123,Estrogen receptor,Humans,modulator
+DB00539,BE0000685,Sex hormone-binding globulin,Humans,
+DB00564,BE0009738,Voltage-gated sodium channel alpha subunit,Humans,inhibitor
+DB00564,BE0000849,Neuronal acetylcholine receptor subunit alpha-4,Humans,
+DB00564,BE0000956,Nuclear receptor subfamily 1 group I member 2,Humans,activator
+DB00570,BE0003400,Tubulin beta-2A chain,Humans,inhibitor
+DB00570,BE0001340,Tubulin alpha-1A chain,Humans,binder
+DB00570,BE0000143,Tubulin beta chain,Humans,binder
+DB00570,BE0003711,Tubulin delta chain,Humans,binder
+DB00570,BE0003713,Tubulin gamma-1 chain,Humans,binder
+DB00570,BE0003712,Tubulin epsilon chain,Humans,binder
+DB00570,BE0001040,Transcription factor Jun,Humans,other/unknown
+DB00575,BE0001002,Amine oxidase [copper-containing] 3,Humans,inhibitor
+DB00575,BE0000572,Alpha-2B adrenergic receptor,Humans,agonist
+DB00575,BE0000342,Alpha-2C adrenergic receptor,Humans,agonist
+DB00575,BE0000289,Alpha-2A adrenergic receptor,Humans,agonist
+DB00575,BE0000501,Alpha-1A adrenergic receptor,Humans,agonist
+DB00575,BE0000575,Alpha-1B adrenergic receptor,Humans,agonist
+DB00575,BE0000715,Alpha-1D adrenergic receptor,Humans,agonist
+DB00634,BE0000803,Dihydropteroate synthase,Escherichia coli (strain K12),inhibitor
+DB00634,BE0004657,Dihydropteroate synthase type-1,Escherichia coli,inhibitor
+DB00634,BE0004658,Folic acid synthesis protein FOL1,Baker's yeast,inhibitor
+DB00647,BE0000770,Mu-type opioid receptor,Humans,agonist
+DB00647,BE0000420,Delta-type opioid receptor,Humans,agonist
+DB00647,BE0000632,Kappa-type opioid receptor,Humans,antagonist
+DB00647,BE0002705,Liver carboxylesterase 1,Humans,
+DB00647,BE0004956,NMDA receptor,Humans,antagonist
+DB00679,BE0000756,D(2) dopamine receptor,Humans,antagonist
+DB00679,BE0000020,D(1A) dopamine receptor,Humans,antagonist
+DB00679,BE0000501,Alpha-1A adrenergic receptor,Humans,antagonist
+DB00679,BE0000575,Alpha-1B adrenergic receptor,Humans,antagonist
+DB00679,BE0000451,5-hydroxytryptamine receptor 2A,Humans,antagonist
+DB00679,BE0000090,Voltage-gated inwardly rectifying potassium channel KCNH2,Humans,inhibitor
+DB00741,BE0000794,Glucocorticoid receptor,Humans,agonist
+DB00741,BE0000422,Annexin A1,Humans,agonist
+DB00787,BE0000308,DNA polymerase catalytic subunit,HHV-1,inhibitor
+DB00787,BE0000633,DNA polymerase catalytic subunit,HHV-3,inhibitor
+DB00836,BE0000770,Mu-type opioid receptor,Humans,agonist
+DB00836,BE0000420,Delta-type opioid receptor,Humans,agonist
+DB00836,BE0000632,Kappa-type opioid receptor,Humans,agonist
+DB00836,BE0000947,Pro-opiomelanocortin,Humans,modulator
+DB00836,BE0000356,Voltage-dependent P/Q-type calcium channel subunit alpha-1A,Humans,blocker
+DB00836,BE0000090,Voltage-gated inwardly rectifying potassium channel KCNH2,Humans,blocker
+DB00836,BE0027477,Calmodulin,Humans,inhibitor
+DB00857,BE0004670,Squalene monooxygenase,Yeast,inhibitor
+DB00857,BE0000577,Squalene monooxygenase,Humans,inhibitor
+DB00871,BE0000694,Beta-2 adrenergic receptor,Humans,agonist
+DB00871,BE0001012,Beta-3 adrenergic receptor,Humans,agonist
+DB00871,BE0000172,Beta-1 adrenergic receptor,Humans,antagonist
+DB00915,BE0000630,Matrix protein 2,Influenza A virus (strain A/Ann Arbor/6/1960 H2N2),inhibitor
+DB00915,BE0000641,"Glutamate receptor ionotropic, NMDA 3A",Humans,antagonist
+DB00915,BE0000756,D(2) dopamine receptor,Humans,agonist
+DB00915,BE0002341,Neuronal acetylcholine receptor subunit alpha-7,Humans,antagonist
+DB00915,BE0000849,Neuronal acetylcholine receptor subunit alpha-4,Humans,antagonist
+DB00915,BE0003585,Neuronal acetylcholine receptor subunit alpha-3,Humans,antagonist
+DB00938,BE0000694,Beta-2 adrenergic receptor,Humans,agonist
+DB00938,BE0000172,Beta-1 adrenergic receptor,Humans,inverse agonist
+DB00938,BE0001012,Beta-3 adrenergic receptor,Humans,inverse agonist
+DB00940,BE0000112,Histamine H2 receptor,Humans,antagonist
+DB00940,BE0000247,Muscarinic acetylcholine receptor M5,Humans,antagonist
+DB00940,BE0000560,Muscarinic acetylcholine receptor M2,Humans,
+DB00940,BE0000045,Muscarinic acetylcholine receptor M3,Humans,
+DB00940,BE0000405,Muscarinic acetylcholine receptor M4,Humans,
+DB00940,BE0000092,Muscarinic acetylcholine receptor M1,Humans,antagonist
+DB00947,BE0000123,Estrogen receptor,Humans,antagonist
+DB00957,BE0000557,Progesterone receptor,Humans,agonist
+DB00957,BE0000123,Estrogen receptor,Humans,agonist
+DB00957,BE0000132,Androgen receptor,Humans,partial agonist
+DB01006,BE0002090,Aromatase,Humans,antagonist
+DB01009,BE0000262,Prostaglandin G/H synthase 2,Humans,inhibitor
+DB01009,BE0000017,Prostaglandin G/H synthase 1,Humans,inhibitor
+DB01009,BE0003552,C-X-C chemokine receptor type 1,Humans,other
+DB01046,BE0000765,Chloride channel protein 2,Humans,inducer
+DB01067,BE0000207,ATP-binding cassette sub-family C member 8,Humans,inhibitor
+DB01067,BE0009591,ATP-sensitive inward rectifier potassium channel 10,Humans,blocker
+DB01067,BE0000215,Peroxisome proliferator-activated receptor gamma,Humans,agonist
+DB01078,BE0000732,Sodium/potassium-transporting ATPase subunit alpha-1,Humans,inhibitor
+DB01101,BE0000021,Thymidylate synthase,Yeast,inhibitor
+DB01101,BE0004796,DNA,Humans,incorporation into and destabilization
+DB01101,BE0004796,DNA,Humans,inhibition of synthesis
+DB01101,BE0004810,RNA,Humans,incorporation into and destabilization
+DB01101,BE0000324,Thymidylate synthase,Humans,inhibitor
+DB01112,BE0000576,Penicillin-binding protein 1A,Clostridium perfringens (strain 13 / Type A),inhibitor
+DB01113,BE0001287,"3',5'-cyclic-AMP phosphodiesterase 4D",Humans,inhibitor
+DB01113,BE0000182,"cGMP-specific 3',5'-cyclic phosphodiesterase",Humans,inhibitor
+DB01113,BE0000487,"3',5'-cyclic-AMP phosphodiesterase 4B",Humans,inhibitor
+DB01113,BE0000631,"cAMP and cAMP-inhibited cGMP 3',5'-cyclic phosphodiesterase 10A",Humans,inhibitor
+DB01113,BE0009789,Phosphodiesterase enzymes,Humans,inhibitor
+DB01115,BE0000430,Voltage-dependent L-type calcium channel subunit alpha-1C,Humans,inhibitor
+DB01115,BE0002359,Voltage-dependent L-type calcium channel subunit alpha-1D,Humans,inhibitor
+DB01115,BE0002354,Voltage-dependent L-type calcium channel subunit beta-2,Humans,inhibitor
+DB01115,BE0000956,Nuclear receptor subfamily 1 group I member 2,Humans,agonist
+DB01115,BE0002355,Voltage-dependent L-type calcium channel subunit alpha-1S,Humans,inhibitor
+DB01115,BE0003604,A-type voltage-gated potassium channel KCND3,Humans,inhibitor
+DB01115,BE0008716,Voltage-dependent T-type calcium channel,Humans,inhibitor
+DB01115,BE0027477,Calmodulin,Humans,inhibitor
+DB01117,BE0004428,Cytochrome b,Plasmodium falciparum,inhibitor
+DB01117,BE0000612,"Dihydroorotate dehydrogenase (quinone), mitochondrial",Plasmodium falciparum (isolate 3D7),inhibitor
+DB01117,BE0000382,"Dihydroorotate dehydrogenase (quinone), mitochondrial",Humans,inhibitor
+DB01167,BE0010965,Lanosterol 14-alpha demethylase,Candida tropicalis,inhibitor
+DB01167,BE0000233,Lanosterol 14-alpha demethylase,Yeast,modulator
+DB01168,BE0004909,Monoamine oxidase,Humans,inhibitor
+DB01168,BE0004796,DNA,Humans,cross-linking/alkylation
+DB01182,BE0000197,Sodium channel protein type 5 subunit alpha,Humans,inhibitor
+DB01182,BE0000090,Voltage-gated inwardly rectifying potassium channel KCNH2,Humans,inhibitor
+DB01182,BE0000172,Beta-1 adrenergic receptor,Humans,antagonist
+DB01182,BE0000694,Beta-2 adrenergic receptor,Humans,antagonist
+DB01198,BE0000795,Gamma-aminobutyric acid receptor subunit alpha-1,Humans,potentiator
+DB01198,BE0000381,Gamma-aminobutyric acid receptor subunit alpha-2,Humans,potentiator
+DB01198,BE0000523,Gamma-aminobutyric acid receptor subunit alpha-3,Humans,potentiator
+DB01198,BE0000471,Gamma-aminobutyric acid receptor subunit alpha-5,Humans,potentiator
+DB01198,BE0000736,Translocator protein,Humans,agonist
+DB01220,BE0000257,DNA-directed RNA polymerase subunit beta,Escherichia coli (strain K12),inhibitor
+DB01220,BE0000956,Nuclear receptor subfamily 1 group I member 2,Humans,agonist
+DB01234,BE0000794,Glucocorticoid receptor,Humans,agonist
+DB01234,BE0000074,Nuclear receptor subfamily 0 group B member 1,Humans,stimulator
+DB01234,BE0000422,Annexin A1,Humans,agonist
+DB01234,BE0000005,"Nitric oxide synthase, inducible",Humans,negative modulator
+DB01234,BE0000956,Nuclear receptor subfamily 1 group I member 2,Humans,agonist
+DB01244,BE0000356,Voltage-dependent P/Q-type calcium channel subunit alpha-1A,Humans,inhibitor
+DB01244,BE0000864,Voltage-dependent T-type calcium channel subunit alpha-1H,Humans,inhibitor
+DB01244,BE0002396,Voltage-dependent calcium channel subunit alpha-2/delta-2,Humans,inhibitor
+DB01244,BE0000732,Sodium/potassium-transporting ATPase subunit alpha-1,Humans,inhibitor
+DB01244,BE0000672,Potassium voltage-gated channel subfamily KQT member 1,Humans,inhibitor
+DB01244,BE0001024,"Troponin C, slow skeletal and cardiac muscles",Humans,other
+DB01244,BE0003323,"Dual specificity calcium/calmodulin-dependent 3',5'-cyclic nucleotide phosphodiesterase 1B",Humans,inhibitor
+DB01244,BE0003565,"Dual specificity calcium/calmodulin-dependent 3',5'-cyclic nucleotide phosphodiesterase 1A",Humans,inhibitor
+DB01244,BE0000090,Voltage-gated inwardly rectifying potassium channel KCNH2,Humans,inhibitor
+DB01244,BE0027477,Calmodulin,Humans,binder
+DB01274,BE0000694,Beta-2 adrenergic receptor,Humans,agonist
+DB01393,BE0001007,Peroxisome proliferator-activated receptor delta,Humans,agonist
+DB01393,BE0000215,Peroxisome proliferator-activated receptor gamma,Humans,agonist
+DB01393,BE0000071,Peroxisome proliferator-activated receptor alpha,Humans,agonist
+DB01393,BE0000956,Nuclear receptor subfamily 1 group I member 2,Humans,partial agonist
+DB01393,BE0000412,Retinoic acid receptor RXR-alpha,Humans,agonist
+DB01393,BE0000078,Retinoic acid receptor RXR-beta,Humans,agonist
+DB01393,BE0000707,Retinoic acid receptor RXR-gamma,Humans,agonist
+DB01428,BE0014016,Hormone-sensitive lipase,Humans,inhibitor
+DB01428,BE0000557,Progesterone receptor,Humans,antagonist
+DB01428,BE0000132,Androgen receptor,Humans,antagonist
+DB01428,BE0000123,Estrogen receptor,Humans,
+DB01428,BE0000792,Estrogen receptor beta,Humans,
+DB01616,BE0000291,5-hydroxytryptamine receptor 1A,Humans,antagonist
+DB05239,BE0000870,Dual specificity mitogen-activated protein kinase kinase 1,Humans,inhibitor
+DB06016,BE0000581,D(3) dopamine receptor,Humans,partial agonist
+DB06016,BE0000756,D(2) dopamine receptor,Humans,partial agonist
+DB06016,BE0000291,5-hydroxytryptamine receptor 1A,Humans,partial agonist
+DB06016,BE0000393,5-hydroxytryptamine receptor 2B,Humans,antagonist
+DB06016,BE0000451,5-hydroxytryptamine receptor 2A,Humans,antagonist
+DB06016,BE0000442,Histamine H1 receptor,Humans,antagonist
+DB06016,BE0000533,5-hydroxytryptamine receptor 2C,Humans,antagonist
+DB06016,BE0000501,Alpha-1A adrenergic receptor,Humans,antagonist
+DB06144,BE0000756,D(2) dopamine receptor,Humans,antagonist
+DB06144,BE0000451,5-hydroxytryptamine receptor 2A,Humans,antagonist
+DB06144,BE0000533,5-hydroxytryptamine receptor 2C,Humans,antagonist
+DB06144,BE0000945,5-hydroxytryptamine receptor 6,Humans,antagonist
+DB06144,BE0000090,Voltage-gated inwardly rectifying potassium channel KCNH2,Humans,inhibitor
+DB06144,BE0000501,Alpha-1A adrenergic receptor,Humans,
+DB06144,BE0000575,Alpha-1B adrenergic receptor,Humans,
+DB06144,BE0000715,Alpha-1D adrenergic receptor,Humans,
+DB06228,BE0000216,Coagulation factor X,Humans,antagonist
+DB06701,BE0000647,Sodium-dependent dopamine transporter,Humans,inhibitor
+DB06701,BE0000486,Sodium-dependent noradrenaline transporter,Humans,inhibitor
+DB06701,BE0000749,Sodium-dependent serotonin transporter,Humans,inhibitor
+DB06708,BE0000732,Sodium/potassium-transporting ATPase subunit alpha-1,Humans,binder
+DB06712,BE0000430,Voltage-dependent L-type calcium channel subunit alpha-1C,Humans,inhibitor
+DB06712,BE0000691,Voltage-dependent calcium channel subunit alpha-2/delta-1,Humans,inhibitor
+DB06712,BE0002354,Voltage-dependent L-type calcium channel subunit beta-2,Humans,inhibitor
+DB06712,BE0002359,Voltage-dependent L-type calcium channel subunit alpha-1D,Humans,inhibitor
+DB06712,BE0002355,Voltage-dependent L-type calcium channel subunit alpha-1S,Humans,inhibitor
+DB06712,BE0003563,Voltage-dependent calcium channel subunit alpha-2/delta-3,Humans,inhibitor
+DB06712,BE0000864,Voltage-dependent T-type calcium channel subunit alpha-1H,Humans,inhibitor
+DB06712,BE0000012,Voltage-dependent T-type calcium channel subunit alpha-1I,Humans,inhibitor
+DB06712,BE0009739,Voltage gated L-type calcium channel,Humans,blocker
+DB06712,BE0008716,Voltage-dependent T-type calcium channel,Humans,inhibitor
+DB06736,BE0000262,Prostaglandin G/H synthase 2,Humans,inhibitor
+DB06736,BE0000017,Prostaglandin G/H synthase 1,Humans,inhibitor
+DB06782,BE0004813,Arsenic,Humans,chelator
+DB06782,BE0004802,Cadmium,Humans,chelator
+DB06782,BE0004814,Mercury,Humans,chelator
+DB06782,BE0003392,Amyloid-beta precursor protein,Humans,
+DB06791,BE0003528,Somatostatin receptor type 2,Humans,agonist
+DB06791,BE0002147,Somatostatin receptor type 5,Humans,agonist
+DB06797,BE0003594,Gamma-aminobutyric acid receptor subunit gamma-3,Humans,modulator
+DB06813,BE0000330,Dihydrofolate reductase,Humans,substrate
+DB06813,BE0000330,Dihydrofolate reductase,Humans,inhibitor
+DB06813,BE0002201,"Peptide deformylase, mitochondrial",Humans,inhibitor
+DB06813,BE0000700,"Folylpolyglutamate synthase, mitochondrial",Humans,substrate
+DB06813,BE0000324,Thymidylate synthase,Humans,substrate
+DB06813,BE0000324,Thymidylate synthase,Humans,inhibitor
+DB08801,BE0000442,Histamine H1 receptor,Humans,antagonist
+DB08801,BE0000560,Muscarinic acetylcholine receptor M2,Humans,antagonist
+DB08868,BE0000581,D(3) dopamine receptor,Humans,antagonist
+DB08868,BE0004728,Sphingosine kinase 1,Humans,inhibitor
+DB08868,BE0002432,Sphingosine 1-phosphate receptor 5,Humans,modulator
+DB08868,BE0008652,Sphingosine 1-phosphate receptor 1,Humans,modulator
+DB08868,BE0009881,Sphingosine 1-phosphate receptor 3,Humans,modulator
+DB08868,BE0002365,Histone deacetylase 1,Humans,inhibitor
+DB08868,BE0009882,Sphingosine 1-phosphate receptor 4,Humans,modulator
+DB08981,BE0000262,Prostaglandin G/H synthase 2,Humans,inhibitor
+DB08981,BE0000017,Prostaglandin G/H synthase 1,Humans,inhibitor
+DB09009,BE0009738,Voltage-gated sodium channel alpha subunit,Humans,inhibitor
+DB09047,BE0000366,DNA gyrase subunit A,Haemophilus influenzae (strain ATCC 51907 / DSM 11121 / KW20 / Rd),inhibitor
+DB09047,BE0002388,DNA gyrase subunit B,Staphylococcus aureus,inhibitor
+DB09047,BE0008385,DNA gyrase subunit A,Staphylococcus aureus,inhibitor
+DB09047,BE0000429,DNA topoisomerase 4 subunit A,Haemophilus influenzae (strain ATCC 51907 / DSM 11121 / KW20 / Rd),inhibitor
+DB09047,BE0000742,DNA topoisomerase 2-alpha,Humans,inhibitor
+DB09063,BE0000359,ALK tyrosine kinase receptor,Humans,antagonist
+DB09091,BE0000794,Glucocorticoid receptor,Humans,binder
+DB09091,BE0002366,Histone deacetylase 2,Humans,stimulator
+DB09093,BE0004799,16S ribosomal RNA,Enteric bacteria and other eubacteria,inhibitor
+DB09093,BE0004651,30S ribosomal protein S3,Escherichia coli (strain K12),inhibitor
+DB09093,BE0004652,30S ribosomal protein S8,Escherichia coli (strain K12),inhibitor
+DB09093,BE0003710,30S ribosomal protein S19,Escherichia coli (strain K12),inhibitor
+DB09093,BE0003708,30S ribosomal protein S14,Escherichia coli (strain K12),inhibitor
+DB09093,BE0004653,30S ribosomal protein S7,Escherichia coli (strain K12),inhibitor
+DB09093,BE0003814,ADP-ribosylation factor 1,Humans,inhibitor
+DB09093,BE0001786,Catalase,Micrococcus luteus,inhibitor
+DB09093,BE0009441,Ephrin type-B receptor 1,Humans,inhibitor
+DB09093,BE0000683,Pancreatic triacylglycerol lipase,Humans,inhibitor
+DB09093,BE0001092,Protein-arginine deiminase type-4,Humans,inhibitor
+DB09124,BE0000557,Progesterone receptor,Humans,ligand
+DB09143,BE0004659,Protein smoothened,Humans,antagonist
+DB09319,BE0004840,Penicillin-binding protein,Gram positive and gram negative bacteria,inhibitor
+DB09401,BE0010064,Guanylate cyclase,Humans,activator
+DB11201,BE0000017,Prostaglandin G/H synthase 1,Humans,antagonist
+DB11201,BE0000262,Prostaglandin G/H synthase 2,Humans,antagonist
+DB11672,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB11672,BE0000005,"Nitric oxide synthase, inducible",Humans,inhibitor
+DB11672,BE0003634,Carbonic anhydrase 14,Humans,inhibitor
+DB11672,BE0000267,Carbonic anhydrase 1,Humans,inhibitor
+DB11672,BE0000966,Collagenase 3,Humans,inhibitor
+DB11672,BE0010009,DNA (cytosine-5)-methyltransferase 3B,Humans,inhibitor
+DB11672,BE0002204,Xanthine dehydrogenase/oxidase,Humans,inhibitor
+DB11672,BE0000017,Prostaglandin G/H synthase 1,Humans,inhibitor
+DB11672,BE0000058,Matrix metalloproteinase-9,Humans,inhibitor
+DB11672,BE0000262,Prostaglandin G/H synthase 2,Humans,inhibitor
+DB11672,BE0000535,Carbonic anhydrase 4,Humans,inhibitor
+DB11672,BE0003392,Amyloid-beta precursor protein,Humans,inhibitor
+DB11672,BE0000322,Carbonic anhydrase 2,Humans,inhibitor
+DB11672,BE0001653,Carbonic anhydrase 12,Humans,inhibitor
+DB11672,BE0003628,Carbonic anhydrase 6,Humans,inhibitor
+DB11672,BE0002437,Carbonic anhydrase 9,Humans,inhibitor
+DB11672,BE0000215,Peroxisome proliferator-activated receptor gamma,Humans,
+DB11672,BE0000779,Vitamin D3 receptor,Humans,
+DB11672,BE0003639,ATP-binding cassette sub-family C member 5,Humans,inhibitor
+DB11672,BE0003074,Carbonyl reductase [NADPH] 1,Humans,
+DB11672,BE0000814,Glutathione S-transferase P,Humans,
+DB11682,BE0002217,Egl nine homolog 1,Humans,inhibitor
+DB11682,BE0002211,Prolyl hydroxylase EGLN2,Humans,inhibitor
+DB11682,BE0002219,Prolyl hydroxylase EGLN3,Humans,inhibitor
+DB11703,BE0001284,Tyrosine-protein kinase BTK,Humans,inhibitor
+DB11791,BE0000915,Hepatocyte growth factor receptor,Humans,inhibitor
+DB12095,BE0000080,Tryptophan 5-hydroxylase 2,Humans,antagonist
+DB12095,BE0000121,Tryptophan 5-hydroxylase 1,Humans,antagonist
+DB12329,BE0000019,30S ribosomal protein S4,Escherichia coli (strain K12),inhibitor
+DB12877,BE0000442,Histamine H1 receptor,Humans,antagonist
+DB13074,BE0003383,Growth hormone secretagogue receptor type 1,Humans,agonist
+DB13946,BE0000132,Androgen receptor,Humans,agonist
+DB13952,BE0000123,Estrogen receptor,Humans,agonist
+DB13952,BE0000792,Estrogen receptor beta,Humans,agonist
+DB13952,BE0000956,Nuclear receptor subfamily 1 group I member 2,Humans,
+DB13952,BE0000849,Neuronal acetylcholine receptor subunit alpha-4,Humans,
+DB13952,BE0003740,Nuclear receptor coactivator 2,Humans,
+DB13952,BE0003446,G-protein coupled estrogen receptor 1,Humans,
+DB13952,BE0009014,ATP synthase subunit a,Humans,
+DB13952,BE0009015,Beclin-1,Humans,
+DB13952,BE0000006,17-beta-hydroxysteroid dehydrogenase type 2,Humans,
+DB13952,BE0002088,Estrogen-related receptor gamma,Humans,ligand
+DB14539,BE0000422,Annexin A1,Humans,agonist
+DB14539,BE0000794,Glucocorticoid receptor,Humans,agonist
+DB14539,BE0000131,11-beta-hydroxysteroid dehydrogenase type 2,Humans,
+DB14539,BE0000051,3 beta-hydroxysteroid dehydrogenase/Delta 5-->4-isomerase type 1,Humans,
+DB15149,BE0002131,Fibroblast growth factor receptor 1,Humans,inhibitor
+DB15149,BE0000748,Fibroblast growth factor receptor 2,Humans,inhibitor
+DB15149,BE0002133,Fibroblast growth factor receptor 3,Humans,inhibitor
+DB15149,BE0001203,Fibroblast growth factor receptor 4,Humans,inhibitor
+DB17083,BE0000203,Gonadotropin-releasing hormone receptor,Humans,antagonist

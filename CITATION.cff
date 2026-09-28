@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use ColdDDI in your research, please cite it as below."
+title: "ColdDDI: Evaluating Knowledge Utilization in Cold-Start Drug-Drug Interaction Prediction"
+abstract: >-
+  ColdDDI is a benchmark for evaluating drug-drug interaction prediction methods
+  under cold-start settings, comprising 1,900 drugs and 565,731 positive pairs
+  from DrugBank 5.1.13. Each interaction is stratified by pharmacological
+  mechanism (PK/PD) and by whether shared mediating entities are present in the
+  knowledge graph (Type A/B). The benchmark evaluates 8 conventional baselines
+  and 13 LLMs across 5 prompt patterns, with diagnostic metrics quantifying
+  knowledge utilization.
+authors:
+  - family-names: Anonymous
+    given-names: Authors
+type: software
+version: "0.1.0-pre"
+date-released: "2026-05-06"
+license: MIT
+repository-code: "https://github.com/0217ljh/ColdDDI"
+keywords:
+  - drug-drug interaction
+  - benchmark
+  - cold-start
+  - large language models
+  - knowledge graphs
+  - pharmacology
+preferred-citation:
+  type: article
+  title: "ColdDDI: Evaluating Knowledge Utilization in Cold-Start Drug-Drug Interaction Prediction"
+  authors:
+    - family-names: Anonymous
+      given-names: Authors
+  year: 2026
+  notes: "Under review at NeurIPS 2026 Evaluations & Datasets Track."

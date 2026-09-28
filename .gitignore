@@ -1,0 +1,205 @@
+# =============================================================================
+# Python
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# =============================================================================
+# Virtual environments
+# =============================================================================
+.venv/
+venv/
+ENV/
+env/
+.conda/
+conda-env/
+
+# =============================================================================
+# Jupyter / IPython
+# =============================================================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+profile_default/
+ipython_config.py
+
+# =============================================================================
+# IDE / Editor
+# =============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =============================================================================
+# CRITICAL: DrugBank raw data — license forbids redistribution
+# =============================================================================
+*.xml
+drugbank*/
+**/drugbank_5.1.13*
+**/drugbank_5*
+raw_drugbank/
+# Allow the public toy XML (small subset shipped for pipeline smoke tests):
+!data/public/drugbank_toy.xml
+
+# =============================================================================
+# data/private/ — DrugBank-licensed artifacts; only structure is tracked
+# =============================================================================
+data/private/**
+!data/private/
+!data/private/**/
+!data/private/**/.gitkeep
+!data/private/_README.md
+
+# =============================================================================
+# ColdDDI artifacts: pickled bundles, splits, cached features
+# (these are large + may contain DrugBank-derived data)
+# =============================================================================
+*.pkl
+*.pickle
+data/raw/
+data/processed/
+data/cache/
+*_bundle*
+fold_*.pkl
+
+# =============================================================================
+# Outputs / experiment runs
+# =============================================================================
+Output/
+output/
+outputs/
+runs/
+results/
+logs/
+*.log
+wandb/
+mlruns/
+tensorboard/
+
+# =============================================================================
+# Model checkpoints / weights
+# =============================================================================
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+checkpoints/
+saved_models/
+pretrained/
+
+# =============================================================================
+# HuggingFace / Transformers cache
+# =============================================================================
+.cache/
+hf_cache/
+.huggingface/
+transformers_cache/
+
+# =============================================================================
+# Large data files (review case-by-case before un-ignoring)
+# =============================================================================
+*.parquet
+*.h5
+*.hdf5
+*.npy
+*.npz
+# *.csv          # uncomment if you don't want to commit any CSVs
+# *.json         # uncomment if you don't want to commit any JSONs
+
+# Allow release-shipped sample artifacts (gated by paper §A.6):
+!annotations/pkpd.parquet
+!annotations/*_sample.parquet
+!splits/seed*/*.pkl
+!splits/seed*_800/*.pkl
+!annotation/*_metrics.json
+!annotation/release/final_consensus.csv
+# Toy splits ship in data/public/ — sample-only release-friendly:
+!data/public/intermediate/splits/**/*.parquet
+!data/public/intermediate/splits/**/*.json
+
+# =============================================================================
+# Secrets / API keys — NEVER commit these
+# =============================================================================
+.env
+.env.local
+*.key
+*.pem
+api_keys.txt
+secrets.yaml
+credentials.json
+openai_key.txt
+anthropic_key.txt
+
+# =============================================================================
+# OS / temp
+# =============================================================================
+*.tmp
+*.bak
+*.orig
+*.rej
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+
+# =============================================================================
+# Coverage / testing
+# =============================================================================
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+.hypothesis/
+nosetests.xml
+coverage.xml
+*.cover
+.benchmarks/
+
+# =============================================================================
+# Type checkers / linters
+# =============================================================================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+.ruff_cache/
+
+# =============================================================================
+# Local notes / scratch files
+# =============================================================================
+SCRATCH.md
+TODO.local.md
+notes/
+scratch/
+playground/
+code-list.md
+log/
+# TIGER runtime random-walk caches (auto-generated, hash-named)
+data/coldddi_tiger_bkg*/

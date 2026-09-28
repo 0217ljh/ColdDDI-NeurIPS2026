@@ -1,0 +1,1541 @@
+drug_a_id,drug_b_id,drug_a_name,description
+DB00231,DB01198,Temazepam,The risk or severity of adverse effects can be increased when Temazepam is combined with Zopiclone.
+DB00231,DB00423,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Methocarbamol.
+DB00231,DB01168,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Procarbazine.
+DB00231,DB01616,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Alverine.
+DB00231,DB06701,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Dexmethylphenidate.
+DB00231,DB06797,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Mebutamate.
+DB00231,DB13213,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Butaperazine.
+DB00231,DB09009,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Articaine.
+DB00231,DB00679,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Thioridazine.
+DB00231,DB06016,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Cariprazine.
+DB00231,DB06144,Temazepam,The risk or severity of CNS depression can be increased when Temazepam is combined with Sertindole.
+DB00231,DB00787,Temazepam,Acyclovir may decrease the excretion rate of Temazepam which could result in a higher serum level.
+DB00231,DB01009,Temazepam,Ketoprofen may decrease the excretion rate of Temazepam which could result in a higher serum level.
+DB00231,DB01112,Temazepam,Cefuroxime may decrease the excretion rate of Temazepam which could result in a higher serum level.
+DB00231,DB01424,Temazepam,Aminophenazone may decrease the excretion rate of Temazepam which could result in a higher serum level.
+DB00231,DB06736,Temazepam,Aceclofenac may decrease the excretion rate of Temazepam which could result in a higher serum level.
+DB00231,DB08976,Temazepam,Floctafenine may decrease the excretion rate of Temazepam which could result in a higher serum level.
+DB00231,DB08981,Temazepam,Fenbufen may decrease the excretion rate of Temazepam which could result in a higher serum level.
+DB00231,DB00303,Temazepam,Temazepam may decrease the excretion rate of Ertapenem which could result in a higher serum level.
+DB00231,DB00871,Temazepam,Temazepam may decrease the excretion rate of Terbutaline which could result in a higher serum level.
+DB00231,DB00915,Temazepam,Temazepam may decrease the excretion rate of Amantadine which could result in a higher serum level.
+DB00231,DB01046,Temazepam,Temazepam may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB00231,DB01067,Temazepam,Temazepam may decrease the excretion rate of Glipizide which could result in a higher serum level.
+DB00231,DB01274,Temazepam,Temazepam may decrease the excretion rate of Arformoterol which could result in a higher serum level.
+DB00231,DB01428,Temazepam,Temazepam may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB00231,DB06782,Temazepam,Temazepam may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB00231,DB06813,Temazepam,Temazepam may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB00231,DB09091,Temazepam,Temazepam may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB00231,DB11102,Temazepam,Temazepam may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB00231,DB13946,Temazepam,Temazepam may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB00231,DB13952,Temazepam,Temazepam may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB00231,DB01101,Temazepam,Temazepam may decrease the excretion rate of Capecitabine which could result in a higher serum level.
+DB00231,DB01115,Temazepam,Temazepam may decrease the excretion rate of Nifedipine which could result in a higher serum level.
+DB00231,DB06228,Temazepam,Temazepam may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB00231,DB00564,Temazepam,Temazepam may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00231,DB00479,Temazepam,Temazepam may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00231,DB09401,Temazepam,Isosorbide may increase the excretion rate of Temazepam which could result in a lower serum level and potentially a reduction in efficacy.
+DB00231,DB00318,Temazepam,The risk or severity of adverse effects can be increased when Codeine is combined with Temazepam.
+DB00231,DB00497,Temazepam,The risk or severity of adverse effects can be increased when Oxycodone is combined with Temazepam.
+DB00231,DB00647,Temazepam,The risk or severity of adverse effects can be increased when Dextropropoxyphene is combined with Temazepam.
+DB00231,DB11609,Temazepam,The risk or severity of adverse effects can be increased when Normethadone is combined with Temazepam.
+DB00231,DB00575,Temazepam,The risk or severity of sedation can be increased when Clonidine is combined with Temazepam.
+DB00276,DB00352,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Tioguanine.
+DB00276,DB00495,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Zidovudine.
+DB00276,DB00570,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Vinblastine.
+DB00276,DB01101,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Capecitabine.
+DB00276,DB01168,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Procarbazine.
+DB00276,DB01234,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Dexamethasone.
+DB00276,DB06813,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Pralatrexate.
+DB00276,DB09091,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Tixocortol.
+DB00276,DB14539,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Hydrocortisone acetate.
+DB00276,DB00564,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Carbamazepine.
+DB00276,DB00324,Amsacrine,The risk or severity of adverse effects can be increased when Amsacrine is combined with Fluorometholone.
+DB00276,DB08868,Amsacrine,Amsacrine may increase the immunosuppressive activities of Fingolimod.
+DB00276,DB01078,Amsacrine,Deslanoside may decrease the cardiotoxic activities of Amsacrine.
+DB00276,DB06228,Amsacrine,The risk or severity of bleeding can be increased when Rivaroxaban is combined with Amsacrine.
+DB00276,DB09009,Amsacrine,The risk or severity of methemoglobinemia can be increased when Amsacrine is combined with Articaine.
+DB00284,DB00957,Acarbose,The therapeutic efficacy of Acarbose can be decreased when used in combination with Norgestimate.
+DB00284,DB06791,Acarbose,The therapeutic efficacy of Acarbose can be decreased when used in combination with Lanreotide.
+DB00284,DB09009,Acarbose,The therapeutic efficacy of Acarbose can be decreased when used in combination with Articaine.
+DB00284,DB09063,Acarbose,The therapeutic efficacy of Acarbose can be decreased when used in combination with Ceritinib.
+DB00284,DB13946,Acarbose,Testosterone undecanoate may increase the hypoglycemic activities of Acarbose.
+DB00284,DB01168,Acarbose,Procarbazine may increase the hypoglycemic activities of Acarbose.
+DB00284,DB06150,Acarbose,The therapeutic efficacy of Acarbose can be increased when used in combination with Sulfadimethoxine.
+DB00284,DB01067,Acarbose,The risk or severity of hypoglycemia can be increased when Acarbose is combined with Glipizide.
+DB00284,DB01244,Acarbose,The risk or severity of hypoglycemia can be increased when Bepridil is combined with Acarbose.
+DB00284,DB06712,Acarbose,The risk or severity of hypoglycemia can be increased when Nilvadipine is combined with Acarbose.
+DB00284,DB00335,Acarbose,The therapeutic efficacy of Acarbose can be increased when used in combination with Atenolol.
+DB00284,DB01182,Acarbose,The therapeutic efficacy of Acarbose can be increased when used in combination with Propafenone.
+DB00284,DB00741,Acarbose,The risk or severity of hyperglycemia can be increased when Hydrocortisone is combined with Acarbose.
+DB00284,DB01234,Acarbose,The risk or severity of hyperglycemia can be increased when Dexamethasone is combined with Acarbose.
+DB00284,DB09091,Acarbose,The risk or severity of hyperglycemia can be increased when Tixocortol is combined with Acarbose.
+DB00284,DB00324,Acarbose,The risk or severity of hyperglycemia can be increased when Fluorometholone is combined with Acarbose.
+DB00284,DB14539,Acarbose,The risk or severity of hyperglycemia can be increased when Hydrocortisone acetate is combined with Acarbose.
+DB00284,DB01115,Acarbose,Nifedipine may decrease the hypoglycemic activities of Acarbose.
+DB00303,DB00787,Ertapenem,Acyclovir may decrease the excretion rate of Ertapenem which could result in a higher serum level.
+DB00303,DB01009,Ertapenem,Ketoprofen may decrease the excretion rate of Ertapenem which could result in a higher serum level.
+DB00303,DB01112,Ertapenem,Cefuroxime may decrease the excretion rate of Ertapenem which could result in a higher serum level.
+DB00303,DB01424,Ertapenem,Aminophenazone may decrease the excretion rate of Ertapenem which could result in a higher serum level.
+DB00303,DB06736,Ertapenem,Aceclofenac may decrease the excretion rate of Ertapenem which could result in a higher serum level.
+DB00303,DB08976,Ertapenem,Floctafenine may decrease the excretion rate of Ertapenem which could result in a higher serum level.
+DB00303,DB08981,Ertapenem,Fenbufen may decrease the excretion rate of Ertapenem which could result in a higher serum level.
+DB00303,DB00871,Ertapenem,Ertapenem may decrease the excretion rate of Terbutaline which could result in a higher serum level.
+DB00303,DB00915,Ertapenem,Ertapenem may decrease the excretion rate of Amantadine which could result in a higher serum level.
+DB00303,DB01046,Ertapenem,Ertapenem may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB00303,DB01067,Ertapenem,Ertapenem may decrease the excretion rate of Glipizide which could result in a higher serum level.
+DB00303,DB01101,Ertapenem,Ertapenem may decrease the excretion rate of Capecitabine which could result in a higher serum level.
+DB00303,DB01115,Ertapenem,Ertapenem may decrease the excretion rate of Nifedipine which could result in a higher serum level.
+DB00303,DB01274,Ertapenem,Ertapenem may decrease the excretion rate of Arformoterol which could result in a higher serum level.
+DB00303,DB01428,Ertapenem,Ertapenem may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB00303,DB06228,Ertapenem,Ertapenem may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB00303,DB06782,Ertapenem,Ertapenem may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB00303,DB06813,Ertapenem,Ertapenem may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB00303,DB09091,Ertapenem,Ertapenem may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB00303,DB11102,Ertapenem,Ertapenem may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB00303,DB13946,Ertapenem,Ertapenem may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB00303,DB13952,Ertapenem,Ertapenem may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB00303,DB00479,Ertapenem,Ertapenem may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00303,DB00564,Ertapenem,Ertapenem may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00303,DB09401,Ertapenem,Isosorbide may increase the excretion rate of Ertapenem which could result in a lower serum level and potentially a reduction in efficacy.
+DB00303,DB09009,Ertapenem,The risk or severity of methemoglobinemia can be increased when Ertapenem is combined with Articaine.
+DB00318,DB00497,Codeine,The risk or severity of adverse effects can be increased when Codeine is combined with Oxycodone.
+DB00318,DB00647,Codeine,The risk or severity of adverse effects can be increased when Codeine is combined with Dextropropoxyphene.
+DB00318,DB11609,Codeine,The risk or severity of adverse effects can be increased when Codeine is combined with Normethadone.
+DB00318,DB00940,Codeine,The risk or severity of adverse effects can be increased when Methantheline is combined with Codeine.
+DB00318,DB08801,Codeine,The risk or severity of adverse effects can be increased when Dimetindene is combined with Codeine.
+DB00318,DB00915,Codeine,The risk or severity of adverse effects can be increased when Amantadine is combined with Codeine.
+DB00318,DB13213,Codeine,The risk or severity of hypotension and CNS depression can be increased when Butaperazine is combined with Codeine.
+DB00318,DB01198,Codeine,The risk or severity of adverse effects can be increased when Codeine is combined with Zopiclone.
+DB00318,DB00857,Codeine,The metabolism of Codeine can be decreased when combined with Terbinafine.
+DB00318,DB06708,Codeine,The metabolism of Codeine can be decreased when combined with Lumefantrine.
+DB00318,DB00679,Codeine,The metabolism of Codeine can be decreased when combined with Thioridazine.
+DB00318,DB01182,Codeine,The metabolism of Codeine can be decreased when combined with Propafenone.
+DB00318,DB01616,Codeine,The risk or severity of CNS depression can be increased when Codeine is combined with Alverine.
+DB00318,DB06016,Codeine,The risk or severity of CNS depression can be increased when Codeine is combined with Cariprazine.
+DB00318,DB06144,Codeine,The risk or severity of CNS depression can be increased when Codeine is combined with Sertindole.
+DB00318,DB06701,Codeine,The risk or severity of CNS depression can be increased when Codeine is combined with Dexmethylphenidate.
+DB00318,DB06797,Codeine,The risk or severity of CNS depression can be increased when Codeine is combined with Mebutamate.
+DB00318,DB09009,Codeine,The risk or severity of CNS depression can be increased when Codeine is combined with Articaine.
+DB00318,DB01168,Codeine,The risk or severity of adverse effects can be increased when Codeine is combined with Procarbazine.
+DB00318,DB14627,Codeine,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Codeine.
+DB00318,DB01046,Codeine,The therapeutic efficacy of Lubiprostone can be decreased when used in combination with Codeine.
+DB00318,DB00495,Codeine,The excretion of Zidovudine can be decreased when combined with Codeine.
+DB00318,DB01244,Codeine,The metabolism of Codeine can be decreased when combined with Bepridil.
+DB00318,DB01115,Codeine,The metabolism of Nifedipine can be decreased when combined with Codeine.
+DB00318,DB00570,Codeine,The metabolism of Codeine can be decreased when combined with Vinblastine.
+DB00318,DB00335,Codeine,The metabolism of Atenolol can be decreased when combined with Codeine.
+DB00318,DB01274,Codeine,The metabolism of Arformoterol can be decreased when combined with Codeine.
+DB00318,DB01424,Codeine,The metabolism of Aminophenazone can be decreased when combined with Codeine.
+DB00318,DB00938,Codeine,The risk or severity of adverse effects can be increased when Codeine is combined with Salmeterol.
+DB00318,DB13952,Codeine,The risk or severity of adverse effects can be increased when Estradiol acetate is combined with Codeine.
+DB00318,DB00787,Codeine,The risk or severity of adverse effects can be increased when Codeine is combined with Acyclovir.
+DB00318,DB09401,Codeine,The therapeutic efficacy of Isosorbide can be decreased when used in combination with Codeine.
+DB00318,DB00575,Codeine,The risk or severity of sedation can be increased when Clonidine is combined with Codeine.
+DB00318,DB06712,Codeine,The metabolism of Codeine can be decreased when combined with Nilvadipine.
+DB00318,DB01167,Codeine,The metabolism of Codeine can be decreased when combined with Itraconazole.
+DB00318,DB00564,Codeine,The metabolism of Codeine can be increased when combined with Carbamazepine.
+DB00318,DB01234,Codeine,The metabolism of Codeine can be increased when combined with Dexamethasone.
+DB00318,DB11672,Codeine,The metabolism of Codeine can be decreased when combined with Curcumin.
+DB00318,DB12095,Codeine,The serum concentration of Codeine can be decreased when it is combined with Telotristat ethyl.
+DB00324,DB00352,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Tioguanine.
+DB00324,DB00495,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Zidovudine.
+DB00324,DB00564,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Carbamazepine.
+DB00324,DB00570,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Vinblastine.
+DB00324,DB01101,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Capecitabine.
+DB00324,DB01168,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Procarbazine.
+DB00324,DB01234,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Dexamethasone.
+DB00324,DB06813,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Pralatrexate.
+DB00324,DB09091,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Tixocortol.
+DB00324,DB14539,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Hydrocortisone acetate.
+DB00324,DB09063,Fluorometholone,The risk or severity of hyperglycemia can be increased when Fluorometholone is combined with Ceritinib.
+DB00324,DB00938,Fluorometholone,The risk or severity of hypokalemia can be increased when Fluorometholone is combined with Salmeterol.
+DB00324,DB01274,Fluorometholone,The risk or severity of hypokalemia can be increased when Fluorometholone is combined with Arformoterol.
+DB00324,DB08868,Fluorometholone,Fluorometholone may increase the immunosuppressive activities of Fingolimod.
+DB00324,DB00957,Fluorometholone,The serum concentration of Fluorometholone can be increased when it is combined with Norgestimate.
+DB00324,DB01009,Fluorometholone,The risk or severity of gastrointestinal irritation can be increased when Fluorometholone is combined with Ketoprofen.
+DB00324,DB01424,Fluorometholone,The risk or severity of gastrointestinal irritation can be increased when Fluorometholone is combined with Aminophenazone.
+DB00324,DB06736,Fluorometholone,The risk or severity of gastrointestinal irritation can be increased when Fluorometholone is combined with Aceclofenac.
+DB00324,DB08976,Fluorometholone,The risk or severity of gastrointestinal irritation can be increased when Fluorometholone is combined with Floctafenine.
+DB00324,DB08981,Fluorometholone,The risk or severity of gastrointestinal irritation can be increased when Fluorometholone is combined with Fenbufen.
+DB00324,DB00871,Fluorometholone,The therapeutic efficacy of Terbutaline can be decreased when used in combination with Fluorometholone.
+DB00324,DB13946,Fluorometholone,The risk or severity of edema formation can be increased when Testosterone undecanoate is combined with Fluorometholone.
+DB00324,DB01067,Fluorometholone,The risk or severity of hyperglycemia can be increased when Fluorometholone is combined with Glipizide.
+DB00324,DB01078,Fluorometholone,The risk or severity of adverse effects can be increased when Fluorometholone is combined with Deslanoside.
+DB00324,DB11201,Fluorometholone,The risk or severity of gastrointestinal irritation can be increased when Fluorometholone is combined with Menthyl salicylate.
+DB00324,DB12095,Fluorometholone,The serum concentration of Fluorometholone can be decreased when it is combined with Telotristat ethyl.
+DB00335,DB09063,Atenolol,Atenolol may increase the bradycardic activities of Ceritinib.
+DB00335,DB06701,Atenolol,Dexmethylphenidate may decrease the antihypertensive activities of Atenolol.
+DB00335,DB08868,Atenolol,Atenolol may increase the bradycardic activities of Fingolimod.
+DB00335,DB08976,Atenolol,The risk or severity of adverse effects can be increased when Atenolol is combined with Floctafenine.
+DB00335,DB01182,Atenolol,The risk or severity of adverse effects can be increased when Propafenone is combined with Atenolol.
+DB00335,DB00411,Atenolol,The risk or severity of adverse effects can be increased when Atenolol is combined with Carbamoylcholine.
+DB00335,DB13213,Atenolol,The serum concentration of Atenolol can be increased when it is combined with Butaperazine.
+DB00335,DB01009,Atenolol,Ketoprofen may decrease the antihypertensive activities of Atenolol.
+DB00335,DB01424,Atenolol,Aminophenazone may decrease the antihypertensive activities of Atenolol.
+DB00335,DB06736,Atenolol,Aceclofenac may decrease the antihypertensive activities of Atenolol.
+DB00335,DB08981,Atenolol,Fenbufen may decrease the antihypertensive activities of Atenolol.
+DB00335,DB01078,Atenolol,Atenolol may increase the arrhythmogenic activities of Deslanoside.
+DB00335,DB00836,Atenolol,Atenolol may increase the arrhythmogenic activities of Loperamide.
+DB00335,DB01244,Atenolol,Atenolol may increase the arrhythmogenic activities of Bepridil.
+DB00335,DB06712,Atenolol,Atenolol may increase the arrhythmogenic activities of Nilvadipine.
+DB00335,DB01168,Atenolol,Procarbazine may increase the hypotensive activities of Atenolol.
+DB00335,DB01113,Atenolol,The risk or severity of adverse effects can be increased when Atenolol is combined with Papaverine.
+DB00335,DB06791,Atenolol,Atenolol may increase the bradycardic activities of Lanreotide.
+DB00335,DB00857,Atenolol,The metabolism of Atenolol can be decreased when combined with Terbinafine.
+DB00335,DB06708,Atenolol,The metabolism of Atenolol can be decreased when combined with Lumefantrine.
+DB00335,DB00679,Atenolol,The metabolism of Atenolol can be decreased when combined with Thioridazine.
+DB00335,DB01167,Atenolol,The risk or severity of hyperkalemia can be increased when Atenolol is combined with Itraconazole.
+DB00335,DB01220,Atenolol,The metabolism of Atenolol can be increased when combined with Rifaximin.
+DB00335,DB00871,Atenolol,The therapeutic efficacy of Terbutaline can be decreased when used in combination with Atenolol.
+DB00335,DB00938,Atenolol,The therapeutic efficacy of Salmeterol can be decreased when used in combination with Atenolol.
+DB00335,DB01274,Atenolol,The therapeutic efficacy of Arformoterol can be decreased when used in combination with Atenolol.
+DB00335,DB01234,Atenolol,Dexamethasone may increase the excretion rate of Atenolol which could result in a lower serum level and potentially a reduction in efficacy.
+DB00335,DB00570,Atenolol,Vinblastine may decrease the excretion rate of Atenolol which could result in a higher serum level.
+DB00335,DB00647,Atenolol,The metabolism of Atenolol can be decreased when combined with Dextropropoxyphene.
+DB00335,DB00497,Atenolol,The metabolism of Oxycodone can be decreased when combined with Atenolol.
+DB00335,DB06016,Atenolol,Cariprazine may decrease the antihypertensive activities of Atenolol.
+DB00335,DB06144,Atenolol,The metabolism of Sertindole can be decreased when combined with Atenolol.
+DB00335,DB00575,Atenolol,The risk or severity of hypotension can be increased when Clonidine is combined with Atenolol.
+DB00335,DB01067,Atenolol,The therapeutic efficacy of Glipizide can be increased when used in combination with Atenolol.
+DB00335,DB11672,Atenolol,The metabolism of Atenolol can be decreased when combined with Curcumin.
+DB00335,DB11201,Atenolol,Menthyl salicylate may decrease the antihypertensive activities of Atenolol.
+DB00338,DB01167,Omeprazole,Omeprazole can cause a decrease in the absorption of Itraconazole resulting in a reduced serum concentration and potentially a decrease in efficacy.
+DB00338,DB06701,Omeprazole,Omeprazole can cause an increase in the absorption of Dexmethylphenidate resulting in an increased serum concentration and potentially a worsening of adverse effects.
+DB00338,DB01112,Omeprazole,The serum concentration of Cefuroxime can be decreased when it is combined with Omeprazole.
+DB00338,DB00564,Omeprazole,The metabolism of Omeprazole can be decreased when combined with Carbamazepine.
+DB00338,DB06712,Omeprazole,The metabolism of Omeprazole can be decreased when combined with Nilvadipine.
+DB00338,DB00679,Omeprazole,The metabolism of Thioridazine can be decreased when combined with Omeprazole.
+DB00338,DB01006,Omeprazole,The metabolism of Omeprazole can be decreased when combined with Letrozole.
+DB00338,DB12095,Omeprazole,The serum concentration of Telotristat ethyl can be increased when it is combined with Omeprazole.
+DB00352,DB00495,Tioguanine,The risk or severity of adverse effects can be increased when Tioguanine is combined with Zidovudine.
+DB00352,DB00564,Tioguanine,The risk or severity of adverse effects can be increased when Tioguanine is combined with Carbamazepine.
+DB00352,DB00570,Tioguanine,The risk or severity of adverse effects can be increased when Tioguanine is combined with Vinblastine.
+DB00352,DB01101,Tioguanine,The risk or severity of adverse effects can be increased when Tioguanine is combined with Capecitabine.
+DB00352,DB01168,Tioguanine,The risk or severity of adverse effects can be increased when Tioguanine is combined with Procarbazine.
+DB00352,DB01234,Tioguanine,The risk or severity of adverse effects can be increased when Tioguanine is combined with Dexamethasone.
+DB00352,DB06813,Tioguanine,The risk or severity of adverse effects can be increased when Tioguanine is combined with Pralatrexate.
+DB00352,DB09091,Tioguanine,The risk or severity of adverse effects can be increased when Tioguanine is combined with Tixocortol.
+DB00352,DB14539,Tioguanine,The risk or severity of adverse effects can be increased when Tioguanine is combined with Hydrocortisone acetate.
+DB00352,DB08868,Tioguanine,Tioguanine may increase the immunosuppressive activities of Fingolimod.
+DB00352,DB06228,Tioguanine,The risk or severity of bleeding can be increased when Rivaroxaban is combined with Tioguanine.
+DB00352,DB09009,Tioguanine,The risk or severity of methemoglobinemia can be increased when Tioguanine is combined with Articaine.
+DB00411,DB01182,Carbamoylcholine,The risk or severity of adverse effects can be increased when Propafenone is combined with Carbamoylcholine.
+DB00411,DB00871,Carbamoylcholine,The risk or severity of adverse effects can be increased when Terbutaline is combined with Carbamoylcholine.
+DB00411,DB00479,Carbamoylcholine,The therapeutic efficacy of Carbamoylcholine can be decreased when used in combination with Amikacin.
+DB00423,DB01198,Methocarbamol,The risk or severity of adverse effects can be increased when Methocarbamol is combined with Zopiclone.
+DB00423,DB00497,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Oxycodone.
+DB00423,DB00564,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Carbamazepine.
+DB00423,DB00647,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Dextropropoxyphene.
+DB00423,DB00679,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Thioridazine.
+DB00423,DB01168,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Procarbazine.
+DB00423,DB01616,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Alverine.
+DB00423,DB06016,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Cariprazine.
+DB00423,DB06144,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Sertindole.
+DB00423,DB06701,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Dexmethylphenidate.
+DB00423,DB06797,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Mebutamate.
+DB00423,DB11609,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Normethadone.
+DB00423,DB13213,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Butaperazine.
+DB00423,DB09009,Methocarbamol,The risk or severity of CNS depression can be increased when Methocarbamol is combined with Articaine.
+DB00423,DB00575,Methocarbamol,The risk or severity of sedation can be increased when Clonidine is combined with Methocarbamol.
+DB00479,DB01078,Amikacin,The risk or severity of adverse effects can be increased when Amikacin is combined with Deslanoside.
+DB00479,DB09319,Amikacin,The serum concentration of Amikacin can be decreased when it is combined with Carindacillin.
+DB00479,DB01112,Amikacin,Cefuroxime may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB01424,Amikacin,Aminophenazone may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB08976,Amikacin,Floctafenine may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB08981,Amikacin,Fenbufen may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB00564,Amikacin,Amikacin may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00479,DB01009,Amikacin,Ketoprofen may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB06736,Amikacin,Aceclofenac may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB00787,Amikacin,Acyclovir may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB00871,Amikacin,Terbutaline may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB00915,Amikacin,Amantadine may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB01046,Amikacin,Lubiprostone may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB01067,Amikacin,Glipizide may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB01101,Amikacin,Capecitabine may increase the nephrotoxic activities of Amikacin.
+DB00479,DB01115,Amikacin,Nifedipine may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB01274,Amikacin,Arformoterol may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB01428,Amikacin,Oxybenzone may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB06228,Amikacin,Rivaroxaban may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB06782,Amikacin,Dimercaprol may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB06813,Amikacin,Pralatrexate may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB09091,Amikacin,Tixocortol may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB11102,Amikacin,N-acetyltyrosine may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB13946,Amikacin,Testosterone undecanoate may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB13952,Amikacin,Estradiol acetate may decrease the excretion rate of Amikacin which could result in a higher serum level.
+DB00479,DB11201,Amikacin,The risk or severity of nephrotoxicity can be increased when Menthyl salicylate is combined with Amikacin.
+DB00479,DB09009,Amikacin,The risk or severity of methemoglobinemia can be increased when Amikacin is combined with Articaine.
+DB00495,DB00570,Zidovudine,The risk or severity of adverse effects can be increased when Zidovudine is combined with Vinblastine.
+DB00495,DB01168,Zidovudine,The risk or severity of adverse effects can be increased when Zidovudine is combined with Procarbazine.
+DB00495,DB01234,Zidovudine,The risk or severity of adverse effects can be increased when Zidovudine is combined with Dexamethasone.
+DB00495,DB06813,Zidovudine,The risk or severity of adverse effects can be increased when Zidovudine is combined with Pralatrexate.
+DB00495,DB09091,Zidovudine,The risk or severity of adverse effects can be increased when Zidovudine is combined with Tixocortol.
+DB00495,DB14539,Zidovudine,The risk or severity of adverse effects can be increased when Zidovudine is combined with Hydrocortisone acetate.
+DB00495,DB00564,Zidovudine,The risk or severity of adverse effects can be increased when Zidovudine is combined with Carbamazepine.
+DB00495,DB00741,Zidovudine,The excretion of Hydrocortisone can be decreased when combined with Zidovudine.
+DB00495,DB00947,Zidovudine,The metabolism of Fulvestrant can be increased when combined with Zidovudine.
+DB00495,DB01067,Zidovudine,The metabolism of Glipizide can be increased when combined with Zidovudine.
+DB00495,DB13952,Zidovudine,The metabolism of Estradiol acetate can be increased when combined with Zidovudine.
+DB00495,DB00957,Zidovudine,The metabolism of Norgestimate can be increased when combined with Zidovudine.
+DB00495,DB00787,Zidovudine,The risk or severity of adverse effects can be increased when Acyclovir is combined with Zidovudine.
+DB00495,DB08868,Zidovudine,Zidovudine may increase the immunosuppressive activities of Fingolimod.
+DB00495,DB01009,Zidovudine,The risk or severity of adverse effects can be increased when Ketoprofen is combined with Zidovudine.
+DB00495,DB00938,Zidovudine,The metabolism of Zidovudine can be decreased when combined with Salmeterol.
+DB00495,DB01006,Zidovudine,The metabolism of Zidovudine can be decreased when combined with Letrozole.
+DB00495,DB00857,Zidovudine,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Zidovudine is combined with Terbinafine."
+DB00495,DB01393,Zidovudine,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Zidovudine is combined with Bezafibrate."
+DB00495,DB06712,Zidovudine,The metabolism of Zidovudine can be decreased when combined with Nilvadipine.
+DB00495,DB01115,Zidovudine,The metabolism of Nifedipine can be decreased when combined with Zidovudine.
+DB00495,DB01198,Zidovudine,The metabolism of Zopiclone can be decreased when combined with Zidovudine.
+DB00495,DB01274,Zidovudine,The metabolism of Arformoterol can be decreased when combined with Zidovudine.
+DB00495,DB06228,Zidovudine,The risk or severity of bleeding can be increased when Rivaroxaban is combined with Zidovudine.
+DB00495,DB01117,Zidovudine,The metabolism of Zidovudine can be decreased when combined with Atovaquone.
+DB00495,DB09063,Zidovudine,The metabolism of Zidovudine can be decreased when combined with Ceritinib.
+DB00495,DB01101,Zidovudine,The serum concentration of Zidovudine can be increased when it is combined with Capecitabine.
+DB00495,DB01424,Zidovudine,The risk or severity of bleeding can be increased when Zidovudine is combined with Aminophenazone.
+DB00495,DB06736,Zidovudine,The risk or severity of bleeding can be increased when Zidovudine is combined with Aceclofenac.
+DB00495,DB08976,Zidovudine,The risk or severity of bleeding can be increased when Zidovudine is combined with Floctafenine.
+DB00495,DB08981,Zidovudine,The risk or severity of bleeding can be increased when Zidovudine is combined with Fenbufen.
+DB00495,DB11791,Zidovudine,The serum concentration of Zidovudine can be increased when it is combined with Capmatinib.
+DB00495,DB00836,Zidovudine,The metabolism of Loperamide can be decreased when combined with Zidovudine.
+DB00495,DB01167,Zidovudine,The metabolism of Zidovudine can be decreased when combined with Itraconazole.
+DB00495,DB11672,Zidovudine,The metabolism of Zidovudine can be decreased when combined with Curcumin.
+DB00495,DB11201,Zidovudine,The risk or severity of bleeding can be increased when Zidovudine is combined with Menthyl salicylate.
+DB00495,DB12095,Zidovudine,The serum concentration of Zidovudine can be decreased when it is combined with Telotristat ethyl.
+DB00495,DB17083,Zidovudine,The serum concentration of Zidovudine can be increased when it is combined with Linzagolix.
+DB00495,DB11682,Zidovudine,The metabolism of Daprodustat can be decreased when combined with Zidovudine.
+DB00497,DB00647,Oxycodone,The risk or severity of adverse effects can be increased when Oxycodone is combined with Dextropropoxyphene.
+DB00497,DB11609,Oxycodone,The risk or severity of adverse effects can be increased when Oxycodone is combined with Normethadone.
+DB00497,DB01168,Oxycodone,Procarbazine may increase the serotonergic and central nervous system depressant (CNS depressant) activities of Oxycodone.
+DB00497,DB00940,Oxycodone,The risk or severity of adverse effects can be increased when Methantheline is combined with Oxycodone.
+DB00497,DB08801,Oxycodone,The risk or severity of adverse effects can be increased when Dimetindene is combined with Oxycodone.
+DB00497,DB00915,Oxycodone,The risk or severity of adverse effects can be increased when Amantadine is combined with Oxycodone.
+DB00497,DB13213,Oxycodone,The risk or severity of hypotension and CNS depression can be increased when Butaperazine is combined with Oxycodone.
+DB00497,DB01198,Oxycodone,The risk or severity of adverse effects can be increased when Oxycodone is combined with Zopiclone.
+DB00497,DB00857,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Terbinafine.
+DB00497,DB06708,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Lumefantrine.
+DB00497,DB00679,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Thioridazine.
+DB00497,DB01182,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Propafenone.
+DB00497,DB01616,Oxycodone,The risk or severity of CNS depression can be increased when Oxycodone is combined with Alverine.
+DB00497,DB06016,Oxycodone,The risk or severity of CNS depression can be increased when Oxycodone is combined with Cariprazine.
+DB00497,DB06144,Oxycodone,The risk or severity of CNS depression can be increased when Oxycodone is combined with Sertindole.
+DB00497,DB06701,Oxycodone,The risk or severity of CNS depression can be increased when Oxycodone is combined with Dexmethylphenidate.
+DB00497,DB06797,Oxycodone,The risk or severity of CNS depression can be increased when Oxycodone is combined with Mebutamate.
+DB00497,DB09009,Oxycodone,The risk or severity of CNS depression can be increased when Oxycodone is combined with Articaine.
+DB00497,DB01046,Oxycodone,The therapeutic efficacy of Lubiprostone can be decreased when used in combination with Oxycodone.
+DB00497,DB14627,Oxycodone,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Oxycodone.
+DB00497,DB11703,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Acalabrutinib.
+DB00497,DB00741,Oxycodone,The metabolism of Hydrocortisone can be decreased when combined with Oxycodone.
+DB00497,DB00938,Oxycodone,The metabolism of Salmeterol can be decreased when combined with Oxycodone.
+DB00497,DB06228,Oxycodone,The metabolism of Rivaroxaban can be decreased when combined with Oxycodone.
+DB00497,DB13952,Oxycodone,The metabolism of Estradiol acetate can be decreased when combined with Oxycodone.
+DB00497,DB14539,Oxycodone,The metabolism of Hydrocortisone acetate can be decreased when combined with Oxycodone.
+DB00497,DB00564,Oxycodone,The metabolism of Carbamazepine can be decreased when combined with Oxycodone.
+DB00497,DB01244,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Bepridil.
+DB00497,DB01115,Oxycodone,The metabolism of Nifedipine can be decreased when combined with Oxycodone.
+DB00497,DB00570,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Vinblastine.
+DB00497,DB01274,Oxycodone,The metabolism of Arformoterol can be decreased when combined with Oxycodone.
+DB00497,DB01424,Oxycodone,The metabolism of Aminophenazone can be decreased when combined with Oxycodone.
+DB00497,DB09401,Oxycodone,The therapeutic efficacy of Isosorbide can be decreased when used in combination with Oxycodone.
+DB00497,DB00575,Oxycodone,The risk or severity of sedation can be increased when Clonidine is combined with Oxycodone.
+DB00497,DB06712,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Nilvadipine.
+DB00497,DB01167,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Itraconazole.
+DB00497,DB01234,Oxycodone,The metabolism of Oxycodone can be increased when combined with Dexamethasone.
+DB00497,DB11672,Oxycodone,The metabolism of Oxycodone can be decreased when combined with Curcumin.
+DB00497,DB12095,Oxycodone,The serum concentration of Oxycodone can be decreased when it is combined with Telotristat ethyl.
+DB00539,DB01220,Toremifene,The serum concentration of Rifaximin can be increased when it is combined with Toremifene.
+DB00539,DB06228,Toremifene,The risk or severity of bleeding can be increased when Toremifene is combined with Rivaroxaban.
+DB00539,DB01113,Toremifene,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Toremifene.
+DB00539,DB01115,Toremifene,The risk or severity of QTc prolongation can be increased when Nifedipine is combined with Toremifene.
+DB00539,DB01182,Toremifene,The risk or severity of QTc prolongation can be increased when Propafenone is combined with Toremifene.
+DB00539,DB06712,Toremifene,The risk or severity of QTc prolongation can be increased when Nilvadipine is combined with Toremifene.
+DB00539,DB12877,Toremifene,The risk or severity of QTc prolongation can be increased when Oxatomide is combined with Toremifene.
+DB00539,DB00871,Toremifene,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Toremifene.
+DB00539,DB00915,Toremifene,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Toremifene.
+DB00539,DB00938,Toremifene,The risk or severity of QTc prolongation can be increased when Salmeterol is combined with Toremifene.
+DB00539,DB01274,Toremifene,The risk or severity of QTc prolongation can be increased when Arformoterol is combined with Toremifene.
+DB00539,DB00679,Toremifene,The risk or severity of QTc prolongation can be increased when Toremifene is combined with Thioridazine.
+DB00539,DB01244,Toremifene,The risk or severity of QTc prolongation can be increased when Toremifene is combined with Bepridil.
+DB00539,DB06708,Toremifene,The risk or severity of QTc prolongation can be increased when Toremifene is combined with Lumefantrine.
+DB00539,DB13074,Toremifene,The risk or severity of QTc prolongation can be increased when Toremifene is combined with Macimorelin.
+DB00539,DB00957,Toremifene,The serum concentration of Toremifene can be increased when it is combined with Norgestimate.
+DB00539,DB11791,Toremifene,The serum concentration of Toremifene can be increased when it is combined with Capmatinib.
+DB00539,DB09063,Toremifene,The serum concentration of Ceritinib can be increased when it is combined with Toremifene.
+DB00539,DB00570,Toremifene,The serum concentration of Vinblastine can be increased when it is combined with Toremifene.
+DB00539,DB05239,Toremifene,The serum concentration of Cobimetinib can be increased when it is combined with Toremifene.
+DB00539,DB00836,Toremifene,The excretion of Loperamide can be decreased when combined with Toremifene.
+DB00539,DB01167,Toremifene,The metabolism of Toremifene can be decreased when combined with Itraconazole.
+DB00539,DB00564,Toremifene,The metabolism of Toremifene can be increased when combined with Carbamazepine.
+DB00539,DB01234,Toremifene,The metabolism of Toremifene can be increased when combined with Dexamethasone.
+DB00539,DB11672,Toremifene,The metabolism of Toremifene can be decreased when combined with Curcumin.
+DB00539,DB12095,Toremifene,The serum concentration of Toremifene can be decreased when it is combined with Telotristat ethyl.
+DB00539,DB15149,Toremifene,The serum concentration of Futibatinib can be increased when it is combined with Toremifene.
+DB00539,DB09009,Toremifene,The risk or severity of methemoglobinemia can be increased when Toremifene is combined with Articaine.
+DB00539,DB16956,Toremifene,The serum concentration of Toremifene can be increased when it is combined with L-Acetylleucine.
+DB00564,DB06813,Carbamazepine,The risk or severity of adverse effects can be increased when Carbamazepine is combined with Pralatrexate.
+DB00564,DB09091,Carbamazepine,The risk or severity of adverse effects can be increased when Carbamazepine is combined with Tixocortol.
+DB00564,DB01101,Carbamazepine,The risk or severity of adverse effects can be increased when Carbamazepine is combined with Capecitabine.
+DB00564,DB08868,Carbamazepine,The serum concentration of Fingolimod can be decreased when it is combined with Carbamazepine.
+DB00564,DB01168,Carbamazepine,The risk or severity of adverse effects can be increased when Carbamazepine is combined with Procarbazine.
+DB00564,DB00947,Carbamazepine,The metabolism of Fulvestrant can be increased when combined with Carbamazepine.
+DB00564,DB00957,Carbamazepine,The serum concentration of Norgestimate can be decreased when it is combined with Carbamazepine.
+DB00564,DB00787,Carbamazepine,The metabolism of Acyclovir can be increased when combined with Carbamazepine.
+DB00564,DB01424,Carbamazepine,The metabolism of Aminophenazone can be increased when combined with Carbamazepine.
+DB00564,DB01182,Carbamazepine,The metabolism of Propafenone can be increased when combined with Carbamazepine.
+DB00564,DB01616,Carbamazepine,The risk or severity of CNS depression can be increased when Carbamazepine is combined with Alverine.
+DB00564,DB06701,Carbamazepine,The risk or severity of CNS depression can be increased when Carbamazepine is combined with Dexmethylphenidate.
+DB00564,DB06797,Carbamazepine,The risk or severity of CNS depression can be increased when Carbamazepine is combined with Mebutamate.
+DB00564,DB11609,Carbamazepine,The risk or severity of CNS depression can be increased when Carbamazepine is combined with Normethadone.
+DB00564,DB13213,Carbamazepine,The risk or severity of CNS depression can be increased when Carbamazepine is combined with Butaperazine.
+DB00564,DB09009,Carbamazepine,The risk or severity of methemoglobinemia can be increased when Carbamazepine is combined with Articaine.
+DB00564,DB00679,Carbamazepine,The risk or severity of CNS depression can be increased when Carbamazepine is combined with Thioridazine.
+DB00564,DB01009,Carbamazepine,Ketoprofen may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB01112,Carbamazepine,Cefuroxime may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB06736,Carbamazepine,Aceclofenac may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB08976,Carbamazepine,Floctafenine may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB08981,Carbamazepine,Fenbufen may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB00871,Carbamazepine,Terbutaline may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB00915,Carbamazepine,Amantadine may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB01046,Carbamazepine,Lubiprostone may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB01274,Carbamazepine,Arformoterol may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB01428,Carbamazepine,Oxybenzone may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB06782,Carbamazepine,Dimercaprol may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB11102,Carbamazepine,N-acetyltyrosine may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB01067,Carbamazepine,Glipizide may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB09401,Carbamazepine,Isosorbide may increase the excretion rate of Carbamazepine which could result in a lower serum level and potentially a reduction in efficacy.
+DB00564,DB00570,Carbamazepine,The metabolism of Vinblastine can be increased when combined with Carbamazepine.
+DB00564,DB00741,Carbamazepine,The metabolism of Carbamazepine can be increased when combined with Hydrocortisone.
+DB00564,DB00857,Carbamazepine,The metabolism of Carbamazepine can be increased when combined with Terbinafine.
+DB00564,DB13952,Carbamazepine,The metabolism of Carbamazepine can be increased when combined with Estradiol acetate.
+DB00564,DB14539,Carbamazepine,The metabolism of Carbamazepine can be increased when combined with Hydrocortisone acetate.
+DB00564,DB01115,Carbamazepine,The metabolism of Carbamazepine can be decreased when combined with Nifedipine.
+DB00564,DB06712,Carbamazepine,The metabolism of Carbamazepine can be decreased when combined with Nilvadipine.
+DB00564,DB06791,Carbamazepine,The metabolism of Carbamazepine can be decreased when combined with Lanreotide.
+DB00564,DB09063,Carbamazepine,The metabolism of Ceritinib can be increased when combined with Carbamazepine.
+DB00564,DB00647,Carbamazepine,The serum concentration of Carbamazepine can be increased when it is combined with Dextropropoxyphene.
+DB00564,DB11703,Carbamazepine,The metabolism of Acalabrutinib can be increased when combined with Carbamazepine.
+DB00564,DB00938,Carbamazepine,The metabolism of Carbamazepine can be decreased when combined with Salmeterol.
+DB00564,DB06228,Carbamazepine,The serum concentration of Rivaroxaban can be decreased when it is combined with Carbamazepine.
+DB00564,DB13946,Carbamazepine,Testosterone undecanoate may decrease the excretion rate of Carbamazepine which could result in a higher serum level.
+DB00564,DB00575,Carbamazepine,The risk or severity of sedation can be increased when Clonidine is combined with Carbamazepine.
+DB00564,DB11791,Carbamazepine,The serum concentration of Capmatinib can be decreased when it is combined with Carbamazepine.
+DB00564,DB00836,Carbamazepine,The metabolism of Loperamide can be increased when combined with Carbamazepine.
+DB00564,DB01167,Carbamazepine,The metabolism of Carbamazepine can be decreased when combined with Itraconazole.
+DB00564,DB06016,Carbamazepine,The metabolism of Cariprazine can be increased when combined with Carbamazepine.
+DB00564,DB06144,Carbamazepine,The metabolism of Sertindole can be increased when combined with Carbamazepine.
+DB00564,DB01198,Carbamazepine,The metabolism of Zopiclone can be increased when combined with Carbamazepine.
+DB00564,DB01006,Carbamazepine,The metabolism of Letrozole can be increased when combined with Carbamazepine.
+DB00564,DB01117,Carbamazepine,The metabolism of Atovaquone can be increased when combined with Carbamazepine.
+DB00564,DB01244,Carbamazepine,The metabolism of Bepridil can be increased when combined with Carbamazepine.
+DB00564,DB01393,Carbamazepine,The metabolism of Bezafibrate can be increased when combined with Carbamazepine.
+DB00564,DB06708,Carbamazepine,The metabolism of Lumefantrine can be increased when combined with Carbamazepine.
+DB00564,DB09124,Carbamazepine,The metabolism of Medrogestone can be increased when combined with Carbamazepine.
+DB00564,DB12329,Carbamazepine,The metabolism of Eravacycline can be increased when combined with Carbamazepine.
+DB00564,DB13074,Carbamazepine,The metabolism of Macimorelin can be increased when combined with Carbamazepine.
+DB00564,DB01234,Carbamazepine,The metabolism of Carbamazepine can be increased when combined with Dexamethasone.
+DB00564,DB05239,Carbamazepine,The serum concentration of Cobimetinib can be decreased when it is combined with Carbamazepine.
+DB00564,DB09143,Carbamazepine,The metabolism of Sonidegib can be increased when combined with Carbamazepine.
+DB00564,DB11672,Carbamazepine,The metabolism of Carbamazepine can be decreased when combined with Curcumin.
+DB00564,DB12095,Carbamazepine,The serum concentration of Carbamazepine can be decreased when it is combined with Telotristat ethyl.
+DB00564,DB15149,Carbamazepine,The metabolism of Futibatinib can be increased when combined with Carbamazepine.
+DB00570,DB01101,Vinblastine,The risk or severity of adverse effects can be increased when Vinblastine is combined with Capecitabine.
+DB00570,DB01168,Vinblastine,The risk or severity of adverse effects can be increased when Vinblastine is combined with Procarbazine.
+DB00570,DB06813,Vinblastine,The risk or severity of adverse effects can be increased when Vinblastine is combined with Pralatrexate.
+DB00570,DB09091,Vinblastine,The risk or severity of adverse effects can be increased when Vinblastine is combined with Tixocortol.
+DB00570,DB01198,Vinblastine,The metabolism of Zopiclone can be decreased when combined with Vinblastine.
+DB00570,DB08868,Vinblastine,Vinblastine may increase the immunosuppressive activities of Fingolimod.
+DB00570,DB01078,Vinblastine,Deslanoside may decrease the cardiotoxic activities of Vinblastine.
+DB00570,DB01067,Vinblastine,Vinblastine may decrease the excretion rate of Glipizide which could result in a higher serum level.
+DB00570,DB01182,Vinblastine,The serum concentration of Vinblastine can be increased when it is combined with Propafenone.
+DB00570,DB14539,Vinblastine,The metabolism of Vinblastine can be increased when combined with Hydrocortisone acetate.
+DB00570,DB00957,Vinblastine,The serum concentration of Vinblastine can be increased when it is combined with Norgestimate.
+DB00570,DB01115,Vinblastine,Vinblastine may decrease the excretion rate of Nifedipine which could result in a higher serum level.
+DB00570,DB05239,Vinblastine,The metabolism of Cobimetinib can be increased when combined with Vinblastine.
+DB00570,DB00575,Vinblastine,The metabolism of Clonidine can be increased when combined with Vinblastine.
+DB00570,DB11703,Vinblastine,The metabolism of Acalabrutinib can be increased when combined with Vinblastine.
+DB00570,DB00741,Vinblastine,The metabolism of Vinblastine can be increased when combined with Hydrocortisone.
+DB00570,DB00857,Vinblastine,The metabolism of Vinblastine can be increased when combined with Terbinafine.
+DB00570,DB13952,Vinblastine,The metabolism of Vinblastine can be increased when combined with Estradiol acetate.
+DB00570,DB09143,Vinblastine,The metabolism of Sonidegib can be increased when combined with Vinblastine.
+DB00570,DB06712,Vinblastine,The metabolism of Vinblastine can be decreased when combined with Nilvadipine.
+DB00570,DB09063,Vinblastine,The metabolism of Ceritinib can be increased when combined with Vinblastine.
+DB00570,DB06791,Vinblastine,The metabolism of Vinblastine can be decreased when combined with Lanreotide.
+DB00570,DB00647,Vinblastine,The serum concentration of Vinblastine can be increased when it is combined with Dextropropoxyphene.
+DB00570,DB00679,Vinblastine,The metabolism of Thioridazine can be decreased when combined with Vinblastine.
+DB00570,DB01274,Vinblastine,The metabolism of Arformoterol can be decreased when combined with Vinblastine.
+DB00570,DB01424,Vinblastine,The metabolism of Aminophenazone can be decreased when combined with Vinblastine.
+DB00570,DB06144,Vinblastine,The metabolism of Sertindole can be decreased when combined with Vinblastine.
+DB00570,DB01244,Vinblastine,The metabolism of Bepridil can be decreased when combined with Vinblastine.
+DB00570,DB06228,Vinblastine,The serum concentration of Vinblastine can be increased when it is combined with Rivaroxaban.
+DB00570,DB11791,Vinblastine,The serum concentration of Capmatinib can be decreased when it is combined with Vinblastine.
+DB00570,DB01167,Vinblastine,The metabolism of Vinblastine can be decreased when combined with Itraconazole.
+DB00570,DB00836,Vinblastine,The serum concentration of Vinblastine can be increased when it is combined with Loperamide.
+DB00570,DB01234,Vinblastine,The metabolism of Vinblastine can be increased when combined with Dexamethasone.
+DB00570,DB11672,Vinblastine,The metabolism of Vinblastine can be decreased when combined with Curcumin.
+DB00570,DB12095,Vinblastine,The serum concentration of Vinblastine can be decreased when it is combined with Telotristat ethyl.
+DB00570,DB15149,Vinblastine,The serum concentration of Vinblastine can be increased when it is combined with Futibatinib.
+DB00570,DB09009,Vinblastine,The risk or severity of methemoglobinemia can be increased when Vinblastine is combined with Articaine.
+DB00570,DB16956,Vinblastine,The serum concentration of Vinblastine can be increased when it is combined with L-Acetylleucine.
+DB00575,DB09063,Clonidine,Clonidine may increase the bradycardic activities of Ceritinib.
+DB00575,DB00871,Clonidine,Terbutaline may decrease the antihypertensive activities of Clonidine.
+DB00575,DB00940,Clonidine,The risk or severity of Tachycardia can be increased when Clonidine is combined with Methantheline.
+DB00575,DB08801,Clonidine,The risk or severity of Tachycardia can be increased when Clonidine is combined with Dimetindene.
+DB00575,DB01113,Clonidine,The risk or severity of adverse effects can be increased when Clonidine is combined with Papaverine.
+DB00575,DB08868,Clonidine,Clonidine may increase the bradycardic activities of Fingolimod.
+DB00575,DB00857,Clonidine,The metabolism of Clonidine can be decreased when combined with Terbinafine.
+DB00575,DB06708,Clonidine,The metabolism of Clonidine can be decreased when combined with Lumefantrine.
+DB00575,DB01009,Clonidine,The therapeutic efficacy of Clonidine can be decreased when used in combination with Ketoprofen.
+DB00575,DB06736,Clonidine,The therapeutic efficacy of Clonidine can be decreased when used in combination with Aceclofenac.
+DB00575,DB08976,Clonidine,The therapeutic efficacy of Clonidine can be decreased when used in combination with Floctafenine.
+DB00575,DB08981,Clonidine,The therapeutic efficacy of Clonidine can be decreased when used in combination with Fenbufen.
+DB00575,DB00741,Clonidine,The metabolism of Clonidine can be increased when combined with Hydrocortisone.
+DB00575,DB13952,Clonidine,The metabolism of Clonidine can be increased when combined with Estradiol acetate.
+DB00575,DB14539,Clonidine,The metabolism of Clonidine can be increased when combined with Hydrocortisone acetate.
+DB00575,DB11703,Clonidine,The metabolism of Clonidine can be decreased when combined with Acalabrutinib.
+DB00575,DB06791,Clonidine,The metabolism of Clonidine can be decreased when combined with Lanreotide.
+DB00575,DB05239,Clonidine,The metabolism of Clonidine can be decreased when combined with Cobimetinib.
+DB00575,DB00938,Clonidine,The metabolism of Clonidine can be decreased when combined with Salmeterol.
+DB00575,DB06228,Clonidine,The metabolism of Clonidine can be decreased when combined with Rivaroxaban.
+DB00575,DB01182,Clonidine,The metabolism of Clonidine can be decreased when combined with Propafenone.
+DB00575,DB01274,Clonidine,The metabolism of Clonidine can be decreased when combined with Arformoterol.
+DB00575,DB01424,Clonidine,The metabolism of Clonidine can be decreased when combined with Aminophenazone.
+DB00575,DB00787,Clonidine,The metabolism of Acyclovir can be decreased when combined with Clonidine.
+DB00575,DB13074,Clonidine,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Clonidine.
+DB00575,DB13946,Clonidine,Testosterone undecanoate may increase the hypertensive activities of Clonidine.
+DB00575,DB00647,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Dextropropoxyphene.
+DB00575,DB00679,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Thioridazine.
+DB00575,DB01168,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Procarbazine.
+DB00575,DB01198,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Zopiclone.
+DB00575,DB01616,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Alverine.
+DB00575,DB06016,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Cariprazine.
+DB00575,DB06144,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Sertindole.
+DB00575,DB06701,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Dexmethylphenidate.
+DB00575,DB06797,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Mebutamate.
+DB00575,DB11609,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Normethadone.
+DB00575,DB13213,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Butaperazine.
+DB00575,DB09009,Clonidine,The risk or severity of sedation can be increased when Clonidine is combined with Articaine.
+DB00575,DB01078,Clonidine,Clonidine may increase the atrioventricular blocking (AV block) activities of Deslanoside.
+DB00575,DB00836,Clonidine,Clonidine may increase the bradycardic activities of Loperamide.
+DB00575,DB01115,Clonidine,Clonidine may increase the atrioventricular blocking (AV block) activities of Nifedipine.
+DB00575,DB01244,Clonidine,The risk or severity of hypotension can be increased when Clonidine is combined with Bepridil.
+DB00575,DB06712,Clonidine,The risk or severity of hypotension can be increased when Clonidine is combined with Nilvadipine.
+DB00575,DB11791,Clonidine,The serum concentration of Clonidine can be increased when it is combined with Capmatinib.
+DB00575,DB00957,Clonidine,The risk or severity of sedation can be increased when Norgestimate is combined with Clonidine.
+DB00575,DB01167,Clonidine,The metabolism of Clonidine can be decreased when combined with Itraconazole.
+DB00575,DB01234,Clonidine,The metabolism of Clonidine can be increased when combined with Dexamethasone.
+DB00575,DB11672,Clonidine,The metabolism of Clonidine can be decreased when combined with Curcumin.
+DB00575,DB11201,Clonidine,The therapeutic efficacy of Clonidine can be decreased when used in combination with Menthyl salicylate.
+DB00575,DB12095,Clonidine,The serum concentration of Clonidine can be decreased when it is combined with Telotristat ethyl.
+DB00634,DB09009,Sulfacetamide,The risk or severity of methemoglobinemia can be increased when Sulfacetamide is combined with Articaine.
+DB00647,DB11609,Dextropropoxyphene,The risk or severity of adverse effects can be increased when Dextropropoxyphene is combined with Normethadone.
+DB00647,DB01198,Dextropropoxyphene,The metabolism of Zopiclone can be decreased when combined with Dextropropoxyphene.
+DB00647,DB00940,Dextropropoxyphene,The risk or severity of adverse effects can be increased when Methantheline is combined with Dextropropoxyphene.
+DB00647,DB08801,Dextropropoxyphene,The risk or severity of adverse effects can be increased when Dimetindene is combined with Dextropropoxyphene.
+DB00647,DB00915,Dextropropoxyphene,The risk or severity of adverse effects can be increased when Amantadine is combined with Dextropropoxyphene.
+DB00647,DB13213,Dextropropoxyphene,The risk or severity of hypotension and CNS depression can be increased when Butaperazine is combined with Dextropropoxyphene.
+DB00647,DB00857,Dextropropoxyphene,The metabolism of Dextropropoxyphene can be decreased when combined with Terbinafine.
+DB00647,DB06708,Dextropropoxyphene,The metabolism of Dextropropoxyphene can be decreased when combined with Lumefantrine.
+DB00647,DB00679,Dextropropoxyphene,The metabolism of Dextropropoxyphene can be decreased when combined with Thioridazine.
+DB00647,DB01182,Dextropropoxyphene,The metabolism of Dextropropoxyphene can be decreased when combined with Propafenone.
+DB00647,DB01616,Dextropropoxyphene,The risk or severity of CNS depression can be increased when Dextropropoxyphene is combined with Alverine.
+DB00647,DB06016,Dextropropoxyphene,The risk or severity of CNS depression can be increased when Dextropropoxyphene is combined with Cariprazine.
+DB00647,DB06144,Dextropropoxyphene,The risk or severity of CNS depression can be increased when Dextropropoxyphene is combined with Sertindole.
+DB00647,DB06701,Dextropropoxyphene,The risk or severity of CNS depression can be increased when Dextropropoxyphene is combined with Dexmethylphenidate.
+DB00647,DB06797,Dextropropoxyphene,The risk or severity of CNS depression can be increased when Dextropropoxyphene is combined with Mebutamate.
+DB00647,DB09009,Dextropropoxyphene,The risk or severity of CNS depression can be increased when Dextropropoxyphene is combined with Articaine.
+DB00647,DB01168,Dextropropoxyphene,The risk or severity of adverse effects can be increased when Dextropropoxyphene is combined with Procarbazine.
+DB00647,DB01046,Dextropropoxyphene,The therapeutic efficacy of Lubiprostone can be decreased when used in combination with Dextropropoxyphene.
+DB00647,DB14627,Dextropropoxyphene,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Dextropropoxyphene.
+DB00647,DB05239,Dextropropoxyphene,The serum concentration of Cobimetinib can be increased when it is combined with Dextropropoxyphene.
+DB00647,DB09063,Dextropropoxyphene,The serum concentration of Ceritinib can be increased when it is combined with Dextropropoxyphene.
+DB00647,DB11703,Dextropropoxyphene,The serum concentration of Acalabrutinib can be increased when it is combined with Dextropropoxyphene.
+DB00647,DB09143,Dextropropoxyphene,The serum concentration of Sonidegib can be increased when it is combined with Dextropropoxyphene.
+DB00647,DB01274,Dextropropoxyphene,The metabolism of Arformoterol can be decreased when combined with Dextropropoxyphene.
+DB00647,DB01115,Dextropropoxyphene,The metabolism of Nifedipine can be decreased when combined with Dextropropoxyphene.
+DB00647,DB01244,Dextropropoxyphene,The metabolism of Bepridil can be decreased when combined with Dextropropoxyphene.
+DB00647,DB01424,Dextropropoxyphene,The metabolism of Aminophenazone can be decreased when combined with Dextropropoxyphene.
+DB00647,DB09401,Dextropropoxyphene,The therapeutic efficacy of Isosorbide can be decreased when used in combination with Dextropropoxyphene.
+DB00647,DB06712,Dextropropoxyphene,The metabolism of Dextropropoxyphene can be decreased when combined with Nilvadipine.
+DB00647,DB01167,Dextropropoxyphene,The metabolism of Dextropropoxyphene can be decreased when combined with Itraconazole.
+DB00647,DB01234,Dextropropoxyphene,The metabolism of Dextropropoxyphene can be increased when combined with Dexamethasone.
+DB00647,DB11672,Dextropropoxyphene,The metabolism of Dextropropoxyphene can be decreased when combined with Curcumin.
+DB00647,DB12095,Dextropropoxyphene,The serum concentration of Dextropropoxyphene can be decreased when it is combined with Telotristat ethyl.
+DB00679,DB01009,Thioridazine,The risk or severity of hypertension can be increased when Thioridazine is combined with Ketoprofen.
+DB00679,DB06736,Thioridazine,The risk or severity of hypertension can be increased when Thioridazine is combined with Aceclofenac.
+DB00679,DB08976,Thioridazine,The risk or severity of hypertension can be increased when Thioridazine is combined with Floctafenine.
+DB00679,DB08981,Thioridazine,The risk or severity of hypertension can be increased when Thioridazine is combined with Fenbufen.
+DB00679,DB11609,Thioridazine,The risk or severity of hypotension and CNS depression can be increased when Thioridazine is combined with Normethadone.
+DB00679,DB01117,Thioridazine,The risk or severity of QTc prolongation can be increased when Atovaquone is combined with Thioridazine.
+DB00679,DB00915,Thioridazine,The therapeutic efficacy of Amantadine can be decreased when used in combination with Thioridazine.
+DB00679,DB01198,Thioridazine,The risk or severity of adverse effects can be increased when Thioridazine is combined with Zopiclone.
+DB00679,DB01113,Thioridazine,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Thioridazine.
+DB00679,DB06712,Thioridazine,The risk or severity of QTc prolongation can be increased when Nilvadipine is combined with Thioridazine.
+DB00679,DB09063,Thioridazine,The risk or severity of QTc prolongation can be increased when Ceritinib is combined with Thioridazine.
+DB00679,DB12877,Thioridazine,The risk or severity of QTc prolongation can be increased when Oxatomide is combined with Thioridazine.
+DB00679,DB00871,Thioridazine,The therapeutic efficacy of Terbutaline can be decreased when used in combination with Thioridazine.
+DB00679,DB00938,Thioridazine,The therapeutic efficacy of Salmeterol can be decreased when used in combination with Thioridazine.
+DB00679,DB01167,Thioridazine,The risk or severity of QTc prolongation can be increased when Itraconazole is combined with Thioridazine.
+DB00679,DB06708,Thioridazine,The metabolism of Thioridazine can be decreased when combined with Lumefantrine.
+DB00679,DB00857,Thioridazine,The metabolism of Thioridazine can be decreased when combined with Terbinafine.
+DB00679,DB06016,Thioridazine,The risk or severity of CNS depression can be increased when Thioridazine is combined with Cariprazine.
+DB00679,DB06144,Thioridazine,The metabolism of Sertindole can be decreased when combined with Thioridazine.
+DB00679,DB00836,Thioridazine,The risk or severity of QTc prolongation can be increased when Loperamide is combined with Thioridazine.
+DB00679,DB01115,Thioridazine,The risk or severity of QTc prolongation can be increased when Nifedipine is combined with Thioridazine.
+DB00679,DB01182,Thioridazine,The risk or severity of QTc prolongation can be increased when Propafenone is combined with Thioridazine.
+DB00679,DB01274,Thioridazine,The metabolism of Arformoterol can be decreased when combined with Thioridazine.
+DB00679,DB01424,Thioridazine,The metabolism of Aminophenazone can be decreased when combined with Thioridazine.
+DB00679,DB01616,Thioridazine,The risk or severity of CNS depression can be increased when Thioridazine is combined with Alverine.
+DB00679,DB06701,Thioridazine,The risk or severity of adverse effects can be increased when Thioridazine is combined with Dexmethylphenidate.
+DB00679,DB06797,Thioridazine,The risk or severity of CNS depression can be increased when Thioridazine is combined with Mebutamate.
+DB00679,DB13213,Thioridazine,The risk or severity of CNS depression can be increased when Thioridazine is combined with Butaperazine.
+DB00679,DB09009,Thioridazine,The risk or severity of CNS depression can be increased when Thioridazine is combined with Articaine.
+DB00679,DB01244,Thioridazine,The metabolism of Bepridil can be decreased when combined with Thioridazine.
+DB00679,DB13074,Thioridazine,The risk or severity of QTc prolongation can be increased when Thioridazine is combined with Macimorelin.
+DB00679,DB01006,Thioridazine,The metabolism of Thioridazine can be decreased when combined with Letrozole.
+DB00679,DB13946,Thioridazine,Testosterone undecanoate may increase the hypertensive activities of Thioridazine.
+DB00679,DB01067,Thioridazine,The therapeutic efficacy of Glipizide can be decreased when used in combination with Thioridazine.
+DB00679,DB01168,Thioridazine,The risk or severity of extrapyramidal symptoms can be increased when Procarbazine is combined with Thioridazine.
+DB00679,DB11672,Thioridazine,The metabolism of Thioridazine can be decreased when combined with Curcumin.
+DB00741,DB09063,Hydrocortisone,The risk or severity of hyperglycemia can be increased when Hydrocortisone is combined with Ceritinib.
+DB00741,DB00938,Hydrocortisone,The risk or severity of hypokalemia can be increased when Hydrocortisone is combined with Salmeterol.
+DB00741,DB01274,Hydrocortisone,The risk or severity of hypokalemia can be increased when Hydrocortisone is combined with Arformoterol.
+DB00741,DB00787,Hydrocortisone,The excretion of Hydrocortisone can be decreased when combined with Acyclovir.
+DB00741,DB08868,Hydrocortisone,Hydrocortisone may increase the immunosuppressive activities of Fingolimod.
+DB00741,DB00957,Hydrocortisone,The serum concentration of Hydrocortisone can be increased when it is combined with Norgestimate.
+DB00741,DB01009,Hydrocortisone,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone is combined with Ketoprofen.
+DB00741,DB06736,Hydrocortisone,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone is combined with Aceclofenac.
+DB00741,DB08976,Hydrocortisone,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone is combined with Floctafenine.
+DB00741,DB08981,Hydrocortisone,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone is combined with Fenbufen.
+DB00741,DB01424,Hydrocortisone,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone is combined with Aminophenazone.
+DB00741,DB00871,Hydrocortisone,The therapeutic efficacy of Terbutaline can be decreased when used in combination with Hydrocortisone.
+DB00741,DB13946,Hydrocortisone,The risk or severity of edema formation can be increased when Testosterone undecanoate is combined with Hydrocortisone.
+DB00741,DB11703,Hydrocortisone,The metabolism of Acalabrutinib can be increased when combined with Hydrocortisone.
+DB00741,DB05239,Hydrocortisone,The metabolism of Cobimetinib can be increased when combined with Hydrocortisone.
+DB00741,DB09143,Hydrocortisone,The metabolism of Sonidegib can be increased when combined with Hydrocortisone.
+DB00741,DB06228,Hydrocortisone,The metabolism of Rivaroxaban can be decreased when combined with Hydrocortisone.
+DB00741,DB14539,Hydrocortisone,The metabolism of Hydrocortisone acetate can be decreased when combined with Hydrocortisone.
+DB00741,DB00857,Hydrocortisone,The metabolism of Terbinafine can be increased when combined with Hydrocortisone.
+DB00741,DB01198,Hydrocortisone,The metabolism of Zopiclone can be increased when combined with Hydrocortisone.
+DB00741,DB01006,Hydrocortisone,The metabolism of Letrozole can be increased when combined with Hydrocortisone.
+DB00741,DB01115,Hydrocortisone,The metabolism of Nifedipine can be increased when combined with Hydrocortisone.
+DB00741,DB01101,Hydrocortisone,The metabolism of Capecitabine can be increased when combined with Hydrocortisone.
+DB00741,DB01067,Hydrocortisone,The risk or severity of hyperglycemia can be increased when Hydrocortisone is combined with Glipizide.
+DB00741,DB01078,Hydrocortisone,The risk or severity of adverse effects can be increased when Hydrocortisone is combined with Deslanoside.
+DB00741,DB13952,Hydrocortisone,The serum concentration of Hydrocortisone can be increased when it is combined with Estradiol acetate.
+DB00741,DB11791,Hydrocortisone,The serum concentration of Capmatinib can be decreased when it is combined with Hydrocortisone.
+DB00741,DB06712,Hydrocortisone,The metabolism of Hydrocortisone can be decreased when combined with Nilvadipine.
+DB00741,DB01167,Hydrocortisone,The metabolism of Hydrocortisone can be decreased when combined with Itraconazole.
+DB00741,DB00836,Hydrocortisone,The metabolism of Loperamide can be increased when combined with Hydrocortisone.
+DB00741,DB01234,Hydrocortisone,The metabolism of Hydrocortisone can be increased when combined with Dexamethasone.
+DB00741,DB11672,Hydrocortisone,The metabolism of Hydrocortisone can be decreased when combined with Curcumin.
+DB00741,DB11201,Hydrocortisone,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone is combined with Menthyl salicylate.
+DB00741,DB12095,Hydrocortisone,The serum concentration of Hydrocortisone can be decreased when it is combined with Telotristat ethyl.
+DB00741,DB11682,Hydrocortisone,The metabolism of Daprodustat can be increased when combined with Hydrocortisone.
+DB00787,DB01009,Acyclovir,The excretion of Acyclovir can be decreased when combined with Ketoprofen.
+DB00787,DB01234,Acyclovir,The excretion of Dexamethasone can be decreased when combined with Acyclovir.
+DB00787,DB06736,Acyclovir,The risk or severity of nephrotoxicity can be increased when Acyclovir is combined with Aceclofenac.
+DB00787,DB01112,Acyclovir,The risk or severity of nephrotoxicity can be increased when Acyclovir is combined with Cefuroxime.
+DB00787,DB01424,Acyclovir,The risk or severity of nephrotoxicity can be increased when Acyclovir is combined with Aminophenazone.
+DB00787,DB08976,Acyclovir,The risk or severity of nephrotoxicity can be increased when Acyclovir is combined with Floctafenine.
+DB00787,DB08981,Acyclovir,The risk or severity of nephrotoxicity can be increased when Acyclovir is combined with Fenbufen.
+DB00787,DB00871,Acyclovir,Acyclovir may decrease the excretion rate of Terbutaline which could result in a higher serum level.
+DB00787,DB01046,Acyclovir,Acyclovir may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB00787,DB01067,Acyclovir,Acyclovir may decrease the excretion rate of Glipizide which could result in a higher serum level.
+DB00787,DB01101,Acyclovir,Capecitabine may increase the nephrotoxic activities of Acyclovir.
+DB00787,DB01274,Acyclovir,Acyclovir may decrease the excretion rate of Arformoterol which could result in a higher serum level.
+DB00787,DB01428,Acyclovir,Acyclovir may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB00787,DB06228,Acyclovir,Acyclovir may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB00787,DB06782,Acyclovir,Acyclovir may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB00787,DB06813,Acyclovir,Acyclovir may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB00787,DB09091,Acyclovir,Acyclovir may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB00787,DB11102,Acyclovir,Acyclovir may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB00787,DB13946,Acyclovir,Acyclovir may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB00787,DB09401,Acyclovir,Isosorbide may increase the excretion rate of Acyclovir which could result in a lower serum level and potentially a reduction in efficacy.
+DB00787,DB01115,Acyclovir,The metabolism of Nifedipine can be decreased when combined with Acyclovir.
+DB00787,DB13952,Acyclovir,The metabolism of Acyclovir can be decreased when combined with Estradiol acetate.
+DB00787,DB01182,Acyclovir,The metabolism of Acyclovir can be decreased when combined with Propafenone.
+DB00787,DB11791,Acyclovir,The metabolism of Acyclovir can be decreased when combined with Capmatinib.
+DB00787,DB00857,Acyclovir,The metabolism of Terbinafine can be decreased when combined with Acyclovir.
+DB00787,DB00915,Acyclovir,The risk or severity of adverse effects can be increased when Acyclovir is combined with Amantadine.
+DB00787,DB00938,Acyclovir,The risk or severity of adverse effects can be increased when Acyclovir is combined with Salmeterol.
+DB00787,DB11672,Acyclovir,The metabolism of Acyclovir can be decreased when combined with Curcumin.
+DB00836,DB09063,Loperamide,Loperamide may increase the bradycardic activities of Ceritinib.
+DB00836,DB01078,Loperamide,Loperamide may increase the arrhythmogenic activities of Deslanoside.
+DB00836,DB01113,Loperamide,The risk or severity of QTc prolongation can be increased when Loperamide is combined with Papaverine.
+DB00836,DB12877,Loperamide,The risk or severity of QTc prolongation can be increased when Loperamide is combined with Oxatomide.
+DB00836,DB00871,Loperamide,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Loperamide.
+DB00836,DB00915,Loperamide,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Loperamide.
+DB00836,DB01274,Loperamide,The risk or severity of QTc prolongation can be increased when Arformoterol is combined with Loperamide.
+DB00836,DB06791,Loperamide,Loperamide may increase the bradycardic activities of Lanreotide.
+DB00836,DB08868,Loperamide,Loperamide may increase the bradycardic activities of Fingolimod.
+DB00836,DB01009,Loperamide,The risk or severity of hyperkalemia can be increased when Loperamide is combined with Ketoprofen.
+DB00836,DB06736,Loperamide,The risk or severity of hyperkalemia can be increased when Loperamide is combined with Aceclofenac.
+DB00836,DB08976,Loperamide,The risk or severity of hyperkalemia can be increased when Loperamide is combined with Floctafenine.
+DB00836,DB08981,Loperamide,The risk or severity of hyperkalemia can be increased when Loperamide is combined with Fenbufen.
+DB00836,DB00938,Loperamide,The metabolism of Loperamide can be decreased when combined with Salmeterol.
+DB00836,DB01244,Loperamide,Loperamide may increase the arrhythmogenic activities of Bepridil.
+DB00836,DB06708,Loperamide,The risk or severity of QTc prolongation can be increased when Loperamide is combined with Lumefantrine.
+DB00836,DB13074,Loperamide,The risk or severity of QTc prolongation can be increased when Loperamide is combined with Macimorelin.
+DB00836,DB01198,Loperamide,The metabolism of Zopiclone can be decreased when combined with Loperamide.
+DB00836,DB00857,Loperamide,The metabolism of Terbinafine can be decreased when combined with Loperamide.
+DB00836,DB05239,Loperamide,The serum concentration of Cobimetinib can be increased when it is combined with Loperamide.
+DB00836,DB01115,Loperamide,Loperamide may increase the arrhythmogenic activities of Nifedipine.
+DB00836,DB01167,Loperamide,The metabolism of Loperamide can be decreased when combined with Itraconazole.
+DB00836,DB01182,Loperamide,The excretion of Loperamide can be decreased when combined with Propafenone.
+DB00836,DB01393,Loperamide,The metabolism of Loperamide can be decreased when combined with Bezafibrate.
+DB00836,DB06712,Loperamide,Loperamide may increase the arrhythmogenic activities of Nilvadipine.
+DB00836,DB01424,Loperamide,The metabolism of Aminophenazone can be decreased when combined with Loperamide.
+DB00836,DB00957,Loperamide,The excretion of Loperamide can be decreased when combined with Norgestimate.
+DB00836,DB01234,Loperamide,The metabolism of Loperamide can be increased when combined with Dexamethasone.
+DB00836,DB13952,Loperamide,The metabolism of Estradiol acetate can be decreased when combined with Loperamide.
+DB00836,DB06228,Loperamide,The serum concentration of Rivaroxaban can be increased when it is combined with Loperamide.
+DB00836,DB11791,Loperamide,The excretion of Loperamide can be decreased when combined with Capmatinib.
+DB00836,DB11672,Loperamide,The metabolism of Loperamide can be decreased when combined with Curcumin.
+DB00836,DB12095,Loperamide,The serum concentration of Loperamide can be decreased when it is combined with Telotristat ethyl.
+DB00836,DB15149,Loperamide,The serum concentration of Futibatinib can be increased when it is combined with Loperamide.
+DB00836,DB17083,Loperamide,The serum concentration of Loperamide can be increased when it is combined with Linzagolix.
+DB00836,DB11682,Loperamide,The metabolism of Daprodustat can be decreased when combined with Loperamide.
+DB00836,DB16956,Loperamide,The excretion of Loperamide can be decreased when combined with L-Acetylleucine.
+DB00857,DB01115,Terbinafine,The metabolism of Nifedipine can be decreased when combined with Terbinafine.
+DB00857,DB01274,Terbinafine,The metabolism of Arformoterol can be decreased when combined with Terbinafine.
+DB00857,DB01182,Terbinafine,The metabolism of Propafenone can be decreased when combined with Terbinafine.
+DB00857,DB01244,Terbinafine,The metabolism of Bepridil can be decreased when combined with Terbinafine.
+DB00857,DB01424,Terbinafine,The metabolism of Aminophenazone can be decreased when combined with Terbinafine.
+DB00857,DB06144,Terbinafine,The metabolism of Sertindole can be decreased when combined with Terbinafine.
+DB00857,DB00938,Terbinafine,The metabolism of Terbinafine can be decreased when combined with Salmeterol.
+DB00857,DB00957,Terbinafine,The metabolism of Norgestimate can be increased when combined with Terbinafine.
+DB00857,DB01006,Terbinafine,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Terbinafine is combined with Letrozole."
+DB00857,DB01168,Terbinafine,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Terbinafine is combined with Procarbazine."
+DB00857,DB01393,Terbinafine,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Terbinafine is combined with Bezafibrate."
+DB00857,DB09063,Terbinafine,The metabolism of Ceritinib can be increased when combined with Terbinafine.
+DB00857,DB05239,Terbinafine,The metabolism of Cobimetinib can be increased when combined with Terbinafine.
+DB00857,DB11703,Terbinafine,The metabolism of Acalabrutinib can be increased when combined with Terbinafine.
+DB00857,DB09143,Terbinafine,The metabolism of Sonidegib can be increased when combined with Terbinafine.
+DB00857,DB01009,Terbinafine,The metabolism of Terbinafine can be decreased when combined with Ketoprofen.
+DB00857,DB06712,Terbinafine,The metabolism of Terbinafine can be decreased when combined with Nilvadipine.
+DB00857,DB01198,Terbinafine,The metabolism of Zopiclone can be decreased when combined with Terbinafine.
+DB00857,DB13952,Terbinafine,The metabolism of Estradiol acetate can be decreased when combined with Terbinafine.
+DB00857,DB01117,Terbinafine,The metabolism of Terbinafine can be decreased when combined with Atovaquone.
+DB00857,DB01067,Terbinafine,The metabolism of Glipizide can be decreased when combined with Terbinafine.
+DB00857,DB01101,Terbinafine,The serum concentration of Terbinafine can be increased when it is combined with Capecitabine.
+DB00857,DB11791,Terbinafine,The serum concentration of Capmatinib can be decreased when it is combined with Terbinafine.
+DB00857,DB01167,Terbinafine,The metabolism of Terbinafine can be decreased when combined with Itraconazole.
+DB00857,DB01234,Terbinafine,The metabolism of Terbinafine can be increased when combined with Dexamethasone.
+DB00857,DB11672,Terbinafine,The metabolism of Terbinafine can be decreased when combined with Curcumin.
+DB00857,DB12095,Terbinafine,The serum concentration of Terbinafine can be decreased when it is combined with Telotristat ethyl.
+DB00857,DB17083,Terbinafine,The serum concentration of Terbinafine can be increased when it is combined with Linzagolix.
+DB00857,DB11682,Terbinafine,The metabolism of Daprodustat can be decreased when combined with Terbinafine.
+DB00871,DB06016,Terbutaline,The risk or severity of hypertension can be increased when Terbutaline is combined with Cariprazine.
+DB00871,DB06701,Terbutaline,The risk or severity of hypertension can be increased when Terbutaline is combined with Dexmethylphenidate.
+DB00871,DB00940,Terbutaline,The therapeutic efficacy of Methantheline can be decreased when used in combination with Terbutaline.
+DB00871,DB08801,Terbutaline,The therapeutic efficacy of Dimetindene can be decreased when used in combination with Terbutaline.
+DB00871,DB01113,Terbutaline,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Papaverine.
+DB00871,DB06712,Terbutaline,Terbutaline may decrease the antihypertensive activities of Nilvadipine.
+DB00871,DB09063,Terbutaline,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Ceritinib.
+DB00871,DB12877,Terbutaline,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Oxatomide.
+DB00871,DB01115,Terbutaline,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Nifedipine.
+DB00871,DB01244,Terbutaline,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Bepridil.
+DB00871,DB06708,Terbutaline,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Lumefantrine.
+DB00871,DB13074,Terbutaline,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Macimorelin.
+DB00871,DB01234,Terbutaline,The therapeutic efficacy of Terbutaline can be decreased when used in combination with Dexamethasone.
+DB00871,DB09091,Terbutaline,The therapeutic efficacy of Terbutaline can be decreased when used in combination with Tixocortol.
+DB00871,DB14539,Terbutaline,The therapeutic efficacy of Terbutaline can be decreased when used in combination with Hydrocortisone acetate.
+DB00871,DB01168,Terbutaline,The risk or severity of adverse effects can be increased when Procarbazine is combined with Terbutaline.
+DB00871,DB00938,Terbutaline,The risk or severity of adverse effects can be increased when Terbutaline is combined with Salmeterol.
+DB00871,DB01274,Terbutaline,The risk or severity of adverse effects can be increased when Terbutaline is combined with Arformoterol.
+DB00871,DB01182,Terbutaline,The therapeutic efficacy of Terbutaline can be decreased when used in combination with Propafenone.
+DB00871,DB00915,Terbutaline,The therapeutic efficacy of Amantadine can be decreased when used in combination with Terbutaline.
+DB00871,DB01167,Terbutaline,The risk or severity of QTc prolongation can be increased when Terbutaline is combined with Itraconazole.
+DB00871,DB01009,Terbutaline,The risk or severity of hypertension can be increased when Terbutaline is combined with Ketoprofen.
+DB00871,DB01112,Terbutaline,Cefuroxime may decrease the excretion rate of Terbutaline which could result in a higher serum level.
+DB00871,DB01424,Terbutaline,The risk or severity of hypertension can be increased when Terbutaline is combined with Aminophenazone.
+DB00871,DB06736,Terbutaline,The risk or severity of hypertension can be increased when Terbutaline is combined with Aceclofenac.
+DB00871,DB08976,Terbutaline,The risk or severity of hypertension can be increased when Terbutaline is combined with Floctafenine.
+DB00871,DB08981,Terbutaline,The risk or severity of hypertension can be increased when Terbutaline is combined with Fenbufen.
+DB00871,DB01046,Terbutaline,Terbutaline may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB00871,DB01067,Terbutaline,Terbutaline may decrease the excretion rate of Glipizide which could result in a higher serum level.
+DB00871,DB01101,Terbutaline,Terbutaline may decrease the excretion rate of Capecitabine which could result in a higher serum level.
+DB00871,DB01428,Terbutaline,Terbutaline may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB00871,DB06228,Terbutaline,Terbutaline may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB00871,DB06782,Terbutaline,Terbutaline may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB00871,DB06813,Terbutaline,Terbutaline may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB00871,DB11102,Terbutaline,Terbutaline may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB00871,DB13952,Terbutaline,Terbutaline may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB00871,DB09401,Terbutaline,Isosorbide may increase the excretion rate of Terbutaline which could result in a lower serum level and potentially a reduction in efficacy.
+DB00871,DB13946,Terbutaline,Testosterone undecanoate may increase the hypertensive activities of Terbutaline.
+DB00915,DB06701,Amantadine,The risk or severity of adverse effects can be increased when Dexmethylphenidate is combined with Amantadine.
+DB00915,DB11609,Amantadine,The risk or severity of adverse effects can be increased when Amantadine is combined with Normethadone.
+DB00915,DB00940,Amantadine,The risk or severity of adverse effects can be increased when Amantadine is combined with Methantheline.
+DB00915,DB08801,Amantadine,The risk or severity of adverse effects can be increased when Amantadine is combined with Dimetindene.
+DB00915,DB06016,Amantadine,The therapeutic efficacy of Amantadine can be decreased when used in combination with Cariprazine.
+DB00915,DB06144,Amantadine,The therapeutic efficacy of Amantadine can be decreased when used in combination with Sertindole.
+DB00915,DB01113,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Papaverine.
+DB00915,DB01115,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Nifedipine.
+DB00915,DB01182,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Propafenone.
+DB00915,DB06712,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Nilvadipine.
+DB00915,DB09063,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Ceritinib.
+DB00915,DB12877,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Oxatomide.
+DB00915,DB01244,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Bepridil.
+DB00915,DB06708,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Lumefantrine.
+DB00915,DB13074,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Macimorelin.
+DB00915,DB00938,Amantadine,The serum concentration of Amantadine can be increased when it is combined with Salmeterol.
+DB00915,DB13952,Amantadine,The serum concentration of Amantadine can be increased when it is combined with Estradiol acetate.
+DB00915,DB01167,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Itraconazole.
+DB00915,DB01274,Amantadine,The risk or severity of QTc prolongation can be increased when Amantadine is combined with Arformoterol.
+DB00915,DB01009,Amantadine,Ketoprofen may decrease the excretion rate of Amantadine which could result in a higher serum level.
+DB00915,DB01112,Amantadine,Cefuroxime may decrease the excretion rate of Amantadine which could result in a higher serum level.
+DB00915,DB01424,Amantadine,Aminophenazone may decrease the excretion rate of Amantadine which could result in a higher serum level.
+DB00915,DB06736,Amantadine,Aceclofenac may decrease the excretion rate of Amantadine which could result in a higher serum level.
+DB00915,DB08976,Amantadine,Floctafenine may decrease the excretion rate of Amantadine which could result in a higher serum level.
+DB00915,DB08981,Amantadine,Fenbufen may decrease the excretion rate of Amantadine which could result in a higher serum level.
+DB00915,DB01046,Amantadine,Amantadine may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB00915,DB01067,Amantadine,Amantadine may decrease the excretion rate of Glipizide which could result in a higher serum level.
+DB00915,DB01101,Amantadine,Amantadine may decrease the excretion rate of Capecitabine which could result in a higher serum level.
+DB00915,DB01428,Amantadine,Amantadine may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB00915,DB06228,Amantadine,Amantadine may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB00915,DB06782,Amantadine,Amantadine may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB00915,DB06813,Amantadine,Amantadine may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB00915,DB09091,Amantadine,Amantadine may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB00915,DB11102,Amantadine,Amantadine may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB00915,DB13946,Amantadine,Amantadine may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB00915,DB09401,Amantadine,Isosorbide may increase the excretion rate of Amantadine which could result in a lower serum level and potentially a reduction in efficacy.
+DB00915,DB14627,Amantadine,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Amantadine.
+DB00915,DB01168,Amantadine,The risk or severity of serotonin syndrome can be increased when Amantadine is combined with Procarbazine.
+DB00938,DB01009,Salmeterol,The risk or severity of hypertension can be increased when Salmeterol is combined with Ketoprofen.
+DB00938,DB06701,Salmeterol,The risk or severity of hypertension can be increased when Salmeterol is combined with Dexmethylphenidate.
+DB00938,DB06736,Salmeterol,The risk or severity of hypertension can be increased when Salmeterol is combined with Aceclofenac.
+DB00938,DB08976,Salmeterol,The risk or severity of hypertension can be increased when Salmeterol is combined with Floctafenine.
+DB00938,DB08981,Salmeterol,The risk or severity of hypertension can be increased when Salmeterol is combined with Fenbufen.
+DB00938,DB06016,Salmeterol,The risk or severity of hypertension can be increased when Salmeterol is combined with Cariprazine.
+DB00938,DB09091,Salmeterol,The risk or severity of hypokalemia can be increased when Tixocortol is combined with Salmeterol.
+DB00938,DB14539,Salmeterol,The risk or severity of hypokalemia can be increased when Hydrocortisone acetate is combined with Salmeterol.
+DB00938,DB01113,Salmeterol,The risk or severity of QTc prolongation can be increased when Salmeterol is combined with Papaverine.
+DB00938,DB12877,Salmeterol,The risk or severity of QTc prolongation can be increased when Salmeterol is combined with Oxatomide.
+DB00938,DB01115,Salmeterol,The risk or severity of QTc prolongation can be increased when Salmeterol is combined with Nifedipine.
+DB00938,DB06712,Salmeterol,The metabolism of Salmeterol can be decreased when combined with Nilvadipine.
+DB00938,DB09063,Salmeterol,The risk or severity of QTc prolongation can be increased when Salmeterol is combined with Ceritinib.
+DB00938,DB01244,Salmeterol,The risk or severity of QTc prolongation can be increased when Salmeterol is combined with Bepridil.
+DB00938,DB06708,Salmeterol,The risk or severity of QTc prolongation can be increased when Salmeterol is combined with Lumefantrine.
+DB00938,DB13074,Salmeterol,The risk or severity of QTc prolongation can be increased when Salmeterol is combined with Macimorelin.
+DB00938,DB01198,Salmeterol,The metabolism of Zopiclone can be decreased when combined with Salmeterol.
+DB00938,DB01424,Salmeterol,The metabolism of Aminophenazone can be decreased when combined with Salmeterol.
+DB00938,DB13952,Salmeterol,The metabolism of Estradiol acetate can be decreased when combined with Salmeterol.
+DB00938,DB01274,Salmeterol,The risk or severity of adverse effects can be increased when Salmeterol is combined with Arformoterol.
+DB00938,DB01182,Salmeterol,The therapeutic efficacy of Salmeterol can be decreased when used in combination with Propafenone.
+DB00938,DB01006,Salmeterol,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Salmeterol is combined with Letrozole."
+DB00938,DB01168,Salmeterol,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Salmeterol is combined with Procarbazine."
+DB00938,DB01393,Salmeterol,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Salmeterol is combined with Bezafibrate."
+DB00938,DB11703,Salmeterol,The metabolism of Salmeterol can be decreased when combined with Acalabrutinib.
+DB00938,DB06228,Salmeterol,The metabolism of Rivaroxaban can be decreased when combined with Salmeterol.
+DB00938,DB00940,Salmeterol,The risk or severity of Tachycardia can be increased when Salmeterol is combined with Methantheline.
+DB00938,DB08801,Salmeterol,The risk or severity of Tachycardia can be increased when Salmeterol is combined with Dimetindene.
+DB00938,DB13946,Salmeterol,Testosterone undecanoate may increase the hypertensive activities of Salmeterol.
+DB00938,DB01167,Salmeterol,The metabolism of Salmeterol can be decreased when combined with Itraconazole.
+DB00938,DB01234,Salmeterol,The metabolism of Salmeterol can be increased when combined with Dexamethasone.
+DB00938,DB11672,Salmeterol,The metabolism of Salmeterol can be decreased when combined with Curcumin.
+DB00938,DB12095,Salmeterol,The serum concentration of Salmeterol can be decreased when it is combined with Telotristat ethyl.
+DB00938,DB11682,Salmeterol,The metabolism of Daprodustat can be decreased when combined with Salmeterol.
+DB00940,DB01112,Methantheline,Methantheline can cause a decrease in the absorption of Cefuroxime resulting in a reduced serum concentration and potentially a decrease in efficacy.
+DB00940,DB06701,Methantheline,The therapeutic efficacy of Dexmethylphenidate can be decreased when used in combination with Methantheline.
+DB00940,DB01167,Methantheline,Methantheline can cause a decrease in the absorption of Itraconazole resulting in a reduced serum concentration and potentially a decrease in efficacy.
+DB00940,DB11609,Methantheline,The risk or severity of adverse effects can be increased when Methantheline is combined with Normethadone.
+DB00940,DB08801,Methantheline,The risk or severity of adverse effects can be increased when Methantheline is combined with Dimetindene.
+DB00940,DB01046,Methantheline,The therapeutic efficacy of Lubiprostone can be decreased when used in combination with Methantheline.
+DB00940,DB14627,Methantheline,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Methantheline.
+DB00940,DB01274,Methantheline,The risk or severity of Tachycardia can be increased when Methantheline is combined with Arformoterol.
+DB00940,DB13074,Methantheline,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Methantheline.
+DB00947,DB09009,Fulvestrant,The risk or severity of methemoglobinemia can be increased when Fulvestrant is combined with Articaine.
+DB00957,DB01220,Norgestimate,The serum concentration of Rifaximin can be increased when it is combined with Norgestimate.
+DB00957,DB09091,Norgestimate,The serum concentration of Tixocortol can be increased when it is combined with Norgestimate.
+DB00957,DB14539,Norgestimate,The serum concentration of Hydrocortisone acetate can be increased when it is combined with Norgestimate.
+DB00957,DB01234,Norgestimate,The serum concentration of Dexamethasone can be increased when it is combined with Norgestimate.
+DB00957,DB09319,Norgestimate,The therapeutic efficacy of Norgestimate can be decreased when used in combination with Carindacillin.
+DB00957,DB12329,Norgestimate,The serum concentration of Norgestimate can be decreased when it is combined with Eravacycline.
+DB00957,DB05239,Norgestimate,The serum concentration of Cobimetinib can be increased when it is combined with Norgestimate.
+DB00957,DB09063,Norgestimate,The serum concentration of Ceritinib can be increased when it is combined with Norgestimate.
+DB00957,DB13952,Norgestimate,The metabolism of Norgestimate can be increased when combined with Estradiol acetate.
+DB00957,DB11703,Norgestimate,The metabolism of Acalabrutinib can be increased when combined with Norgestimate.
+DB00957,DB09143,Norgestimate,The metabolism of Sonidegib can be increased when combined with Norgestimate.
+DB00957,DB01117,Norgestimate,The metabolism of Norgestimate can be decreased when combined with Atovaquone.
+DB00957,DB01198,Norgestimate,The metabolism of Zopiclone can be decreased when combined with Norgestimate.
+DB00957,DB01274,Norgestimate,The metabolism of Arformoterol can be decreased when combined with Norgestimate.
+DB00957,DB01424,Norgestimate,The metabolism of Aminophenazone can be decreased when combined with Norgestimate.
+DB00957,DB01101,Norgestimate,The serum concentration of Norgestimate can be increased when it is combined with Capecitabine.
+DB00957,DB01067,Norgestimate,The therapeutic efficacy of Glipizide can be decreased when used in combination with Norgestimate.
+DB00957,DB11791,Norgestimate,The serum concentration of Capmatinib can be decreased when it is combined with Norgestimate.
+DB00957,DB06228,Norgestimate,The risk or severity of adverse effects can be increased when Norgestimate is combined with Rivaroxaban.
+DB00957,DB06712,Norgestimate,The metabolism of Norgestimate can be decreased when combined with Nilvadipine.
+DB00957,DB01167,Norgestimate,The metabolism of Norgestimate can be decreased when combined with Itraconazole.
+DB00957,DB11672,Norgestimate,The metabolism of Norgestimate can be decreased when combined with Curcumin.
+DB00957,DB12095,Norgestimate,The serum concentration of Norgestimate can be decreased when it is combined with Telotristat ethyl.
+DB00957,DB15149,Norgestimate,The serum concentration of Futibatinib can be increased when it is combined with Norgestimate.
+DB01006,DB01115,Letrozole,The metabolism of Nifedipine can be decreased when combined with Letrozole.
+DB01006,DB01274,Letrozole,The metabolism of Arformoterol can be decreased when combined with Letrozole.
+DB01006,DB01168,Letrozole,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Letrozole is combined with Procarbazine."
+DB01006,DB01393,Letrozole,"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when Letrozole is combined with Bezafibrate."
+DB01006,DB06712,Letrozole,The metabolism of Letrozole can be decreased when combined with Nilvadipine.
+DB01006,DB01167,Letrozole,The metabolism of Letrozole can be decreased when combined with Itraconazole.
+DB01006,DB01234,Letrozole,The metabolism of Letrozole can be increased when combined with Dexamethasone.
+DB01006,DB11672,Letrozole,The metabolism of Letrozole can be decreased when combined with Curcumin.
+DB01006,DB12095,Letrozole,The serum concentration of Letrozole can be decreased when it is combined with Telotristat ethyl.
+DB01006,DB09009,Letrozole,The risk or severity of methemoglobinemia can be increased when Letrozole is combined with Articaine.
+DB01009,DB06016,Ketoprofen,The risk or severity of hypertension can be increased when Ketoprofen is combined with Cariprazine.
+DB01009,DB06701,Ketoprofen,The risk or severity of hypertension can be increased when Ketoprofen is combined with Dexmethylphenidate.
+DB01009,DB06813,Ketoprofen,Ketoprofen may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB01009,DB06228,Ketoprofen,The risk or severity of bleeding and hemorrhage can be increased when Ketoprofen is combined with Rivaroxaban.
+DB01009,DB01182,Ketoprofen,Ketoprofen may decrease the antihypertensive activities of Propafenone.
+DB01009,DB06150,Ketoprofen,The risk or severity of adverse effects can be increased when Ketoprofen is combined with Sulfadimethoxine.
+DB01009,DB01112,Ketoprofen,The risk or severity of nephrotoxicity can be increased when Ketoprofen is combined with Cefuroxime.
+DB01009,DB01234,Ketoprofen,The risk or severity of gastrointestinal irritation can be increased when Dexamethasone is combined with Ketoprofen.
+DB01009,DB14539,Ketoprofen,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone acetate is combined with Ketoprofen.
+DB01009,DB09091,Ketoprofen,The risk or severity of gastrointestinal irritation can be increased when Tixocortol is combined with Ketoprofen.
+DB01009,DB01167,Ketoprofen,The risk or severity of hyperkalemia can be increased when Ketoprofen is combined with Itraconazole.
+DB01009,DB01244,Ketoprofen,The therapeutic efficacy of Bepridil can be decreased when used in combination with Ketoprofen.
+DB01009,DB06712,Ketoprofen,The therapeutic efficacy of Nilvadipine can be decreased when used in combination with Ketoprofen.
+DB01009,DB01067,Ketoprofen,The protein binding of Glipizide can be decreased when combined with Ketoprofen.
+DB01009,DB06736,Ketoprofen,The risk or severity of adverse effects can be increased when Ketoprofen is combined with Aceclofenac.
+DB01009,DB08976,Ketoprofen,The risk or severity of adverse effects can be increased when Ketoprofen is combined with Floctafenine.
+DB01009,DB08981,Ketoprofen,The risk or severity of adverse effects can be increased when Ketoprofen is combined with Fenbufen.
+DB01009,DB01424,Ketoprofen,The risk or severity of adverse effects can be increased when Ketoprofen is combined with Aminophenazone.
+DB01009,DB01046,Ketoprofen,Ketoprofen may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB01009,DB01274,Ketoprofen,The risk or severity of hypertension can be increased when Ketoprofen is combined with Arformoterol.
+DB01009,DB01428,Ketoprofen,Ketoprofen may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01009,DB06782,Ketoprofen,Ketoprofen may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB01009,DB11102,Ketoprofen,Ketoprofen may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB01009,DB13952,Ketoprofen,Ketoprofen may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB01009,DB01115,Ketoprofen,The risk or severity of hyperkalemia can be increased when Ketoprofen is combined with Nifedipine.
+DB01009,DB01101,Ketoprofen,Capecitabine may increase the nephrotoxic activities of Ketoprofen.
+DB01009,DB09401,Ketoprofen,Isosorbide may increase the excretion rate of Ketoprofen which could result in a lower serum level and potentially a reduction in efficacy.
+DB01009,DB01198,Ketoprofen,The metabolism of Zopiclone can be decreased when combined with Ketoprofen.
+DB01009,DB13074,Ketoprofen,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Ketoprofen.
+DB01009,DB13946,Ketoprofen,Testosterone undecanoate may increase the hypertensive activities of Ketoprofen.
+DB01009,DB11201,Ketoprofen,The risk or severity of adverse effects can be increased when Ketoprofen is combined with Menthyl salicylate.
+DB01009,DB11682,Ketoprofen,The metabolism of Daprodustat can be decreased when combined with Ketoprofen.
+DB01046,DB08801,Lubiprostone,The therapeutic efficacy of Lubiprostone can be decreased when used in combination with Dimetindene.
+DB01046,DB09401,Lubiprostone,The risk or severity of dehydration can be increased when Isosorbide is combined with Lubiprostone.
+DB01046,DB01244,Lubiprostone,The therapeutic efficacy of Lubiprostone can be decreased when used in combination with Bepridil.
+DB01046,DB06712,Lubiprostone,The therapeutic efficacy of Lubiprostone can be decreased when used in combination with Nilvadipine.
+DB01046,DB11609,Lubiprostone,The therapeutic efficacy of Lubiprostone can be decreased when used in combination with Normethadone.
+DB01046,DB01112,Lubiprostone,Cefuroxime may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB01046,DB01424,Lubiprostone,Aminophenazone may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB01046,DB06736,Lubiprostone,Aceclofenac may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB01046,DB08976,Lubiprostone,Floctafenine may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB01046,DB08981,Lubiprostone,Fenbufen may decrease the excretion rate of Lubiprostone which could result in a higher serum level.
+DB01046,DB01067,Lubiprostone,Lubiprostone may decrease the excretion rate of Glipizide which could result in a higher serum level.
+DB01046,DB01101,Lubiprostone,Lubiprostone may decrease the excretion rate of Capecitabine which could result in a higher serum level.
+DB01046,DB01115,Lubiprostone,The therapeutic efficacy of Lubiprostone can be decreased when used in combination with Nifedipine.
+DB01046,DB01274,Lubiprostone,Lubiprostone may decrease the excretion rate of Arformoterol which could result in a higher serum level.
+DB01046,DB01428,Lubiprostone,Lubiprostone may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01046,DB06228,Lubiprostone,Lubiprostone may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB01046,DB06782,Lubiprostone,Lubiprostone may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB01046,DB06813,Lubiprostone,Lubiprostone may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB01046,DB09091,Lubiprostone,Lubiprostone may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB01046,DB11102,Lubiprostone,Lubiprostone may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB01046,DB13946,Lubiprostone,Lubiprostone may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB01046,DB13952,Lubiprostone,Lubiprostone may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB01046,DB14627,Lubiprostone,The risk or severity of adverse effects can be increased when Lubiprostone is combined with Oxyphenisatin acetate.
+DB01067,DB01115,Glipizide,Glipizide may decrease the excretion rate of Nifedipine which could result in a higher serum level.
+DB01067,DB01393,Glipizide,The risk or severity of hypoglycemia can be increased when Bezafibrate is combined with Glipizide.
+DB01067,DB06791,Glipizide,The therapeutic efficacy of Glipizide can be decreased when used in combination with Lanreotide.
+DB01067,DB09009,Glipizide,The therapeutic efficacy of Glipizide can be decreased when used in combination with Articaine.
+DB01067,DB01168,Glipizide,Procarbazine may increase the hypoglycemic activities of Glipizide.
+DB01067,DB01424,Glipizide,The protein binding of Glipizide can be decreased when combined with Aminophenazone.
+DB01067,DB06736,Glipizide,The protein binding of Glipizide can be decreased when combined with Aceclofenac.
+DB01067,DB08976,Glipizide,The protein binding of Glipizide can be decreased when combined with Floctafenine.
+DB01067,DB08981,Glipizide,The protein binding of Glipizide can be decreased when combined with Fenbufen.
+DB01067,DB06150,Glipizide,The therapeutic efficacy of Glipizide can be increased when used in combination with Sulfadimethoxine.
+DB01067,DB01112,Glipizide,Cefuroxime may decrease the excretion rate of Glipizide which could result in a higher serum level.
+DB01067,DB01274,Glipizide,Glipizide may decrease the excretion rate of Arformoterol which could result in a higher serum level.
+DB01067,DB01428,Glipizide,Glipizide may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01067,DB06782,Glipizide,Glipizide may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB01067,DB06813,Glipizide,Glipizide may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB01067,DB11102,Glipizide,Glipizide may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB01067,DB13946,Glipizide,Testosterone undecanoate may increase the hypoglycemic activities of Glipizide.
+DB01067,DB06228,Glipizide,Glipizide may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB01067,DB09401,Glipizide,Isosorbide may increase the excretion rate of Glipizide which could result in a lower serum level and potentially a reduction in efficacy.
+DB01067,DB01117,Glipizide,The metabolism of Glipizide can be decreased when combined with Atovaquone.
+DB01067,DB09063,Glipizide,The therapeutic efficacy of Glipizide can be decreased when used in combination with Ceritinib.
+DB01067,DB01198,Glipizide,The metabolism of Zopiclone can be decreased when combined with Glipizide.
+DB01067,DB01101,Glipizide,The serum concentration of Glipizide can be increased when it is combined with Capecitabine.
+DB01067,DB01244,Glipizide,The risk or severity of hypoglycemia can be increased when Bepridil is combined with Glipizide.
+DB01067,DB06712,Glipizide,The risk or severity of hypoglycemia can be increased when Nilvadipine is combined with Glipizide.
+DB01067,DB01182,Glipizide,The therapeutic efficacy of Glipizide can be increased when used in combination with Propafenone.
+DB01067,DB13213,Glipizide,The therapeutic efficacy of Glipizide can be decreased when used in combination with Butaperazine.
+DB01067,DB13952,Glipizide,The therapeutic efficacy of Glipizide can be decreased when used in combination with Estradiol acetate.
+DB01067,DB09091,Glipizide,The risk or severity of hyperglycemia can be increased when Tixocortol is combined with Glipizide.
+DB01067,DB01234,Glipizide,The risk or severity of hyperglycemia can be increased when Dexamethasone is combined with Glipizide.
+DB01067,DB14539,Glipizide,The risk or severity of hyperglycemia can be increased when Hydrocortisone acetate is combined with Glipizide.
+DB01067,DB11201,Glipizide,The protein binding of Glipizide can be decreased when combined with Menthyl salicylate.
+DB01078,DB01167,Deslanoside,The serum concentration of Deslanoside can be increased when it is combined with Itraconazole.
+DB01078,DB01182,Deslanoside,The serum concentration of Deslanoside can be increased when it is combined with Propafenone.
+DB01078,DB01115,Deslanoside,Deslanoside may increase the arrhythmogenic activities of Nifedipine.
+DB01078,DB01244,Deslanoside,Deslanoside may increase the arrhythmogenic activities of Bepridil.
+DB01078,DB06712,Deslanoside,Deslanoside may increase the arrhythmogenic activities of Nilvadipine.
+DB01078,DB01101,Deslanoside,Deslanoside may decrease the cardiotoxic activities of Capecitabine.
+DB01078,DB01234,Deslanoside,The risk or severity of adverse effects can be increased when Dexamethasone is combined with Deslanoside.
+DB01078,DB09091,Deslanoside,The risk or severity of adverse effects can be increased when Tixocortol is combined with Deslanoside.
+DB01078,DB14539,Deslanoside,The risk or severity of adverse effects can be increased when Hydrocortisone acetate is combined with Deslanoside.
+DB01101,DB01168,Capecitabine,The risk or severity of adverse effects can be increased when Capecitabine is combined with Procarbazine.
+DB01101,DB01234,Capecitabine,The risk or severity of adverse effects can be increased when Capecitabine is combined with Dexamethasone.
+DB01101,DB06813,Capecitabine,The risk or severity of adverse effects can be increased when Capecitabine is combined with Pralatrexate.
+DB01101,DB09091,Capecitabine,The risk or severity of adverse effects can be increased when Capecitabine is combined with Tixocortol.
+DB01101,DB14539,Capecitabine,The risk or severity of adverse effects can be increased when Capecitabine is combined with Hydrocortisone acetate.
+DB01101,DB08868,Capecitabine,Capecitabine may increase the immunosuppressive activities of Fingolimod.
+DB01101,DB01112,Capecitabine,Capecitabine may increase the nephrotoxic activities of Cefuroxime.
+DB01101,DB08976,Capecitabine,Capecitabine may increase the nephrotoxic activities of Floctafenine.
+DB01101,DB08981,Capecitabine,Capecitabine may increase the nephrotoxic activities of Fenbufen.
+DB01101,DB06736,Capecitabine,Capecitabine may increase the nephrotoxic activities of Aceclofenac.
+DB01101,DB01428,Capecitabine,Capecitabine may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01101,DB06228,Capecitabine,Capecitabine may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB01101,DB06782,Capecitabine,Capecitabine may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB01101,DB11102,Capecitabine,Capecitabine may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB01101,DB09401,Capecitabine,Isosorbide may increase the excretion rate of Capecitabine which could result in a lower serum level and potentially a reduction in efficacy.
+DB01101,DB01198,Capecitabine,The serum concentration of Zopiclone can be increased when it is combined with Capecitabine.
+DB01101,DB01274,Capecitabine,The serum concentration of Arformoterol can be increased when it is combined with Capecitabine.
+DB01101,DB01424,Capecitabine,The serum concentration of Aminophenazone can be increased when it is combined with Capecitabine.
+DB01101,DB13946,Capecitabine,Capecitabine may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB01101,DB13952,Capecitabine,The serum concentration of Estradiol acetate can be increased when it is combined with Capecitabine.
+DB01101,DB01117,Capecitabine,The metabolism of Capecitabine can be decreased when combined with Atovaquone.
+DB01101,DB09063,Capecitabine,The metabolism of Capecitabine can be decreased when combined with Ceritinib.
+DB01101,DB01115,Capecitabine,Capecitabine may decrease the excretion rate of Nifedipine which could result in a higher serum level.
+DB01101,DB09009,Capecitabine,The risk or severity of methemoglobinemia can be increased when Capecitabine is combined with Articaine.
+DB01112,DB01424,Cefuroxime,The risk or severity of nephrotoxicity can be increased when Cefuroxime is combined with Aminophenazone.
+DB01112,DB08976,Cefuroxime,The risk or severity of nephrotoxicity can be increased when Cefuroxime is combined with Floctafenine.
+DB01112,DB08981,Cefuroxime,The risk or severity of nephrotoxicity can be increased when Cefuroxime is combined with Fenbufen.
+DB01112,DB06736,Cefuroxime,The risk or severity of nephrotoxicity can be increased when Cefuroxime is combined with Aceclofenac.
+DB01112,DB01115,Cefuroxime,Cefuroxime may decrease the excretion rate of Nifedipine which could result in a higher serum level.
+DB01112,DB01274,Cefuroxime,Cefuroxime may decrease the excretion rate of Arformoterol which could result in a higher serum level.
+DB01112,DB01428,Cefuroxime,Cefuroxime may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01112,DB06228,Cefuroxime,Cefuroxime may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB01112,DB06782,Cefuroxime,Cefuroxime may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB01112,DB06813,Cefuroxime,Cefuroxime may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB01112,DB09091,Cefuroxime,Cefuroxime may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB01112,DB11102,Cefuroxime,Cefuroxime may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB01112,DB13946,Cefuroxime,Cefuroxime may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB01112,DB13952,Cefuroxime,Cefuroxime may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB01112,DB09009,Cefuroxime,The risk or severity of methemoglobinemia can be increased when Cefuroxime is combined with Articaine.
+DB01113,DB01168,Papaverine,Procarbazine may increase the orthostatic hypotensive activities of Papaverine.
+DB01113,DB01244,Papaverine,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Bepridil.
+DB01113,DB06708,Papaverine,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Lumefantrine.
+DB01113,DB13074,Papaverine,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Macimorelin.
+DB01113,DB01115,Papaverine,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Nifedipine.
+DB01113,DB01182,Papaverine,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Propafenone.
+DB01113,DB06712,Papaverine,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Nilvadipine.
+DB01113,DB09063,Papaverine,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Ceritinib.
+DB01113,DB12877,Papaverine,The risk or severity of QTc prolongation can be increased when Papaverine is combined with Oxatomide.
+DB01113,DB01167,Papaverine,The risk or severity of QTc prolongation can be increased when Itraconazole is combined with Papaverine.
+DB01113,DB01274,Papaverine,The risk or severity of QTc prolongation can be increased when Arformoterol is combined with Papaverine.
+DB01115,DB09063,Nifedipine,Nifedipine may increase the bradycardic activities of Ceritinib.
+DB01115,DB01182,Nifedipine,The risk or severity of congestive heart failure and hypotension can be increased when Nifedipine is combined with Propafenone.
+DB01115,DB01244,Nifedipine,Nifedipine may increase the arrhythmogenic activities of Bepridil.
+DB01115,DB06712,Nifedipine,Nifedipine may increase the arrhythmogenic activities of Nilvadipine.
+DB01115,DB01168,Nifedipine,Procarbazine may increase the orthostatic hypotensive activities of Nifedipine.
+DB01115,DB13074,Nifedipine,The risk or severity of QTc prolongation can be increased when Nifedipine is combined with Macimorelin.
+DB01115,DB12877,Nifedipine,The risk or severity of QTc prolongation can be increased when Nifedipine is combined with Oxatomide.
+DB01115,DB06791,Nifedipine,Nifedipine may increase the bradycardic activities of Lanreotide.
+DB01115,DB06708,Nifedipine,The metabolism of Nifedipine can be decreased when combined with Lumefantrine.
+DB01115,DB14627,Nifedipine,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Nifedipine.
+DB01115,DB06736,Nifedipine,The risk or severity of hyperkalemia can be increased when Nifedipine is combined with Aceclofenac.
+DB01115,DB08976,Nifedipine,The risk or severity of hyperkalemia can be increased when Nifedipine is combined with Floctafenine.
+DB01115,DB08981,Nifedipine,The risk or severity of hyperkalemia can be increased when Nifedipine is combined with Fenbufen.
+DB01115,DB01428,Nifedipine,Nifedipine may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01115,DB06782,Nifedipine,Nifedipine may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB01115,DB06813,Nifedipine,Nifedipine may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB01115,DB11102,Nifedipine,Nifedipine may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB01115,DB09091,Nifedipine,Nifedipine may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB01115,DB11703,Nifedipine,The metabolism of Nifedipine can be decreased when combined with Acalabrutinib.
+DB01115,DB14539,Nifedipine,The metabolism of Hydrocortisone acetate can be decreased when combined with Nifedipine.
+DB01115,DB06228,Nifedipine,Nifedipine may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB01115,DB01424,Nifedipine,The metabolism of Aminophenazone can be decreased when combined with Nifedipine.
+DB01115,DB13946,Nifedipine,Nifedipine may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB01115,DB13952,Nifedipine,The metabolism of Nifedipine can be decreased when combined with Estradiol acetate.
+DB01115,DB08868,Nifedipine,Nifedipine may increase the bradycardic activities of Fingolimod.
+DB01115,DB06144,Nifedipine,The metabolism of Sertindole can be decreased when combined with Nifedipine.
+DB01115,DB01274,Nifedipine,The metabolism of Arformoterol can be decreased when combined with Nifedipine.
+DB01115,DB09401,Nifedipine,Nifedipine may increase the vasodilatory activities of Isosorbide.
+DB01115,DB11791,Nifedipine,The serum concentration of Capmatinib can be decreased when it is combined with Nifedipine.
+DB01115,DB01167,Nifedipine,The metabolism of Nifedipine can be decreased when combined with Itraconazole.
+DB01115,DB01234,Nifedipine,The metabolism of Nifedipine can be increased when combined with Dexamethasone.
+DB01115,DB11672,Nifedipine,The metabolism of Nifedipine can be decreased when combined with Curcumin.
+DB01115,DB12095,Nifedipine,The serum concentration of Nifedipine can be decreased when it is combined with Telotristat ethyl.
+DB01117,DB06708,Atovaquone,The risk or severity of QTc prolongation can be increased when Atovaquone is combined with Lumefantrine.
+DB01117,DB13213,Atovaquone,The risk or severity of QTc prolongation can be increased when Atovaquone is combined with Butaperazine.
+DB01117,DB01198,Atovaquone,The metabolism of Zopiclone can be decreased when combined with Atovaquone.
+DB01117,DB01274,Atovaquone,The metabolism of Arformoterol can be decreased when combined with Atovaquone.
+DB01117,DB01424,Atovaquone,The metabolism of Aminophenazone can be decreased when combined with Atovaquone.
+DB01117,DB13952,Atovaquone,The metabolism of Estradiol acetate can be decreased when combined with Atovaquone.
+DB01117,DB06712,Atovaquone,The metabolism of Atovaquone can be decreased when combined with Nilvadipine.
+DB01117,DB01167,Atovaquone,The metabolism of Atovaquone can be decreased when combined with Itraconazole.
+DB01117,DB01234,Atovaquone,The metabolism of Atovaquone can be increased when combined with Dexamethasone.
+DB01117,DB11672,Atovaquone,The metabolism of Atovaquone can be decreased when combined with Curcumin.
+DB01117,DB12095,Atovaquone,The serum concentration of Atovaquone can be decreased when it is combined with Telotristat ethyl.
+DB01117,DB09009,Atovaquone,The risk or severity of methemoglobinemia can be increased when Atovaquone is combined with Articaine.
+DB01167,DB01220,Itraconazole,The serum concentration of Rifaximin can be increased when it is combined with Itraconazole.
+DB01167,DB12877,Itraconazole,The risk or severity of QTc prolongation can be increased when Itraconazole is combined with Oxatomide.
+DB01167,DB06736,Itraconazole,The risk or severity of hyperkalemia can be increased when Itraconazole is combined with Aceclofenac.
+DB01167,DB08976,Itraconazole,The risk or severity of hyperkalemia can be increased when Itraconazole is combined with Floctafenine.
+DB01167,DB08981,Itraconazole,The risk or severity of hyperkalemia can be increased when Itraconazole is combined with Fenbufen.
+DB01167,DB01274,Itraconazole,The risk or severity of QTc prolongation can be increased when Itraconazole is combined with Arformoterol.
+DB01167,DB09063,Itraconazole,The metabolism of Ceritinib can be decreased when combined with Itraconazole.
+DB01167,DB06708,Itraconazole,The metabolism of Lumefantrine can be decreased when combined with Itraconazole.
+DB01167,DB13074,Itraconazole,The metabolism of Macimorelin can be decreased when combined with Itraconazole.
+DB01167,DB13952,Itraconazole,The metabolism of Estradiol acetate can be decreased when combined with Itraconazole.
+DB01167,DB14539,Itraconazole,The metabolism of Hydrocortisone acetate can be decreased when combined with Itraconazole.
+DB01167,DB01198,Itraconazole,The metabolism of Zopiclone can be decreased when combined with Itraconazole.
+DB01167,DB05239,Itraconazole,The serum concentration of Cobimetinib can be increased when it is combined with Itraconazole.
+DB01167,DB01234,Itraconazole,The metabolism of Dexamethasone can be decreased when combined with Itraconazole.
+DB01167,DB01424,Itraconazole,The metabolism of Aminophenazone can be decreased when combined with Itraconazole.
+DB01167,DB01244,Itraconazole,The metabolism of Bepridil can be decreased when combined with Itraconazole.
+DB01167,DB01182,Itraconazole,The metabolism of Propafenone can be decreased when combined with Itraconazole.
+DB01167,DB06228,Itraconazole,The metabolism of Rivaroxaban can be decreased when combined with Itraconazole.
+DB01167,DB11703,Itraconazole,The metabolism of Acalabrutinib can be decreased when combined with Itraconazole.
+DB01167,DB09143,Itraconazole,The metabolism of Sonidegib can be decreased when combined with Itraconazole.
+DB01167,DB06712,Itraconazole,The metabolism of Nilvadipine can be decreased when combined with Itraconazole.
+DB01167,DB01393,Itraconazole,The metabolism of Bezafibrate can be decreased when combined with Itraconazole.
+DB01167,DB06016,Itraconazole,The metabolism of Cariprazine can be decreased when combined with Itraconazole.
+DB01167,DB06144,Itraconazole,The metabolism of Sertindole can be decreased when combined with Itraconazole.
+DB01167,DB09124,Itraconazole,The metabolism of Medrogestone can be decreased when combined with Itraconazole.
+DB01167,DB12329,Itraconazole,The metabolism of Eravacycline can be decreased when combined with Itraconazole.
+DB01167,DB11791,Itraconazole,The serum concentration of Capmatinib can be increased when it is combined with Itraconazole.
+DB01167,DB06813,Itraconazole,Itraconazole may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB01167,DB11672,Itraconazole,The metabolism of Itraconazole can be decreased when combined with Curcumin.
+DB01167,DB12095,Itraconazole,The serum concentration of Itraconazole can be decreased when it is combined with Telotristat ethyl.
+DB01167,DB15149,Itraconazole,The metabolism of Futibatinib can be decreased when combined with Itraconazole.
+DB01168,DB01234,Procarbazine,The risk or severity of adverse effects can be increased when Procarbazine is combined with Dexamethasone.
+DB01168,DB06813,Procarbazine,The risk or severity of adverse effects can be increased when Procarbazine is combined with Pralatrexate.
+DB01168,DB09091,Procarbazine,The risk or severity of adverse effects can be increased when Procarbazine is combined with Tixocortol.
+DB01168,DB14539,Procarbazine,The risk or severity of adverse effects can be increased when Procarbazine is combined with Hydrocortisone acetate.
+DB01168,DB01393,Procarbazine,Procarbazine may increase the hepatotoxic activities of Bezafibrate.
+DB01168,DB06701,Procarbazine,Procarbazine may increase the hypertensive activities of Dexmethylphenidate.
+DB01168,DB08868,Procarbazine,Procarbazine may increase the immunosuppressive activities of Fingolimod.
+DB01168,DB01244,Procarbazine,Procarbazine may increase the hypotensive activities of Bepridil.
+DB01168,DB06712,Procarbazine,Procarbazine may increase the hypotensive activities of Nilvadipine.
+DB01168,DB01198,Procarbazine,The risk or severity of adverse effects can be increased when Procarbazine is combined with Zopiclone.
+DB01168,DB01616,Procarbazine,The risk or severity of CNS depression can be increased when Procarbazine is combined with Alverine.
+DB01168,DB06144,Procarbazine,The risk or severity of adverse effects can be increased when Procarbazine is combined with Sertindole.
+DB01168,DB06797,Procarbazine,The risk or severity of CNS depression can be increased when Procarbazine is combined with Mebutamate.
+DB01168,DB09009,Procarbazine,The risk or severity of methemoglobinemia can be increased when Procarbazine is combined with Articaine.
+DB01168,DB06016,Procarbazine,The metabolism of Cariprazine can be decreased when combined with Procarbazine.
+DB01168,DB01274,Procarbazine,The risk or severity of adverse effects can be increased when Procarbazine is combined with Arformoterol.
+DB01168,DB11609,Procarbazine,The risk or severity of adverse effects can be increased when Normethadone is combined with Procarbazine.
+DB01168,DB06228,Procarbazine,The risk or severity of bleeding and hemorrhage can be increased when Procarbazine is combined with Rivaroxaban.
+DB01168,DB13213,Procarbazine,The risk or severity of extrapyramidal symptoms can be increased when Procarbazine is combined with Butaperazine.
+DB01182,DB09063,Propafenone,Propafenone may increase the bradycardic activities of Ceritinib.
+DB01182,DB08868,Propafenone,Propafenone may increase the bradycardic activities of Fingolimod.
+DB01182,DB08976,Propafenone,The risk or severity of adverse effects can be increased when Propafenone is combined with Floctafenine.
+DB01182,DB01220,Propafenone,The serum concentration of Rifaximin can be increased when it is combined with Propafenone.
+DB01182,DB06701,Propafenone,The risk or severity of hypertension can be increased when Propafenone is combined with Dexmethylphenidate.
+DB01182,DB13213,Propafenone,The serum concentration of Propafenone can be increased when it is combined with Butaperazine.
+DB01182,DB01424,Propafenone,Aminophenazone may decrease the antihypertensive activities of Propafenone.
+DB01182,DB06736,Propafenone,Aceclofenac may decrease the antihypertensive activities of Propafenone.
+DB01182,DB08981,Propafenone,Fenbufen may decrease the antihypertensive activities of Propafenone.
+DB01182,DB06712,Propafenone,Propafenone may increase the arrhythmogenic activities of Nilvadipine.
+DB01182,DB01244,Propafenone,Propafenone may increase the arrhythmogenic activities of Bepridil.
+DB01182,DB13074,Propafenone,The risk or severity of QTc prolongation can be increased when Propafenone is combined with Macimorelin.
+DB01182,DB12877,Propafenone,The risk or severity of QTc prolongation can be increased when Propafenone is combined with Oxatomide.
+DB01182,DB06791,Propafenone,Propafenone may increase the bradycardic activities of Lanreotide.
+DB01182,DB06708,Propafenone,The metabolism of Propafenone can be decreased when combined with Lumefantrine.
+DB01182,DB06016,Propafenone,The risk or severity of hypertension can be increased when Propafenone is combined with Cariprazine.
+DB01182,DB06144,Propafenone,The metabolism of Sertindole can be decreased when combined with Propafenone.
+DB01182,DB06228,Propafenone,The serum concentration of Rivaroxaban can be increased when it is combined with Propafenone.
+DB01182,DB01274,Propafenone,The metabolism of Arformoterol can be decreased when combined with Propafenone.
+DB01182,DB05239,Propafenone,The serum concentration of Cobimetinib can be increased when it is combined with Propafenone.
+DB01182,DB13952,Propafenone,The metabolism of Estradiol acetate can be decreased when combined with Propafenone.
+DB01182,DB11791,Propafenone,The metabolism of Propafenone can be decreased when combined with Capmatinib.
+DB01182,DB13946,Propafenone,Testosterone undecanoate may increase the hypertensive activities of Propafenone.
+DB01182,DB01234,Propafenone,The metabolism of Propafenone can be increased when combined with Dexamethasone.
+DB01182,DB11672,Propafenone,The metabolism of Propafenone can be decreased when combined with Curcumin.
+DB01182,DB11201,Propafenone,Menthyl salicylate may decrease the antihypertensive activities of Propafenone.
+DB01182,DB12095,Propafenone,The serum concentration of Propafenone can be decreased when it is combined with Telotristat ethyl.
+DB01182,DB15149,Propafenone,The serum concentration of Futibatinib can be increased when it is combined with Propafenone.
+DB01198,DB01234,Zopiclone,The metabolism of Zopiclone can be decreased when combined with Dexamethasone.
+DB01198,DB06712,Zopiclone,The metabolism of Zopiclone can be decreased when combined with Nilvadipine.
+DB01198,DB06791,Zopiclone,The metabolism of Zopiclone can be decreased when combined with Lanreotide.
+DB01198,DB09063,Zopiclone,The metabolism of Zopiclone can be decreased when combined with Ceritinib.
+DB01198,DB11703,Zopiclone,The metabolism of Zopiclone can be decreased when combined with Acalabrutinib.
+DB01198,DB13946,Zopiclone,The metabolism of Zopiclone can be decreased when combined with Testosterone undecanoate.
+DB01198,DB01616,Zopiclone,The risk or severity of adverse effects can be increased when Alverine is combined with Zopiclone.
+DB01198,DB06016,Zopiclone,The risk or severity of adverse effects can be increased when Cariprazine is combined with Zopiclone.
+DB01198,DB06144,Zopiclone,The risk or severity of adverse effects can be increased when Sertindole is combined with Zopiclone.
+DB01198,DB06701,Zopiclone,The risk or severity of adverse effects can be increased when Dexmethylphenidate is combined with Zopiclone.
+DB01198,DB06797,Zopiclone,The risk or severity of adverse effects can be increased when Mebutamate is combined with Zopiclone.
+DB01198,DB11609,Zopiclone,The risk or severity of adverse effects can be increased when Normethadone is combined with Zopiclone.
+DB01198,DB13213,Zopiclone,The risk or severity of adverse effects can be increased when Butaperazine is combined with Zopiclone.
+DB01198,DB09009,Zopiclone,The risk or severity of adverse effects can be increased when Articaine is combined with Zopiclone.
+DB01198,DB01393,Zopiclone,The metabolism of Zopiclone can be decreased when combined with Bezafibrate.
+DB01198,DB01424,Zopiclone,The metabolism of Aminophenazone can be decreased when combined with Zopiclone.
+DB01198,DB13952,Zopiclone,The metabolism of Estradiol acetate can be decreased when combined with Zopiclone.
+DB01198,DB01274,Zopiclone,The metabolism of Arformoterol can be decreased when combined with Zopiclone.
+DB01198,DB11672,Zopiclone,The metabolism of Zopiclone can be decreased when combined with Curcumin.
+DB01198,DB12095,Zopiclone,The serum concentration of Zopiclone can be decreased when it is combined with Telotristat ethyl.
+DB01198,DB17083,Zopiclone,The serum concentration of Zopiclone can be increased when it is combined with Linzagolix.
+DB01198,DB11682,Zopiclone,The metabolism of Daprodustat can be decreased when combined with Zopiclone.
+DB01220,DB11791,Rifaximin,The serum concentration of Capmatinib can be decreased when it is combined with Rifaximin.
+DB01220,DB11672,Rifaximin,The serum concentration of Rifaximin can be increased when it is combined with Curcumin.
+DB01220,DB09009,Rifaximin,The risk or severity of methemoglobinemia can be increased when Rifaximin is combined with Articaine.
+DB01220,DB12095,Rifaximin,The serum concentration of Rifaximin can be increased when it is combined with Telotristat ethyl.
+DB01220,DB16956,Rifaximin,The serum concentration of Rifaximin can be increased when it is combined with L-Acetylleucine.
+DB01234,DB06813,Dexamethasone,The risk or severity of adverse effects can be increased when Dexamethasone is combined with Pralatrexate.
+DB01234,DB09091,Dexamethasone,The risk or severity of adverse effects can be increased when Dexamethasone is combined with Tixocortol.
+DB01234,DB14539,Dexamethasone,The risk or severity of adverse effects can be increased when Dexamethasone is combined with Hydrocortisone acetate.
+DB01234,DB09063,Dexamethasone,The risk or severity of hyperglycemia can be increased when Dexamethasone is combined with Ceritinib.
+DB01234,DB01274,Dexamethasone,The risk or severity of hypokalemia can be increased when Dexamethasone is combined with Arformoterol.
+DB01234,DB08868,Dexamethasone,Dexamethasone may increase the immunosuppressive activities of Fingolimod.
+DB01234,DB06736,Dexamethasone,The risk or severity of gastrointestinal irritation can be increased when Dexamethasone is combined with Aceclofenac.
+DB01234,DB08976,Dexamethasone,The risk or severity of gastrointestinal irritation can be increased when Dexamethasone is combined with Floctafenine.
+DB01234,DB08981,Dexamethasone,The risk or severity of gastrointestinal irritation can be increased when Dexamethasone is combined with Fenbufen.
+DB01234,DB01424,Dexamethasone,The risk or severity of gastrointestinal irritation can be increased when Dexamethasone is combined with Aminophenazone.
+DB01234,DB13946,Dexamethasone,The risk or severity of edema formation can be increased when Testosterone undecanoate is combined with Dexamethasone.
+DB01234,DB13952,Dexamethasone,The serum concentration of Dexamethasone can be increased when it is combined with Estradiol acetate.
+DB01234,DB11791,Dexamethasone,The serum concentration of Capmatinib can be decreased when it is combined with Dexamethasone.
+DB01234,DB06712,Dexamethasone,The metabolism of Nilvadipine can be increased when combined with Dexamethasone.
+DB01234,DB01393,Dexamethasone,The metabolism of Bezafibrate can be increased when combined with Dexamethasone.
+DB01234,DB06228,Dexamethasone,The metabolism of Rivaroxaban can be increased when combined with Dexamethasone.
+DB01234,DB01244,Dexamethasone,The metabolism of Bepridil can be increased when combined with Dexamethasone.
+DB01234,DB06016,Dexamethasone,The metabolism of Cariprazine can be increased when combined with Dexamethasone.
+DB01234,DB06144,Dexamethasone,The metabolism of Sertindole can be increased when combined with Dexamethasone.
+DB01234,DB06708,Dexamethasone,The metabolism of Lumefantrine can be increased when combined with Dexamethasone.
+DB01234,DB09124,Dexamethasone,The metabolism of Medrogestone can be increased when combined with Dexamethasone.
+DB01234,DB12329,Dexamethasone,The metabolism of Eravacycline can be increased when combined with Dexamethasone.
+DB01234,DB13074,Dexamethasone,The metabolism of Macimorelin can be increased when combined with Dexamethasone.
+DB01234,DB05239,Dexamethasone,The serum concentration of Cobimetinib can be decreased when it is combined with Dexamethasone.
+DB01234,DB11703,Dexamethasone,The metabolism of Acalabrutinib can be increased when combined with Dexamethasone.
+DB01234,DB09143,Dexamethasone,The metabolism of Sonidegib can be increased when combined with Dexamethasone.
+DB01234,DB11672,Dexamethasone,The metabolism of Dexamethasone can be decreased when combined with Curcumin.
+DB01234,DB11201,Dexamethasone,The risk or severity of gastrointestinal irritation can be increased when Dexamethasone is combined with Menthyl salicylate.
+DB01234,DB12095,Dexamethasone,The serum concentration of Dexamethasone can be decreased when it is combined with Telotristat ethyl.
+DB01234,DB15149,Dexamethasone,The metabolism of Futibatinib can be increased when combined with Dexamethasone.
+DB01234,DB09009,Dexamethasone,The risk or severity of methemoglobinemia can be increased when Dexamethasone is combined with Articaine.
+DB01234,DB11682,Dexamethasone,The metabolism of Daprodustat can be increased when combined with Dexamethasone.
+DB01244,DB09063,Bepridil,Bepridil may increase the bradycardic activities of Ceritinib.
+DB01244,DB06701,Bepridil,Dexmethylphenidate may decrease the antihypertensive activities of Bepridil.
+DB01244,DB06712,Bepridil,Bepridil may increase the arrhythmogenic activities of Nilvadipine.
+DB01244,DB12877,Bepridil,The risk or severity of QTc prolongation can be increased when Oxatomide is combined with Bepridil.
+DB01244,DB06791,Bepridil,Bepridil may increase the bradycardic activities of Lanreotide.
+DB01244,DB08868,Bepridil,Bepridil may increase the bradycardic activities of Fingolimod.
+DB01244,DB01274,Bepridil,The risk or severity of QTc prolongation can be increased when Arformoterol is combined with Bepridil.
+DB01244,DB06708,Bepridil,The metabolism of Bepridil can be decreased when combined with Lumefantrine.
+DB01244,DB13074,Bepridil,The risk or severity of QTc prolongation can be increased when Bepridil is combined with Macimorelin.
+DB01244,DB01424,Bepridil,The therapeutic efficacy of Bepridil can be decreased when used in combination with Aminophenazone.
+DB01244,DB06736,Bepridil,The therapeutic efficacy of Bepridil can be decreased when used in combination with Aceclofenac.
+DB01244,DB08976,Bepridil,The therapeutic efficacy of Bepridil can be decreased when used in combination with Floctafenine.
+DB01244,DB08981,Bepridil,The therapeutic efficacy of Bepridil can be decreased when used in combination with Fenbufen.
+DB01244,DB14627,Bepridil,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Bepridil.
+DB01244,DB06016,Bepridil,Cariprazine may decrease the antihypertensive activities of Bepridil.
+DB01244,DB06144,Bepridil,The metabolism of Sertindole can be decreased when combined with Bepridil.
+DB01244,DB09401,Bepridil,Bepridil may increase the vasodilatory activities of Isosorbide.
+DB01244,DB11672,Bepridil,The metabolism of Bepridil can be decreased when combined with Curcumin.
+DB01244,DB11201,Bepridil,The therapeutic efficacy of Bepridil can be decreased when used in combination with Menthyl salicylate.
+DB01244,DB12095,Bepridil,The serum concentration of Bepridil can be decreased when it is combined with Telotristat ethyl.
+DB01274,DB06701,Arformoterol,The risk or severity of hypertension can be increased when Arformoterol is combined with Dexmethylphenidate.
+DB01274,DB09091,Arformoterol,The risk or severity of hypokalemia can be increased when Tixocortol is combined with Arformoterol.
+DB01274,DB14539,Arformoterol,The risk or severity of hypokalemia can be increased when Hydrocortisone acetate is combined with Arformoterol.
+DB01274,DB06712,Arformoterol,Arformoterol may decrease the antihypertensive activities of Nilvadipine.
+DB01274,DB12877,Arformoterol,The risk or severity of QTc prolongation can be increased when Arformoterol is combined with Oxatomide.
+DB01274,DB13074,Arformoterol,The risk or severity of QTc prolongation can be increased when Arformoterol is combined with Macimorelin.
+DB01274,DB06708,Arformoterol,The metabolism of Arformoterol can be decreased when combined with Lumefantrine.
+DB01274,DB01424,Arformoterol,The risk or severity of hypertension can be increased when Arformoterol is combined with Aminophenazone.
+DB01274,DB06736,Arformoterol,The risk or severity of hypertension can be increased when Arformoterol is combined with Aceclofenac.
+DB01274,DB08976,Arformoterol,The risk or severity of hypertension can be increased when Arformoterol is combined with Floctafenine.
+DB01274,DB08981,Arformoterol,The risk or severity of hypertension can be increased when Arformoterol is combined with Fenbufen.
+DB01274,DB01428,Arformoterol,Arformoterol may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01274,DB06228,Arformoterol,Arformoterol may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB01274,DB06782,Arformoterol,Arformoterol may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB01274,DB06813,Arformoterol,Arformoterol may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB01274,DB11102,Arformoterol,Arformoterol may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB01274,DB13952,Arformoterol,Arformoterol may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB01274,DB09401,Arformoterol,Isosorbide may increase the excretion rate of Arformoterol which could result in a lower serum level and potentially a reduction in efficacy.
+DB01274,DB06016,Arformoterol,The risk or severity of hypertension can be increased when Arformoterol is combined with Cariprazine.
+DB01274,DB06144,Arformoterol,The metabolism of Sertindole can be decreased when combined with Arformoterol.
+DB01274,DB09063,Arformoterol,The metabolism of Arformoterol can be decreased when combined with Ceritinib.
+DB01274,DB08801,Arformoterol,The risk or severity of Tachycardia can be increased when Arformoterol is combined with Dimetindene.
+DB01274,DB13946,Arformoterol,Testosterone undecanoate may increase the hypertensive activities of Arformoterol.
+DB01274,DB11672,Arformoterol,The metabolism of Arformoterol can be decreased when combined with Curcumin.
+DB01393,DB01424,Bezafibrate,The metabolism of Aminophenazone can be decreased when combined with Bezafibrate.
+DB01393,DB13952,Bezafibrate,The metabolism of Estradiol acetate can be decreased when combined with Bezafibrate.
+DB01393,DB06712,Bezafibrate,The metabolism of Bezafibrate can be decreased when combined with Nilvadipine.
+DB01393,DB11672,Bezafibrate,The metabolism of Bezafibrate can be decreased when combined with Curcumin.
+DB01393,DB12095,Bezafibrate,The serum concentration of Bezafibrate can be decreased when it is combined with Telotristat ethyl.
+DB01393,DB11682,Bezafibrate,The metabolism of Daprodustat can be decreased when combined with Bezafibrate.
+DB01424,DB06701,Aminophenazone,The risk or severity of hypertension can be increased when Aminophenazone is combined with Dexmethylphenidate.
+DB01424,DB06016,Aminophenazone,The risk or severity of hypertension can be increased when Aminophenazone is combined with Cariprazine.
+DB01424,DB06813,Aminophenazone,Aminophenazone may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB01424,DB06228,Aminophenazone,The risk or severity of bleeding and hemorrhage can be increased when Aminophenazone is combined with Rivaroxaban.
+DB01424,DB06708,Aminophenazone,The metabolism of Aminophenazone can be decreased when combined with Lumefantrine.
+DB01424,DB09091,Aminophenazone,The risk or severity of gastrointestinal irritation can be increased when Tixocortol is combined with Aminophenazone.
+DB01424,DB14539,Aminophenazone,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone acetate is combined with Aminophenazone.
+DB01424,DB06712,Aminophenazone,The metabolism of Aminophenazone can be decreased when combined with Nilvadipine.
+DB01424,DB06736,Aminophenazone,The risk or severity of adverse effects can be increased when Aminophenazone is combined with Aceclofenac.
+DB01424,DB08976,Aminophenazone,The risk or severity of adverse effects can be increased when Aminophenazone is combined with Floctafenine.
+DB01424,DB08981,Aminophenazone,The risk or severity of adverse effects can be increased when Aminophenazone is combined with Fenbufen.
+DB01424,DB01428,Aminophenazone,Aminophenazone may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01424,DB06782,Aminophenazone,Aminophenazone may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB01424,DB11102,Aminophenazone,Aminophenazone may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB01424,DB13952,Aminophenazone,The metabolism of Estradiol acetate can be decreased when combined with Aminophenazone.
+DB01424,DB06144,Aminophenazone,The metabolism of Sertindole can be decreased when combined with Aminophenazone.
+DB01424,DB11791,Aminophenazone,The metabolism of Aminophenazone can be decreased when combined with Capmatinib.
+DB01424,DB09063,Aminophenazone,The metabolism of Aminophenazone can be decreased when combined with Ceritinib.
+DB01424,DB13074,Aminophenazone,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Aminophenazone.
+DB01424,DB13946,Aminophenazone,Testosterone undecanoate may increase the hypertensive activities of Aminophenazone.
+DB01424,DB11672,Aminophenazone,The metabolism of Aminophenazone can be decreased when combined with Curcumin.
+DB01424,DB11201,Aminophenazone,The risk or severity of adverse effects can be increased when Aminophenazone is combined with Menthyl salicylate.
+DB01424,DB12095,Aminophenazone,The serum concentration of Aminophenazone can be decreased when it is combined with Telotristat ethyl.
+DB01424,DB17083,Aminophenazone,The serum concentration of Aminophenazone can be increased when it is combined with Linzagolix.
+DB01424,DB11682,Aminophenazone,The metabolism of Daprodustat can be decreased when combined with Aminophenazone.
+DB01428,DB06736,Oxybenzone,Aceclofenac may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01428,DB08976,Oxybenzone,Floctafenine may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01428,DB08981,Oxybenzone,Fenbufen may decrease the excretion rate of Oxybenzone which could result in a higher serum level.
+DB01428,DB06228,Oxybenzone,Oxybenzone may decrease the excretion rate of Rivaroxaban which could result in a higher serum level.
+DB01428,DB06782,Oxybenzone,Oxybenzone may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB01428,DB06813,Oxybenzone,Oxybenzone may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB01428,DB09091,Oxybenzone,Oxybenzone may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB01428,DB11102,Oxybenzone,Oxybenzone may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB01428,DB13946,Oxybenzone,Oxybenzone may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB01428,DB13952,Oxybenzone,Oxybenzone may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB01428,DB09401,Oxybenzone,Isosorbide may increase the excretion rate of Oxybenzone which could result in a lower serum level and potentially a reduction in efficacy.
+DB01616,DB06016,Alverine,The risk or severity of CNS depression can be increased when Alverine is combined with Cariprazine.
+DB01616,DB06144,Alverine,The risk or severity of CNS depression can be increased when Alverine is combined with Sertindole.
+DB01616,DB06701,Alverine,The risk or severity of CNS depression can be increased when Alverine is combined with Dexmethylphenidate.
+DB01616,DB06797,Alverine,The risk or severity of CNS depression can be increased when Alverine is combined with Mebutamate.
+DB01616,DB11609,Alverine,The risk or severity of CNS depression can be increased when Alverine is combined with Normethadone.
+DB01616,DB13213,Alverine,The risk or severity of CNS depression can be increased when Alverine is combined with Butaperazine.
+DB01616,DB09009,Alverine,The risk or severity of CNS depression can be increased when Alverine is combined with Articaine.
+DB05239,DB06712,Cobimetinib,The metabolism of Cobimetinib can be decreased when combined with Nilvadipine.
+DB05239,DB14539,Cobimetinib,The metabolism of Cobimetinib can be increased when combined with Hydrocortisone acetate.
+DB05239,DB13952,Cobimetinib,The metabolism of Cobimetinib can be increased when combined with Estradiol acetate.
+DB05239,DB09063,Cobimetinib,The metabolism of Cobimetinib can be decreased when combined with Ceritinib.
+DB05239,DB06791,Cobimetinib,The metabolism of Cobimetinib can be decreased when combined with Lanreotide.
+DB05239,DB11703,Cobimetinib,The metabolism of Cobimetinib can be decreased when combined with Acalabrutinib.
+DB05239,DB09143,Cobimetinib,The metabolism of Sonidegib can be decreased when combined with Cobimetinib.
+DB05239,DB06228,Cobimetinib,The serum concentration of Cobimetinib can be increased when it is combined with Rivaroxaban.
+DB05239,DB11791,Cobimetinib,The serum concentration of Cobimetinib can be increased when it is combined with Capmatinib.
+DB05239,DB11672,Cobimetinib,The serum concentration of Cobimetinib can be increased when it is combined with Curcumin.
+DB05239,DB12095,Cobimetinib,The serum concentration of Cobimetinib can be decreased when it is combined with Telotristat ethyl.
+DB05239,DB15149,Cobimetinib,The serum concentration of Cobimetinib can be increased when it is combined with Futibatinib.
+DB05239,DB09009,Cobimetinib,The risk or severity of methemoglobinemia can be increased when Cobimetinib is combined with Articaine.
+DB05239,DB16956,Cobimetinib,The serum concentration of Cobimetinib can be increased when it is combined with L-Acetylleucine.
+DB06016,DB06736,Cariprazine,The risk or severity of hypertension can be increased when Cariprazine is combined with Aceclofenac.
+DB06016,DB08976,Cariprazine,The risk or severity of hypertension can be increased when Cariprazine is combined with Floctafenine.
+DB06016,DB08981,Cariprazine,The risk or severity of hypertension can be increased when Cariprazine is combined with Fenbufen.
+DB06016,DB06701,Cariprazine,The risk or severity of adverse effects can be increased when Cariprazine is combined with Dexmethylphenidate.
+DB06016,DB06797,Cariprazine,The risk or severity of CNS depression can be increased when Cariprazine is combined with Mebutamate.
+DB06016,DB11609,Cariprazine,The risk or severity of CNS depression can be increased when Cariprazine is combined with Normethadone.
+DB06016,DB13213,Cariprazine,The risk or severity of CNS depression can be increased when Cariprazine is combined with Butaperazine.
+DB06016,DB09009,Cariprazine,The risk or severity of CNS depression can be increased when Cariprazine is combined with Articaine.
+DB06016,DB06144,Cariprazine,The risk or severity of CNS depression can be increased when Cariprazine is combined with Sertindole.
+DB06016,DB13946,Cariprazine,Testosterone undecanoate may increase the hypertensive activities of Cariprazine.
+DB06016,DB06712,Cariprazine,The metabolism of Cariprazine can be decreased when combined with Nilvadipine.
+DB06016,DB11672,Cariprazine,The metabolism of Cariprazine can be decreased when combined with Curcumin.
+DB06016,DB12095,Cariprazine,The serum concentration of Cariprazine can be decreased when it is combined with Telotristat ethyl.
+DB06144,DB06708,Sertindole,The metabolism of Sertindole can be decreased when combined with Lumefantrine.
+DB06144,DB06701,Sertindole,The risk or severity of adverse effects can be increased when Sertindole is combined with Dexmethylphenidate.
+DB06144,DB06797,Sertindole,The risk or severity of CNS depression can be increased when Sertindole is combined with Mebutamate.
+DB06144,DB11609,Sertindole,The risk or severity of CNS depression can be increased when Sertindole is combined with Normethadone.
+DB06144,DB13213,Sertindole,The risk or severity of CNS depression can be increased when Sertindole is combined with Butaperazine.
+DB06144,DB09009,Sertindole,The risk or severity of CNS depression can be increased when Sertindole is combined with Articaine.
+DB06144,DB06712,Sertindole,The metabolism of Sertindole can be decreased when combined with Nilvadipine.
+DB06144,DB11672,Sertindole,The metabolism of Sertindole can be decreased when combined with Curcumin.
+DB06144,DB12095,Sertindole,The serum concentration of Sertindole can be decreased when it is combined with Telotristat ethyl.
+DB06228,DB06736,Rivaroxaban,The risk or severity of bleeding and hemorrhage can be increased when Aceclofenac is combined with Rivaroxaban.
+DB06228,DB08976,Rivaroxaban,The risk or severity of bleeding and hemorrhage can be increased when Floctafenine is combined with Rivaroxaban.
+DB06228,DB08981,Rivaroxaban,The risk or severity of bleeding and hemorrhage can be increased when Fenbufen is combined with Rivaroxaban.
+DB06228,DB09124,Rivaroxaban,Medrogestone may decrease the anticoagulant activities of Rivaroxaban.
+DB06228,DB13946,Rivaroxaban,Testosterone undecanoate may increase the anticoagulant activities of Rivaroxaban.
+DB06228,DB13952,Rivaroxaban,Estradiol acetate may decrease the anticoagulant activities of Rivaroxaban.
+DB06228,DB06782,Rivaroxaban,Rivaroxaban may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB06228,DB06813,Rivaroxaban,Rivaroxaban may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB06228,DB09091,Rivaroxaban,Rivaroxaban may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB06228,DB11102,Rivaroxaban,Rivaroxaban may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB06228,DB09401,Rivaroxaban,Isosorbide may increase the excretion rate of Rivaroxaban which could result in a lower serum level and potentially a reduction in efficacy.
+DB06228,DB11703,Rivaroxaban,The metabolism of Rivaroxaban can be decreased when combined with Acalabrutinib.
+DB06228,DB14539,Rivaroxaban,The metabolism of Hydrocortisone acetate can be decreased when combined with Rivaroxaban.
+DB06228,DB09063,Rivaroxaban,The serum concentration of Ceritinib can be increased when it is combined with Rivaroxaban.
+DB06228,DB11791,Rivaroxaban,The serum concentration of Rivaroxaban can be increased when it is combined with Capmatinib.
+DB06228,DB06712,Rivaroxaban,The metabolism of Rivaroxaban can be decreased when combined with Nilvadipine.
+DB06228,DB11672,Rivaroxaban,The metabolism of Rivaroxaban can be decreased when combined with Curcumin.
+DB06228,DB11201,Rivaroxaban,The risk or severity of bleeding and hemorrhage can be increased when Menthyl salicylate is combined with Rivaroxaban.
+DB06228,DB12095,Rivaroxaban,The serum concentration of Rivaroxaban can be decreased when it is combined with Telotristat ethyl.
+DB06228,DB15149,Rivaroxaban,The serum concentration of Futibatinib can be increased when it is combined with Rivaroxaban.
+DB06228,DB16956,Rivaroxaban,The serum concentration of Rivaroxaban can be increased when it is combined with L-Acetylleucine.
+DB06701,DB06712,Dexmethylphenidate,Dexmethylphenidate may decrease the antihypertensive activities of Nilvadipine.
+DB06701,DB06736,Dexmethylphenidate,The risk or severity of hypertension can be increased when Dexmethylphenidate is combined with Aceclofenac.
+DB06701,DB08976,Dexmethylphenidate,The risk or severity of hypertension can be increased when Dexmethylphenidate is combined with Floctafenine.
+DB06701,DB08981,Dexmethylphenidate,The risk or severity of hypertension can be increased when Dexmethylphenidate is combined with Fenbufen.
+DB06701,DB13213,Dexmethylphenidate,The risk or severity of adverse effects can be increased when Butaperazine is combined with Dexmethylphenidate.
+DB06701,DB06797,Dexmethylphenidate,The risk or severity of CNS depression can be increased when Dexmethylphenidate is combined with Mebutamate.
+DB06701,DB11609,Dexmethylphenidate,The risk or severity of CNS depression can be increased when Dexmethylphenidate is combined with Normethadone.
+DB06701,DB09009,Dexmethylphenidate,The risk or severity of CNS depression can be increased when Dexmethylphenidate is combined with Articaine.
+DB06701,DB13946,Dexmethylphenidate,Testosterone undecanoate may increase the hypertensive activities of Dexmethylphenidate.
+DB06708,DB13213,Lumefantrine,The risk or severity of QTc prolongation can be increased when Lumefantrine is combined with Butaperazine.
+DB06708,DB06712,Lumefantrine,The risk or severity of QTc prolongation can be increased when Nilvadipine is combined with Lumefantrine.
+DB06708,DB12877,Lumefantrine,The risk or severity of QTc prolongation can be increased when Oxatomide is combined with Lumefantrine.
+DB06708,DB09063,Lumefantrine,The risk or severity of QTc prolongation can be increased when Ceritinib is combined with Lumefantrine.
+DB06708,DB13074,Lumefantrine,The risk or severity of QTc prolongation can be increased when Lumefantrine is combined with Macimorelin.
+DB06708,DB11672,Lumefantrine,The metabolism of Lumefantrine can be decreased when combined with Curcumin.
+DB06708,DB12095,Lumefantrine,The serum concentration of Lumefantrine can be decreased when it is combined with Telotristat ethyl.
+DB06708,DB09009,Lumefantrine,The risk or severity of methemoglobinemia can be increased when Lumefantrine is combined with Articaine.
+DB06712,DB09063,Nilvadipine,Nilvadipine may increase the bradycardic activities of Ceritinib.
+DB06712,DB09143,Nilvadipine,The metabolism of Sonidegib can be decreased when combined with Nilvadipine.
+DB06712,DB13074,Nilvadipine,The risk or severity of QTc prolongation can be increased when Nilvadipine is combined with Macimorelin.
+DB06712,DB12877,Nilvadipine,The risk or severity of QTc prolongation can be increased when Nilvadipine is combined with Oxatomide.
+DB06712,DB06791,Nilvadipine,Nilvadipine may increase the bradycardic activities of Lanreotide.
+DB06712,DB06736,Nilvadipine,The therapeutic efficacy of Nilvadipine can be decreased when used in combination with Aceclofenac.
+DB06712,DB08976,Nilvadipine,The therapeutic efficacy of Nilvadipine can be decreased when used in combination with Floctafenine.
+DB06712,DB08981,Nilvadipine,The therapeutic efficacy of Nilvadipine can be decreased when used in combination with Fenbufen.
+DB06712,DB14627,Nilvadipine,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Nilvadipine.
+DB06712,DB11703,Nilvadipine,The metabolism of Acalabrutinib can be decreased when combined with Nilvadipine.
+DB06712,DB13952,Nilvadipine,The metabolism of Estradiol acetate can be decreased when combined with Nilvadipine.
+DB06712,DB08868,Nilvadipine,The metabolism of Fingolimod can be decreased when combined with Nilvadipine.
+DB06712,DB09401,Nilvadipine,Nilvadipine may increase the vasodilatory activities of Isosorbide.
+DB06712,DB09124,Nilvadipine,The metabolism of Medrogestone can be decreased when combined with Nilvadipine.
+DB06712,DB11791,Nilvadipine,The metabolism of Capmatinib can be decreased when combined with Nilvadipine.
+DB06712,DB12329,Nilvadipine,The metabolism of Eravacycline can be decreased when combined with Nilvadipine.
+DB06712,DB14539,Nilvadipine,The metabolism of Hydrocortisone acetate can be decreased when combined with Nilvadipine.
+DB06712,DB11672,Nilvadipine,The metabolism of Nilvadipine can be decreased when combined with Curcumin.
+DB06712,DB11201,Nilvadipine,The therapeutic efficacy of Nilvadipine can be decreased when used in combination with Menthyl salicylate.
+DB06712,DB12095,Nilvadipine,The serum concentration of Nilvadipine can be decreased when it is combined with Telotristat ethyl.
+DB06712,DB15149,Nilvadipine,The metabolism of Futibatinib can be decreased when combined with Nilvadipine.
+DB06712,DB11682,Nilvadipine,The metabolism of Daprodustat can be decreased when combined with Nilvadipine.
+DB06736,DB06813,Aceclofenac,Aceclofenac may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB06736,DB14539,Aceclofenac,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone acetate is combined with Aceclofenac.
+DB06736,DB09091,Aceclofenac,The risk or severity of gastrointestinal irritation can be increased when Tixocortol is combined with Aceclofenac.
+DB06736,DB08976,Aceclofenac,The risk or severity of adverse effects can be increased when Aceclofenac is combined with Floctafenine.
+DB06736,DB08981,Aceclofenac,The risk or severity of adverse effects can be increased when Aceclofenac is combined with Fenbufen.
+DB06736,DB06782,Aceclofenac,Aceclofenac may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB06736,DB11102,Aceclofenac,Aceclofenac may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB06736,DB13952,Aceclofenac,Aceclofenac may increase the thrombogenic activities of Estradiol acetate.
+DB06736,DB09401,Aceclofenac,Isosorbide may increase the excretion rate of Aceclofenac which could result in a lower serum level and potentially a reduction in efficacy.
+DB06736,DB13074,Aceclofenac,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Aceclofenac.
+DB06736,DB13946,Aceclofenac,Testosterone undecanoate may increase the hypertensive activities of Aceclofenac.
+DB06736,DB11201,Aceclofenac,The risk or severity of adverse effects can be increased when Aceclofenac is combined with Menthyl salicylate.
+DB06782,DB08976,Dimercaprol,Floctafenine may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB06782,DB08981,Dimercaprol,Fenbufen may decrease the excretion rate of Dimercaprol which could result in a higher serum level.
+DB06782,DB06813,Dimercaprol,Dimercaprol may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB06782,DB09091,Dimercaprol,Dimercaprol may decrease the excretion rate of Tixocortol which could result in a higher serum level.
+DB06782,DB11102,Dimercaprol,Dimercaprol may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB06782,DB13946,Dimercaprol,Dimercaprol may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB06782,DB13952,Dimercaprol,Dimercaprol may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB06782,DB09401,Dimercaprol,Isosorbide may increase the excretion rate of Dimercaprol which could result in a lower serum level and potentially a reduction in efficacy.
+DB06791,DB09063,Lanreotide,Lanreotide may increase the bradycardic activities of Ceritinib.
+DB06791,DB08868,Lanreotide,Lanreotide may increase the bradycardic activities of Fingolimod.
+DB06791,DB11703,Lanreotide,The metabolism of Acalabrutinib can be decreased when combined with Lanreotide.
+DB06791,DB09143,Lanreotide,The metabolism of Sonidegib can be decreased when combined with Lanreotide.
+DB06791,DB13074,Lanreotide,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Lanreotide.
+DB06791,DB09009,Lanreotide,The risk or severity of methemoglobinemia can be increased when Lanreotide is combined with Articaine.
+DB06797,DB11609,Mebutamate,The risk or severity of CNS depression can be increased when Mebutamate is combined with Normethadone.
+DB06797,DB13213,Mebutamate,The risk or severity of CNS depression can be increased when Mebutamate is combined with Butaperazine.
+DB06797,DB09009,Mebutamate,The risk or severity of CNS depression can be increased when Mebutamate is combined with Articaine.
+DB06813,DB09091,Pralatrexate,The risk or severity of adverse effects can be increased when Pralatrexate is combined with Tixocortol.
+DB06813,DB14539,Pralatrexate,The risk or severity of adverse effects can be increased when Pralatrexate is combined with Hydrocortisone acetate.
+DB06813,DB08976,Pralatrexate,Floctafenine may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB06813,DB08981,Pralatrexate,Fenbufen may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB06813,DB08868,Pralatrexate,Pralatrexate may increase the immunosuppressive activities of Fingolimod.
+DB06813,DB13952,Pralatrexate,Estradiol acetate may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB06813,DB11102,Pralatrexate,Pralatrexate may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB06813,DB13946,Pralatrexate,Pralatrexate may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB06813,DB09401,Pralatrexate,Isosorbide may increase the excretion rate of Pralatrexate which could result in a lower serum level and potentially a reduction in efficacy.
+DB06813,DB11791,Pralatrexate,The serum concentration of Pralatrexate can be increased when it is combined with Capmatinib.
+DB06813,DB11201,Pralatrexate,Menthyl salicylate may decrease the excretion rate of Pralatrexate which could result in a higher serum level.
+DB06813,DB09009,Pralatrexate,The risk or severity of methemoglobinemia can be increased when Pralatrexate is combined with Articaine.
+DB08801,DB11609,Dimetindene,The risk or severity of adverse effects can be increased when Dimetindene is combined with Normethadone.
+DB08801,DB14627,Dimetindene,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Dimetindene.
+DB08801,DB13074,Dimetindene,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Dimetindene.
+DB08868,DB09063,Fingolimod,Fingolimod may increase the bradycardic activities of Ceritinib.
+DB08868,DB09091,Fingolimod,Tixocortol may increase the immunosuppressive activities of Fingolimod.
+DB08868,DB14539,Fingolimod,Hydrocortisone acetate may increase the immunosuppressive activities of Fingolimod.
+DB08976,DB14539,Floctafenine,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone acetate is combined with Floctafenine.
+DB08976,DB09091,Floctafenine,The risk or severity of gastrointestinal irritation can be increased when Tixocortol is combined with Floctafenine.
+DB08976,DB08981,Floctafenine,The risk or severity of adverse effects can be increased when Floctafenine is combined with Fenbufen.
+DB08976,DB11102,Floctafenine,Floctafenine may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB08976,DB13952,Floctafenine,Floctafenine may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB08976,DB13074,Floctafenine,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Floctafenine.
+DB08976,DB13946,Floctafenine,Testosterone undecanoate may increase the hypertensive activities of Floctafenine.
+DB08976,DB11201,Floctafenine,The risk or severity of adverse effects can be increased when Floctafenine is combined with Menthyl salicylate.
+DB08981,DB14539,Fenbufen,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone acetate is combined with Fenbufen.
+DB08981,DB09091,Fenbufen,The risk or severity of gastrointestinal irritation can be increased when Tixocortol is combined with Fenbufen.
+DB08981,DB11102,Fenbufen,Fenbufen may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB08981,DB13952,Fenbufen,Fenbufen may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB08981,DB13074,Fenbufen,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Fenbufen.
+DB08981,DB13946,Fenbufen,Testosterone undecanoate may increase the hypertensive activities of Fenbufen.
+DB08981,DB11201,Fenbufen,The risk or severity of adverse effects can be increased when Fenbufen is combined with Menthyl salicylate.
+DB09009,DB11609,Articaine,The risk or severity of CNS depression can be increased when Articaine is combined with Normethadone.
+DB09009,DB13213,Articaine,The risk or severity of CNS depression can be increased when Articaine is combined with Butaperazine.
+DB09009,DB09047,Articaine,The risk or severity of methemoglobinemia can be increased when Finafloxacin is combined with Articaine.
+DB09009,DB09063,Articaine,The risk or severity of methemoglobinemia can be increased when Ceritinib is combined with Articaine.
+DB09009,DB09143,Articaine,The risk or severity of methemoglobinemia can be increased when Sonidegib is combined with Articaine.
+DB09009,DB11672,Articaine,The risk or severity of methemoglobinemia can be increased when Curcumin is combined with Articaine.
+DB09009,DB11791,Articaine,The risk or severity of methemoglobinemia can be increased when Capmatinib is combined with Articaine.
+DB09009,DB15149,Articaine,The risk or severity of methemoglobinemia can be increased when Futibatinib is combined with Articaine.
+DB09009,DB09093,Articaine,The risk or severity of methemoglobinemia can be increased when Chlortetracycline is combined with Articaine.
+DB09009,DB09319,Articaine,The risk or severity of methemoglobinemia can be increased when Carindacillin is combined with Articaine.
+DB09009,DB12329,Articaine,The risk or severity of methemoglobinemia can be increased when Eravacycline is combined with Articaine.
+DB09063,DB09091,Ceritinib,The risk or severity of hyperglycemia can be increased when Tixocortol is combined with Ceritinib.
+DB09063,DB14539,Ceritinib,The risk or severity of hyperglycemia can be increased when Hydrocortisone acetate is combined with Ceritinib.
+DB09063,DB13074,Ceritinib,The risk or severity of QTc prolongation can be increased when Ceritinib is combined with Macimorelin.
+DB09063,DB12877,Ceritinib,The risk or severity of QTc prolongation can be increased when Ceritinib is combined with Oxatomide.
+DB09063,DB13952,Ceritinib,The metabolism of Ceritinib can be increased when combined with Estradiol acetate.
+DB09063,DB11703,Ceritinib,The metabolism of Acalabrutinib can be decreased when combined with Ceritinib.
+DB09063,DB09143,Ceritinib,The metabolism of Sonidegib can be decreased when combined with Ceritinib.
+DB09063,DB11791,Ceritinib,The serum concentration of Ceritinib can be increased when it is combined with Capmatinib.
+DB09063,DB11672,Ceritinib,The metabolism of Ceritinib can be decreased when combined with Curcumin.
+DB09063,DB12095,Ceritinib,The serum concentration of Ceritinib can be decreased when it is combined with Telotristat ethyl.
+DB09063,DB15149,Ceritinib,The serum concentration of Ceritinib can be increased when it is combined with Futibatinib.
+DB09063,DB16956,Ceritinib,The serum concentration of Ceritinib can be increased when it is combined with L-Acetylleucine.
+DB09091,DB14539,Tixocortol,The risk or severity of adverse effects can be increased when Tixocortol is combined with Hydrocortisone acetate.
+DB09091,DB13946,Tixocortol,The risk or severity of edema formation can be increased when Testosterone undecanoate is combined with Tixocortol.
+DB09091,DB11102,Tixocortol,Tixocortol may decrease the excretion rate of N-acetyltyrosine which could result in a higher serum level.
+DB09091,DB13952,Tixocortol,Tixocortol may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB09091,DB09401,Tixocortol,Isosorbide may increase the excretion rate of Tixocortol which could result in a lower serum level and potentially a reduction in efficacy.
+DB09091,DB11201,Tixocortol,The risk or severity of gastrointestinal irritation can be increased when Tixocortol is combined with Menthyl salicylate.
+DB09124,DB12329,Medrogestone,The serum concentration of Medrogestone can be decreased when it is combined with Eravacycline.
+DB09124,DB11672,Medrogestone,The metabolism of Medrogestone can be decreased when combined with Curcumin.
+DB09124,DB12095,Medrogestone,The serum concentration of Medrogestone can be decreased when it is combined with Telotristat ethyl.
+DB09143,DB13952,Sonidegib,The metabolism of Sonidegib can be increased when combined with Estradiol acetate.
+DB09143,DB14539,Sonidegib,The metabolism of Sonidegib can be increased when combined with Hydrocortisone acetate.
+DB09143,DB11703,Sonidegib,The metabolism of Sonidegib can be decreased when combined with Acalabrutinib.
+DB09143,DB11672,Sonidegib,The metabolism of Sonidegib can be decreased when combined with Curcumin.
+DB09143,DB12095,Sonidegib,The serum concentration of Sonidegib can be decreased when it is combined with Telotristat ethyl.
+DB09319,DB12329,Carindacillin,The therapeutic efficacy of Carindacillin can be decreased when used in combination with Eravacycline.
+DB09401,DB14627,Isosorbide,The risk or severity of dehydration can be increased when Isosorbide is combined with Oxyphenisatin acetate.
+DB09401,DB11102,Isosorbide,Isosorbide may increase the excretion rate of N-acetyltyrosine which could result in a lower serum level and potentially a reduction in efficacy.
+DB09401,DB13946,Isosorbide,Isosorbide may increase the excretion rate of Testosterone undecanoate which could result in a lower serum level and potentially a reduction in efficacy.
+DB09401,DB13952,Isosorbide,Isosorbide may increase the excretion rate of Estradiol acetate which could result in a lower serum level and potentially a reduction in efficacy.
+DB09401,DB11609,Isosorbide,The therapeutic efficacy of Isosorbide can be decreased when used in combination with Normethadone.
+DB11102,DB13946,N-acetyltyrosine,N-acetyltyrosine may decrease the excretion rate of Testosterone undecanoate which could result in a higher serum level.
+DB11102,DB13952,N-acetyltyrosine,N-acetyltyrosine may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB11201,DB14539,Menthyl salicylate,The risk or severity of gastrointestinal irritation can be increased when Hydrocortisone acetate is combined with Menthyl salicylate.
+DB11201,DB13074,Menthyl salicylate,The therapeutic efficacy of Macimorelin can be decreased when used in combination with Menthyl salicylate.
+DB11609,DB13213,Normethadone,The risk or severity of hypotension and CNS depression can be increased when Butaperazine is combined with Normethadone.
+DB11609,DB14627,Normethadone,The therapeutic efficacy of Oxyphenisatin acetate can be decreased when used in combination with Normethadone.
+DB11672,DB11703,Curcumin,The metabolism of Acalabrutinib can be decreased when combined with Curcumin.
+DB11672,DB11791,Curcumin,The metabolism of Capmatinib can be decreased when combined with Curcumin.
+DB11672,DB12329,Curcumin,The metabolism of Eravacycline can be decreased when combined with Curcumin.
+DB11672,DB13074,Curcumin,The metabolism of Macimorelin can be decreased when combined with Curcumin.
+DB11672,DB13952,Curcumin,The metabolism of Estradiol acetate can be decreased when combined with Curcumin.
+DB11672,DB14539,Curcumin,The metabolism of Hydrocortisone acetate can be decreased when combined with Curcumin.
+DB11672,DB15149,Curcumin,The metabolism of Futibatinib can be decreased when combined with Curcumin.
+DB11672,DB12095,Curcumin,The serum concentration of Telotristat ethyl can be increased when it is combined with Curcumin.
+DB11682,DB17083,Daprodustat,The serum concentration of Daprodustat can be increased when it is combined with Linzagolix.
+DB11682,DB13952,Daprodustat,The metabolism of Estradiol acetate can be decreased when combined with Daprodustat.
+DB11703,DB13952,Acalabrutinib,The metabolism of Acalabrutinib can be increased when combined with Estradiol acetate.
+DB11703,DB14539,Acalabrutinib,The metabolism of Acalabrutinib can be increased when combined with Hydrocortisone acetate.
+DB11703,DB11791,Acalabrutinib,The serum concentration of Capmatinib can be increased when it is combined with Acalabrutinib.
+DB11703,DB12095,Acalabrutinib,The serum concentration of Acalabrutinib can be decreased when it is combined with Telotristat ethyl.
+DB11791,DB13946,Capmatinib,The serum concentration of Capmatinib can be decreased when it is combined with Testosterone undecanoate.
+DB11791,DB13952,Capmatinib,The serum concentration of Capmatinib can be decreased when it is combined with Estradiol acetate.
+DB11791,DB14539,Capmatinib,The serum concentration of Capmatinib can be decreased when it is combined with Hydrocortisone acetate.
+DB11791,DB12095,Capmatinib,The serum concentration of Capmatinib can be decreased when it is combined with Telotristat ethyl.
+DB11791,DB15149,Capmatinib,The serum concentration of Futibatinib can be increased when it is combined with Capmatinib.
+DB12095,DB12329,Telotristat ethyl,The serum concentration of Eravacycline can be decreased when it is combined with Telotristat ethyl.
+DB12095,DB13074,Telotristat ethyl,The serum concentration of Macimorelin can be decreased when it is combined with Telotristat ethyl.
+DB12095,DB13952,Telotristat ethyl,The serum concentration of Estradiol acetate can be decreased when it is combined with Telotristat ethyl.
+DB12095,DB14539,Telotristat ethyl,The serum concentration of Hydrocortisone acetate can be decreased when it is combined with Telotristat ethyl.
+DB12095,DB15149,Telotristat ethyl,The serum concentration of Futibatinib can be decreased when it is combined with Telotristat ethyl.
+DB12095,DB16956,Telotristat ethyl,The serum concentration of Telotristat ethyl can be increased when it is combined with L-Acetylleucine.
+DB12877,DB13074,Oxatomide,The risk or severity of QTc prolongation can be increased when Oxatomide is combined with Macimorelin.
+DB13946,DB14539,Testosterone undecanoate,The risk or severity of edema formation can be increased when Testosterone undecanoate is combined with Hydrocortisone acetate.
+DB13946,DB13952,Testosterone undecanoate,Testosterone undecanoate may decrease the excretion rate of Estradiol acetate which could result in a higher serum level.
+DB13952,DB14539,Estradiol acetate,The metabolism of Hydrocortisone acetate can be decreased when combined with Estradiol acetate.
+DB13952,DB17083,Estradiol acetate,The serum concentration of Estradiol acetate can be increased when it is combined with Linzagolix.
+DB15149,DB16956,Futibatinib,The serum concentration of Futibatinib can be increased when it is combined with L-Acetylleucine.

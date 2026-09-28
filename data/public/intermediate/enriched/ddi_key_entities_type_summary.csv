@@ -1,0 +1,25 @@
+ddi_type,pk_pd_label,n_pairs,n_with_key_entity,coverage_pct,top3_key_entities
+The metabolism of can be decreased when combined with,PK,281,247,87.9,Cytochrome P450 3A4(140); Cytochrome P450 2D6(35); Cytochrome P450 2C8(30)
+may decrease the excretion rate of which could result in a higher serum level,PK,228,14,6.1,Bile salt export pump(4); ATP-dependent translocase ABCB1(3); Solute carrier family 22 member 2(2)
+The risk or severity of adverse effects can be increased when is combined with,PD,148,21,14.2,Prostaglandin G/H synthase 1(6); Glucocorticoid receptor(5); Delta-type opioid receptor(2)
+The metabolism of can be increased when combined with,PK,94,91,96.8,Cytochrome P450 3A4(67); Cytochrome P450 2C8(11); Cytochrome P450 3A5(6)
+The risk or severity of QTc prolongation can be increased when is combined with,PD,89,1,1.1,Voltage-gated inwardly rectifying potassium channel KCNH2(1)
+The risk or severity of CNS depression can be increased when is combined with,PD,78,3,3.8,5-hydroxytryptamine receptor 2A(2); 5-hydroxytryptamine receptor 1A(1)
+The therapeutic efficacy of can be decreased when used in combination with,PD,75,8,10.7,Beta-1 adrenergic receptor(4); D(2) dopamine receptor(3); Beta-2 adrenergic receptor(1)
+The serum concentration of can be increased when it is combined with,PK,70,65,92.9,Cytochrome P450 3A4(41); Cytochrome P450 2C9(12); ATP-dependent translocase ABCB1(5)
+The serum concentration of can be decreased when it is combined with,PK,56,55,98.2,Cytochrome P450 3A4(38); Cytochrome P450 2C9(6); Cytochrome P450 2C8(6)
+The risk or severity of hypertension can be increased when is combined with,PD,36,0,0.0,
+The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,30,0,0.0,
+The risk or severity of methemoglobinemia can be increased when is combined with,PD,24,1,4.2,Voltage-gated sodium channel alpha subunit(1)
+may increase the bradycardic activities of,PD,23,0,0.0,
+may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,20,1,5.0,Bile salt export pump(1)
+may decrease the antihypertensive activities of,PD,18,0,0.0,
+The risk or severity of sedation can be increased when is combined with,PD,18,2,11.1,Alpha-1B adrenergic receptor(1); Alpha-1A adrenergic receptor(1)
+may increase the arrhythmogenic activities of,PD,16,7,43.8,Calmodulin(3); Sodium/potassium-transporting ATPase subunit alpha-1(1); Voltage-dependent L-type calcium channel subunit alpha-1D(1)
+may increase the hypertensive activities of,PD,14,0,0.0,
+The risk or severity of hyperkalemia can be increased when is combined with,PD,13,0,0.0,
+may increase the immunosuppressive activities of,PD,12,0,0.0,
+The risk or severity of nephrotoxicity can be increased when is combined with,PD,11,0,0.0,
+The risk or severity of hyperglycemia can be increased when is combined with,PD,10,0,0.0,
+"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when is combined with",PD,10,0,0.0,
+The excretion of can be decreased when combined with,PK,9,7,77.8,ATP-dependent translocase ABCB1(4); Organic anion transporter 3(2); Solute carrier family 22 member 6(1)

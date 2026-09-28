@@ -1,0 +1,25 @@
+ddi_type,pk_pd_label,matched_pk_keywords,matched_pd_keywords
+The excretion of can be decreased when combined with,PK,excretion,
+The metabolism of can be decreased when combined with,PK,metabolism,
+The metabolism of can be increased when combined with,PK,metabolism,
+The risk or severity of CNS depression can be increased when is combined with,PD,,risk
+The risk or severity of QTc prolongation can be increased when is combined with,PD,,risk; qtc
+The risk or severity of adverse effects can be increased when is combined with,PD,,adverse effect; risk
+The risk or severity of gastrointestinal irritation can be increased when is combined with,PD,,risk
+The risk or severity of hyperglycemia can be increased when is combined with,PD,,risk
+The risk or severity of hyperkalemia can be increased when is combined with,PD,,risk
+The risk or severity of hypertension can be increased when is combined with,PD,,risk; hypertension
+The risk or severity of methemoglobinemia can be increased when is combined with,PD,,risk
+"The risk or severity of myopathy, rhabdomyolysis, and myoglobinuria can be increased when is combined with",PD,,risk; myopathy
+The risk or severity of nephrotoxicity can be increased when is combined with,PD,,risk; nephrotoxicity
+The risk or severity of sedation can be increased when is combined with,PD,,risk; sedation
+The serum concentration of can be decreased when it is combined with,PK,serum concentration,
+The serum concentration of can be increased when it is combined with,PK,serum concentration,
+The therapeutic efficacy of can be decreased when used in combination with,PD,,therapeutic efficacy
+may decrease the antihypertensive activities of,PD,,activities
+may decrease the excretion rate of which could result in a higher serum level,PK,excretion,
+may increase the arrhythmogenic activities of,PD,,activities
+may increase the bradycardic activities of,PD,,activities
+may increase the excretion rate of which could result in a lower serum level and potentially a reduction in efficacy,PK,excretion,
+may increase the hypertensive activities of,PD,,activities
+may increase the immunosuppressive activities of,PD,,activities

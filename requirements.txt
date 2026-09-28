@@ -1,0 +1,15 @@
+# ColdDDI dependencies (Linux, Python 3.10).
+# Tested under conda env `project_1` with the versions noted below.
+
+numpy>=1.26          # 1.x + bundle-pickle shim (coldddi/data/dataset.py)
+pandas>=2.0
+pyarrow>=14.0        # parquet I/O
+rdkit>=2023.09       # SMILES parsing + Morgan fingerprints
+scikit-learn>=1.3    # PCA + ROC-AUC
+torch>=2.0           # all baselines
+torch-geometric>=2.5 # SSI-DDI / DSN-DDI / HDN-DDI / TIGER
+networkx>=3.0        # TIGER shortest-path encoding
+gensim>=4.3          # TIGER random-walk Word2Vec embeddings
+
+# Tests
+pytest>=8.0

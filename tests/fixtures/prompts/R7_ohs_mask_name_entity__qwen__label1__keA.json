@@ -1,0 +1,101 @@
+{
+  "paper_name": "R7_ohs_mask_name_entity",
+  "method_internal": "OHS_Mask_Name_Entity",
+  "model_family": "qwen",
+  "model_name": "/tmp/mydata/Models/Hub/Qwen2.5-3B",
+  "label": 1,
+  "ke_variant": "A",
+  "sample": {
+    "drug_a_id": "DB00001",
+    "drug_b_id": "DB00002",
+    "drug_a_name": "Lepirudin",
+    "drug_b_name": "Cetuximab",
+    "drugA_name": "Lepirudin",
+    "drugB_name": "Cetuximab",
+    "label": 1,
+    "subgraph_1hop": {
+      "neighbors": {
+        "transporters": {
+          "A": [
+            "SLC22A1",
+            "ABCB1"
+          ],
+          "B": [
+            "unknown"
+          ]
+        },
+        "pathways": {
+          "A": [
+            "Coagulation cascade"
+          ],
+          "B": [
+            "EGFR signaling"
+          ]
+        },
+        "targets": {
+          "A": [
+            "F2",
+            "F10"
+          ],
+          "B": [
+            "EGFR"
+          ]
+        },
+        "enzymes": {
+          "A": [
+            "CYP3A4",
+            "CYP2D6"
+          ],
+          "B": [
+            "CYP2C9"
+          ]
+        },
+        "carriers": {
+          "A": [
+            "ALB"
+          ],
+          "B": [
+            "unknown"
+          ]
+        },
+        "smiles": {
+          "A": [
+            "CC[C@H](C)[C@H](NC(=O)C)C(=O)O"
+          ],
+          "B": [
+            "CN(C)CCC(=O)O"
+          ]
+        }
+      }
+    }
+  },
+  "kb": {
+    "drug_id2name": {
+      "DB00001": "Lepirudin",
+      "DB00002": "Cetuximab",
+      "DB00003": "Aspirin",
+      "DB00004": "Warfarin",
+      "DB00005": "Metformin",
+      "DB00006": "Ibuprofen"
+    },
+    "drug_id2smiles": {
+      "DB00001": "CC[C@H](C)[C@H](NC(=O)C)C(=O)O",
+      "DB00002": "CN(C)CCC(=O)O",
+      "DB00003": "CC(=O)OC1=CC=CC=C1C(=O)O",
+      "DB00004": "CC(=O)CC(c1ccccc1)c1c(O)c2ccccc2oc1=O",
+      "DB00005": "CN(C)C(=N)N=C(N)N",
+      "DB00006": "CC(C)Cc1ccc(C(C)C(=O)O)cc1"
+    }
+  },
+  "key_entity_map": {
+    "DB00001|DB00002": {
+      "key_entity_name": "F2",
+      "key_entity_type": "targets",
+      "has_key_entity": true
+    }
+  },
+  "fewshot_samples": null,
+  "fewshot_metadata": null,
+  "np_seed": 20260511,
+  "prompt": "<|im_start|>system\nTask: Binary Classification of Drug-Drug Interactions (DDI)\nYou are an expert pharmacologist and clinical research assistant. Your objective is to determine whether a clinically significant drug-drug interaction (DDI) exists between the two provided drugs identified by the '[Prediction]' tag. Consider potential pharmacokinetic interactions and pharmacodynamic interactions in your assessment.<|im_end|>\n\n<|im_start|>user\nThis inference is augmented by external biomedical knowledge transformed into natural language descriptions. Structured Knowledge Graph facts regarding each drug have been linearized into coherent sentences grouping biological associations by category (e.g., whose targets are xxx, xxx, and xxx). Utilize these semantic descriptions to identify potential interaction mechanisms.\nOutput Constraint: Respond strictly with exactly one token: ' Yes' or ' No'. Do not provide any explanations, confidence scores, punctuation, or additional text.\n### [Prediction]:\nDrug A: [DRUG_A]\nwhose transporters are SLC22A1, ABCB1\nwhose pathways are Coagulation cascade\nwhose targets are [ENTITY], F10\nwhose enzymes are CYP3A4, CYP2D6\nwhose carriers are ALB\nwhose smiles are CC[C@H](C)[C@H](NC(=O)C)C(=O)O.\nDrug B: [DRUG_B]\nwhose transporter is unknown\nwhose pathways are EGFR signaling\nwhose targets are EGFR\nwhose enzymes are CYP2C9\nwhose carrier is unknown\nwhose smiles are CN(C)CCC(=O)O.\n### Answer:<|im_end|>\n\n<|im_start|>assistant Yes"
+}

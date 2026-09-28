@@ -1,0 +1,182 @@
+drugbank_id,transporter_id,transporter_name,organism,action
+DB00276,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB00318,BE0003648,Solute carrier family 22 member 1,Humans,substrate
+DB00318,BE0003648,Solute carrier family 22 member 1,Humans,inhibitor
+DB00335,BE0000703,Bile salt export pump,Humans,substrate
+DB00338,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,inhibitor
+DB00338,BE0001061,ATP-binding cassette sub-family C member 3,Humans,inducer
+DB00338,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB00338,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB00352,BE0001188,ATP-binding cassette sub-family C member 4,Humans,inhibitor
+DB00495,BE0003647,Solute carrier family 22 member 2,Humans,
+DB00495,BE0001066,Solute carrier family 22 member 6,Humans,substrate
+DB00495,BE0003646,Solute carrier family 22 member 7,Humans,
+DB00495,BE0003645,Organic anion transporter 3,Humans,substrate
+DB00495,BE0003645,Organic anion transporter 3,Humans,inhibitor
+DB00495,BE0000879,Solute carrier family 22 member 11,Humans,
+DB00495,BE0004705,Sodium/nucleoside cotransporter 1,Humans,
+DB00495,BE0004706,Equilibrative nucleoside transporter 2,Humans,
+DB00495,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB00495,BE0001188,ATP-binding cassette sub-family C member 4,Humans,substrate
+DB00495,BE0003639,ATP-binding cassette sub-family C member 5,Humans,substrate
+DB00495,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,substrate
+DB00539,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB00564,BE0001032,ATP-dependent translocase ABCB1,Humans,inducer
+DB00564,BE0004770,RalA-binding protein 1,Humans,substrate
+DB00564,BE0001069,ATP-binding cassette sub-family C member 2,Humans,substrate
+DB00570,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB00570,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB00570,BE0001032,ATP-dependent translocase ABCB1,Humans,inducer
+DB00570,BE0000785,Multidrug resistance-associated protein 1,Humans,substrate
+DB00570,BE0000785,Multidrug resistance-associated protein 1,Humans,inhibitor
+DB00570,BE0000785,Multidrug resistance-associated protein 1,Humans,inducer
+DB00570,BE0001069,ATP-binding cassette sub-family C member 2,Humans,substrate
+DB00570,BE0001069,ATP-binding cassette sub-family C member 2,Humans,inhibitor
+DB00570,BE0001069,ATP-binding cassette sub-family C member 2,Humans,inducer
+DB00570,BE0003640,ATP-binding cassette sub-family C member 6,Humans,inhibitor
+DB00570,BE0000703,Bile salt export pump,Humans,substrate
+DB00570,BE0000703,Bile salt export pump,Humans,inhibitor
+DB00570,BE0001004,Solute carrier organic anion transporter family member 1B1,Humans,inhibitor
+DB00575,BE0003650,Solute carrier family 22 member 3,Humans,inhibitor
+DB00575,BE0000106,Organic cation/carnitine transporter 2,Humans,inhibitor
+DB00575,BE0000757,Solute carrier family 22 member 4,Humans,inhibitor
+DB00741,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB00741,BE0001032,ATP-dependent translocase ABCB1,Humans,inducer
+DB00741,BE0003642,Solute carrier organic anion transporter family member 1A2,Humans,inhibitor
+DB00741,BE0003645,Organic anion transporter 3,Humans,substrate
+DB00787,BE0003648,Solute carrier family 22 member 1,Humans,substrate
+DB00787,BE0003648,Solute carrier family 22 member 1,Humans,inhibitor
+DB00787,BE0001066,Solute carrier family 22 member 6,Humans,substrate
+DB00787,BE0001066,Solute carrier family 22 member 6,Humans,inhibitor
+DB00787,BE0003645,Organic anion transporter 3,Humans,substrate
+DB00787,BE0003645,Organic anion transporter 3,Humans,inhibitor
+DB00787,BE0003643,Ileal sodium/bile acid cotransporter,Humans,substrate
+DB00787,BE0003657,Multidrug and toxin extrusion protein 1,Humans,substrate
+DB00787,BE0004752,Multidrug and toxin extrusion protein 2,Humans,substrate
+DB00836,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB00857,BE0009791,ABC multidrug transporter MDR2,Trichophyton interdigitale (strain MR816),substrate
+DB00871,BE0000106,Organic cation/carnitine transporter 2,Humans,substrate
+DB00871,BE0003647,Solute carrier family 22 member 2,Humans,substrate
+DB00915,BE0003647,Solute carrier family 22 member 2,Humans,substrate
+DB00915,BE0003647,Solute carrier family 22 member 2,Humans,inhibitor
+DB00915,BE0003648,Solute carrier family 22 member 1,Humans,substrate
+DB00915,BE0003648,Solute carrier family 22 member 1,Humans,inhibitor
+DB00938,BE0003648,Solute carrier family 22 member 1,Humans,substrate
+DB00938,BE0003648,Solute carrier family 22 member 1,Humans,inhibitor
+DB00938,BE0003650,Solute carrier family 22 member 3,Humans,inhibitor
+DB00938,BE0003647,Solute carrier family 22 member 2,Humans,inhibitor
+DB00957,BE0001069,ATP-binding cassette sub-family C member 2,Humans,inhibitor
+DB00957,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB01006,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB01009,BE0001188,ATP-binding cassette sub-family C member 4,Humans,inhibitor
+DB01009,BE0003642,Solute carrier organic anion transporter family member 1A2,Humans,inhibitor
+DB01009,BE0001066,Solute carrier family 22 member 6,Humans,inhibitor
+DB01009,BE0003645,Organic anion transporter 3,Humans,inhibitor
+DB01009,BE0000879,Solute carrier family 22 member 11,Humans,inhibitor
+DB01009,BE0003646,Solute carrier family 22 member 7,Humans,inhibitor
+DB01067,BE0000703,Bile salt export pump,Humans,substrate
+DB01112,BE0001018,Solute carrier family 15 member 1,Humans,inhibitor
+DB01112,BE0001134,Solute carrier family 15 member 2,Humans,inhibitor
+DB01115,BE0001061,ATP-binding cassette sub-family C member 3,Humans,inducer
+DB01115,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB01115,BE0001032,ATP-dependent translocase ABCB1,Humans,inducer
+DB01115,BE0001069,ATP-binding cassette sub-family C member 2,Humans,inducer
+DB01115,BE0001004,Solute carrier organic anion transporter family member 1B1,Humans,inhibitor
+DB01115,BE0000703,Bile salt export pump,Humans,inhibitor
+DB01117,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB01167,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB01167,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,inhibitor
+DB01167,BE0001042,Solute carrier organic anion transporter family member 2B1,Humans,inhibitor
+DB01182,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB01234,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB01234,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB01234,BE0001032,ATP-dependent translocase ABCB1,Humans,inducer
+DB01234,BE0003645,Organic anion transporter 3,Humans,substrate
+DB01234,BE0000703,Bile salt export pump,Humans,inducer
+DB01234,BE0001069,ATP-binding cassette sub-family C member 2,Humans,inducer
+DB01234,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,inhibitor
+DB01234,BE0003642,Solute carrier organic anion transporter family member 1A2,Humans,inhibitor
+DB01244,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB01393,BE0001004,Solute carrier organic anion transporter family member 1B1,Humans,inhibitor
+DB01424,BE0001066,Solute carrier family 22 member 6,Humans,inhibitor
+DB05239,BE0001004,Solute carrier organic anion transporter family member 1B1,Humans,weak inhibitor
+DB05239,BE0003659,Solute carrier organic anion transporter family member 1B3,Humans,inhibitor
+DB05239,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,weak inhibitor
+DB05239,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB06016,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB06228,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB06228,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,substrate
+DB06813,BE0004711,Reduced folate transporter,Humans,substrate
+DB06813,BE0001069,ATP-binding cassette sub-family C member 2,Humans,substrate
+DB06813,BE0001069,ATP-binding cassette sub-family C member 2,Humans,inhibitor
+DB06813,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,substrate
+DB06813,BE0001048,Proton-coupled folate transporter,Humans,substrate
+DB06813,BE0001061,ATP-binding cassette sub-family C member 3,Humans,substrate
+DB06813,BE0001061,ATP-binding cassette sub-family C member 3,Humans,inhibitor
+DB06813,BE0003659,Solute carrier organic anion transporter family member 1B3,Humans,substrate
+DB08868,BE0000884,Excitatory amino acid transporter 2,Humans,inducer
+DB08868,BE0001115,Excitatory amino acid transporter 1,Humans,inducer
+DB08868,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB08868,BE0000785,Multidrug resistance-associated protein 1,Humans,inhibitor
+DB08868,BE0000785,Multidrug resistance-associated protein 1,Humans,inducer
+DB09063,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB11672,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB11682,BE0001004,Solute carrier organic anion transporter family member 1B1,Humans,inhibitor
+DB11682,BE0003659,Solute carrier organic anion transporter family member 1B3,Humans,inhibitor
+DB11682,BE0001066,Solute carrier family 22 member 6,Humans,substrate
+DB11682,BE0003645,Organic anion transporter 3,Humans,substrate
+DB11682,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,substrate
+DB11791,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB11791,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB11791,BE0003657,Multidrug and toxin extrusion protein 1,Humans,inhibitor
+DB11791,BE0004752,Multidrug and toxin extrusion protein 2,Humans,inhibitor
+DB11791,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,inhibitor
+DB12095,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB12095,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB13946,BE0003642,Solute carrier organic anion transporter family member 1A2,Humans,inhibitor
+DB13946,BE0003642,Solute carrier organic anion transporter family member 1A2,Humans,inducer
+DB13946,BE0003645,Organic anion transporter 3,Humans,inducer
+DB13946,BE0003646,Solute carrier family 22 member 7,Humans,inducer
+DB13946,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB13946,BE0003644,Hepatic sodium/bile acid cotransporter,Humans,inhibitor
+DB13946,BE0000757,Solute carrier family 22 member 4,Humans,substrate
+DB13946,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,substrate
+DB13946,BE0003647,Solute carrier family 22 member 2,Humans,inducer
+DB13946,BE0003657,Multidrug and toxin extrusion protein 1,Humans,inducer
+DB13946,BE0003659,Solute carrier organic anion transporter family member 1B3,Humans,substrate
+DB13952,BE0003647,Solute carrier family 22 member 2,Humans,inhibitor
+DB13952,BE0003648,Solute carrier family 22 member 1,Humans,inhibitor
+DB13952,BE0003650,Solute carrier family 22 member 3,Humans,inhibitor
+DB13952,BE0001042,Solute carrier organic anion transporter family member 2B1,Humans,inhibitor
+DB13952,BE0003642,Solute carrier organic anion transporter family member 1A2,Humans,inhibitor
+DB13952,BE0003651,ATP-binding cassette sub-family C member 10,Humans,inhibitor
+DB13952,BE0000879,Solute carrier family 22 member 11,Humans,inhibitor
+DB13952,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,inhibitor
+DB13952,BE0001004,Solute carrier organic anion transporter family member 1B1,Humans,inhibitor
+DB13952,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB13952,BE0003645,Organic anion transporter 3,Humans,
+DB13952,BE0003659,Solute carrier organic anion transporter family member 1B3,Humans,
+DB13952,BE0003660,Solute carrier organic anion transporter family member 1C1,Humans,
+DB13952,BE0003656,Solute carrier organic anion transporter family member 4A1,Humans,
+DB14539,BE0001032,ATP-dependent translocase ABCB1,Humans,
+DB14539,BE0003642,Solute carrier organic anion transporter family member 1A2,Humans,
+DB14539,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,
+DB14539,BE0003645,Organic anion transporter 3,Humans,
+DB15149,BE0001032,ATP-dependent translocase ABCB1,Humans,substrate
+DB15149,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB15149,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,substrate
+DB16956,BE0001066,Solute carrier family 22 member 6,Humans,substrate
+DB16956,BE0001066,Solute carrier family 22 member 6,Humans,inhibitor
+DB16956,BE0003645,Organic anion transporter 3,Humans,substrate
+DB16956,BE0003645,Organic anion transporter 3,Humans,inhibitor
+DB16956,BE0001032,ATP-dependent translocase ABCB1,Humans,inhibitor
+DB16956,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,inhibitor
+DB16956,BE0000703,Bile salt export pump,Humans,inhibitor
+DB17083,BE0001004,Solute carrier organic anion transporter family member 1B1,Humans,substrate
+DB17083,BE0001004,Solute carrier organic anion transporter family member 1B1,Humans,inhibitor
+DB17083,BE0003659,Solute carrier organic anion transporter family member 1B3,Humans,substrate
+DB17083,BE0003659,Solute carrier organic anion transporter family member 1B3,Humans,inhibitor
+DB17083,BE0003645,Organic anion transporter 3,Humans,substrate
+DB17083,BE0003645,Organic anion transporter 3,Humans,inhibitor
+DB17083,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,substrate
+DB17083,BE0001066,Solute carrier family 22 member 6,Humans,inhibitor

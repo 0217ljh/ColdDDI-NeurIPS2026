@@ -1,0 +1,45 @@
+drugbank_id,carrier_id,carrier_name,organism,action
+DB00303,BE0000530,Albumin,Humans,binder
+DB00324,BE0000209,Corticosteroid-binding globulin,Humans,
+DB00335,BE0000530,Albumin,Humans,substrate
+DB00495,BE0000530,Albumin,Humans,
+DB00497,BE0000530,Albumin,Humans,binder
+DB00497,BE0004879,alpha1-acid glycoprotein,Humans,binder
+DB00575,BE0000530,Albumin,Humans,binder
+DB00741,BE0000685,Sex hormone-binding globulin,Humans,binder
+DB00741,BE0000209,Corticosteroid-binding globulin,Humans,binder
+DB00787,BE0000530,Albumin,Humans,binder
+DB00857,BE0000530,Albumin,Humans,binder
+DB00857,BE0004879,alpha1-acid glycoprotein,Humans,binder
+DB00938,BE0000530,Albumin,Humans,binder
+DB00938,BE0004879,alpha1-acid glycoprotein,Humans,binder
+DB00957,BE0000530,Albumin,Humans,binder
+DB00957,BE0000685,Sex hormone-binding globulin,Humans,binder
+DB01006,BE0000530,Albumin,Humans,binder
+DB01009,BE0000530,Albumin,Humans,
+DB01067,BE0000530,Albumin,Humans,binder
+DB01101,BE0000530,Albumin,Humans,binder
+DB01115,BE0000530,Albumin,Humans,binder
+DB01115,BE0004879,alpha1-acid glycoprotein,Humans,binder
+DB01167,BE0000530,Albumin,Humans,binder
+DB01234,BE0000530,Albumin,Humans,binder
+DB05239,BE0000925,Alpha-1-acid glycoprotein 1,Humans,binder
+DB06150,BE0000530,Albumin,Humans,substrate
+DB06813,BE0000530,Albumin,Humans,binder
+DB09093,BE0000530,Albumin,Humans,
+DB09124,BE0000530,Albumin,Humans,binder
+DB09124,BE0000685,Sex hormone-binding globulin,Humans,binder
+DB09124,BE0000209,Corticosteroid-binding globulin,Humans,binder
+DB11703,BE0000530,Albumin,Humans,binder
+DB11703,BE0004879,alpha1-acid glycoprotein,Humans,binder
+DB12095,BE0001067,Broad substrate specificity ATP-binding cassette transporter ABCG2,Humans,binder
+DB13946,BE0000530,Albumin,Humans,binder
+DB13946,BE0000685,Sex hormone-binding globulin,Humans,binder
+DB13952,BE0000685,Sex hormone-binding globulin,Humans,
+DB13952,BE0000530,Albumin,Humans,
+DB13952,BE0003591,"Fatty acid-binding protein, intestinal",Humans,
+DB14539,BE0000685,Sex hormone-binding globulin,Humans,
+DB14539,BE0000209,Corticosteroid-binding globulin,Humans,
+DB15149,BE0000530,Albumin,Humans,binder
+DB15149,BE0000925,Alpha-1-acid glycoprotein 1,Humans,binder
+DB17083,BE0000530,Albumin,Humans,binder

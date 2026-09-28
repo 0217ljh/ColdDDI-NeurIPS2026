@@ -1,0 +1,346 @@
+drugbank_id,enzyme_id,enzyme_name,organism,action
+DB00231,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00231,BE0003549,Cytochrome P450 2B6,Humans,substrate
+DB00231,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB00303,BE0001148,Dipeptidase 1,Humans,substrate
+DB00318,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB00318,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00318,BE0003679,UDP-glucuronosyltransferase 2B7,Humans,substrate
+DB00318,BE0003681,UDP-glucuronosyltransferase 2B4,Humans,substrate
+DB00324,BE0002362,Cytochrome P450 3A5,Humans,inducer
+DB00324,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00324,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB00335,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB00338,BE0003543,Cytochrome P450 1A1,Humans,substrate
+DB00338,BE0003543,Cytochrome P450 1A1,Humans,inducer
+DB00338,BE0002433,Cytochrome P450 1A2,Humans,inducer
+DB00338,BE0001111,Cytochrome P450 1B1,Humans,inducer
+DB00338,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB00338,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB00338,BE0003611,Cytochrome P450 2C18,Humans,substrate
+DB00338,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB00338,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00338,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB00338,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB00338,BE0003536,Cytochrome P450 2C19,Humans,substrate
+DB00338,BE0003536,Cytochrome P450 2C19,Humans,inhibitor
+DB00352,BE0000077,Hypoxanthine-guanine phosphoribosyltransferase,Humans,substrate
+DB00411,BE0000657,Cytosolic phospholipase A2,Humans,inducer
+DB00411,BE0000426,Acetylcholinesterase,Humans,substrate
+DB00495,BE0003336,Cytochrome P450 2A6,Humans,substrate
+DB00495,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB00495,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00495,BE0001260,"Thymidine kinase, cytosolic",Humans,substrate
+DB00495,BE0003679,UDP-glucuronosyltransferase 2B7,Humans,substrate
+DB00495,BE0003541,UDP-glucuronosyltransferase 1A1,Humans,substrate
+DB00495,BE0003541,UDP-glucuronosyltransferase 1A1,Humans,inducer
+DB00497,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB00497,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00497,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB00539,BE0003543,Cytochrome P450 1A1,Humans,substrate
+DB00539,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00539,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB00564,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00564,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB00564,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB00564,BE0002887,Cytochrome P450 2C8,Humans,inducer
+DB00564,BE0002433,Cytochrome P450 1A2,Humans,inhibitor
+DB00564,BE0002433,Cytochrome P450 1A2,Humans,inducer
+DB00564,BE0002793,Cytochrome P450 2C9,Humans,inducer
+DB00564,BE0003536,Cytochrome P450 2C19,Humans,inhibitor
+DB00564,BE0003536,Cytochrome P450 2C19,Humans,inducer
+DB00564,BE0003549,Cytochrome P450 2B6,Humans,substrate
+DB00564,BE0003549,Cytochrome P450 2B6,Humans,inducer
+DB00564,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB00564,BE0002362,Cytochrome P450 3A5,Humans,inducer
+DB00564,BE0003679,UDP-glucuronosyltransferase 2B7,Humans,substrate
+DB00564,BE0003541,UDP-glucuronosyltransferase 1A1,Humans,inducer
+DB00564,BE0004694,UDP-glucuronosyltransferase 1-6,Humans,inducer
+DB00564,BE0004695,UDP-glucuronosyltransferase 1A7,Humans,inducer
+DB00570,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB00570,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00570,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB00570,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB00575,BE0002433,Cytochrome P450 1A2,Humans,substrate
+DB00575,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00575,BE0003543,Cytochrome P450 1A1,Humans,substrate
+DB00575,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB00575,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB00647,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB00647,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB00647,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00647,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB00647,BE0004866,Cytochrome P450 3A Subfamily,Humans,inhibitor
+DB00647,BE0003681,UDP-glucuronosyltransferase 2B4,Humans,inhibitor
+DB00679,BE0003533,Cytochrome P450 2E1,Humans,inhibitor
+DB00679,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB00679,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB00679,BE0003536,Cytochrome P450 2C19,Humans,substrate
+DB00741,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00741,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB00741,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB00741,BE0003612,Cytochrome P450 3A7,Humans,substrate
+DB00741,BE0000731,"Cytochrome P450 11B1, mitochondrial",Humans,substrate
+DB00741,BE0003542,"Cytochrome P450 11B2, mitochondrial",Humans,substrate
+DB00741,BE0002887,Cytochrome P450 2C8,Humans,inducer
+DB00741,BE0003610,Aldo-keto reductase family 1 member D1,Humans,substrate
+DB00741,BE0000585,3-oxo-5-alpha-steroid 4-dehydrogenase 2,Humans,substrate
+DB00741,BE0000131,11-beta-hydroxysteroid dehydrogenase type 2,Humans,substrate
+DB00741,BE0000329,11-beta-hydroxysteroid dehydrogenase 1,Humans,substrate
+DB00741,BE0003336,Cytochrome P450 2A6,Humans,inducer
+DB00741,BE0001111,Cytochrome P450 1B1,Humans,inducer
+DB00741,BE0003549,Cytochrome P450 2B6,Humans,inducer
+DB00741,BE0002793,Cytochrome P450 2C9,Humans,inducer
+DB00741,BE0003536,Cytochrome P450 2C19,Humans,inducer
+DB00787,BE0000458,Thymidine kinase,HHV-1,substrate
+DB00787,BE0002351,Guanylate kinase,Humans,substrate
+DB00787,BE0009626,Nucleoside diphosphokinase,Humans,substrate
+DB00787,BE0009686,Pyruvate Kinases,Humans,substrate
+DB00787,BE0009627,Creatine Kinases,Humans,substrate
+DB00787,BE0009688,Phosphoglycerate Kinases,Humans,substrate
+DB00787,BE0009689,Succinyl-CoA Synthetases,Humans,substrate
+DB00787,BE0009690,Phosphoenolpyruvate Carboxykinases,Humans,substrate
+DB00787,BE0009692,Adenylosuccinate Synthetases,Humans,substrate
+DB00836,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00836,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB00836,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB00836,BE0003549,Cytochrome P450 2B6,Humans,substrate
+DB00836,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB00857,BE0000017,Prostaglandin G/H synthase 1,Humans,substrate
+DB00857,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB00857,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB00857,BE0002433,Cytochrome P450 1A2,Humans,substrate
+DB00857,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00857,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB00857,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB00857,BE0003536,Cytochrome P450 2C19,Humans,substrate
+DB00871,BE0009567,Sulfotransferase,Humans,substrate
+DB00871,BE0009758,UDP-glucuronosyltransferases (UGTs),Humans,substrate
+DB00871,BE0002180,Cholinesterase,Humans,inhibitor
+DB00915,BE0002151,Aromatic-L-amino-acid decarboxylase,Humans,inducer
+DB00915,BE0002196,Amine oxidase [flavin-containing] B,Humans,inhibitor
+DB00938,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00938,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB00938,BE0003612,Cytochrome P450 3A7,Humans,substrate
+DB00938,BE0002887,Cytochrome P450 2C8,Humans,inhibitor
+DB00940,BE0000426,Acetylcholinesterase,Humans,inhibitor
+DB00947,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00947,BE0003541,UDP-glucuronosyltransferase 1A1,Humans,substrate
+DB00957,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB00957,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB00957,BE0003549,Cytochrome P450 2B6,Humans,substrate
+DB00957,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB00957,BE0003541,UDP-glucuronosyltransferase 1A1,Humans,substrate
+DB01006,BE0003536,Cytochrome P450 2C19,Humans,inhibitor
+DB01006,BE0003679,UDP-glucuronosyltransferase 2B7,Humans,substrate
+DB01006,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01006,BE0003336,Cytochrome P450 2A6,Humans,substrate
+DB01006,BE0003336,Cytochrome P450 2A6,Humans,inhibitor
+DB01006,BE0002090,Aromatase,Humans,inhibitor
+DB01009,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB01009,BE0002793,Cytochrome P450 2C9,Humans,inhibitor
+DB01009,BE0002887,Cytochrome P450 2C8,Humans,inhibitor
+DB01009,BE0003541,UDP-glucuronosyltransferase 1A1,Humans,substrate
+DB01046,BE0003074,Carbonyl reductase [NADPH] 1,Humans,substrate
+DB01067,BE0003541,UDP-glucuronosyltransferase 1A1,Humans,substrate
+DB01067,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB01101,BE0002193,Thymidine phosphorylase,Humans,substrate
+DB01101,BE0002705,Liver carboxylesterase 1,Humans,substrate
+DB01101,BE0002443,Cytidine deaminase,Humans,substrate
+DB01101,BE0002793,Cytochrome P450 2C9,Humans,inhibitor
+DB01101,BE0002793,Cytochrome P450 2C9,Humans,downregulator
+DB01101,BE0002456,Uridine phosphorylase 1,Humans,substrate
+DB01101,BE0002457,Uridine phosphorylase 2,Humans,substrate
+DB01115,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01115,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB01115,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB01115,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB01115,BE0002433,Cytochrome P450 1A2,Humans,substrate
+DB01115,BE0002433,Cytochrome P450 1A2,Humans,inhibitor
+DB01115,BE0003336,Cytochrome P450 2A6,Humans,substrate
+DB01115,BE0002887,Cytochrome P450 2C8,Humans,inhibitor
+DB01115,BE0003543,Cytochrome P450 1A1,Humans,inhibitor
+DB01115,BE0003549,Cytochrome P450 2B6,Humans,inducer
+DB01115,BE0003533,Cytochrome P450 2E1,Humans,inhibitor
+DB01115,BE0002793,Cytochrome P450 2C9,Humans,inhibitor
+DB01115,BE0002793,Cytochrome P450 2C9,Humans,inducer
+DB01115,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB01117,BE0002793,Cytochrome P450 2C9,Humans,inhibitor
+DB01117,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01167,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01167,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB01167,BE0002362,Cytochrome P450 3A5,Humans,inhibitor
+DB01167,BE0003612,Cytochrome P450 3A7,Humans,inhibitor
+DB01167,BE0004866,Cytochrome P450 3A Subfamily,Humans,inhibitor
+DB01167,BE0003549,Cytochrome P450 2B6,Humans,inhibitor
+DB01167,BE0003543,Cytochrome P450 1A1,Humans,inducer
+DB01167,BE0003533,Cytochrome P450 2E1,Humans,inhibitor
+DB01168,BE0002204,Xanthine dehydrogenase/oxidase,Humans,substrate
+DB01182,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB01182,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB01182,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01182,BE0002433,Cytochrome P450 1A2,Humans,substrate
+DB01182,BE0002433,Cytochrome P450 1A2,Humans,inhibitor
+DB01198,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01198,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB01198,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB01198,BE0000017,Prostaglandin G/H synthase 1,Humans,substrate
+DB01220,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01220,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB01220,BE0003536,Cytochrome P450 2C19,Humans,inducer
+DB01220,BE0002887,Cytochrome P450 2C8,Humans,inducer
+DB01234,BE0000131,11-beta-hydroxysteroid dehydrogenase type 2,Humans,substrate
+DB01234,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01234,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB01234,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB01234,BE0000329,11-beta-hydroxysteroid dehydrogenase 1,Humans,substrate
+DB01234,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB01234,BE0002362,Cytochrome P450 3A5,Humans,inducer
+DB01234,BE0003612,Cytochrome P450 3A7,Humans,substrate
+DB01234,BE0003612,Cytochrome P450 3A7,Humans,inducer
+DB01234,BE0000344,"Steroid 17-alpha-hydroxylase/17,20 lyase",Humans,inhibitor
+DB01234,BE0003543,Cytochrome P450 1A1,Humans,inhibitor
+DB01234,BE0003543,Cytochrome P450 1A1,Humans,inducer
+DB01234,BE0003336,Cytochrome P450 2A6,Humans,inducer
+DB01234,BE0003549,Cytochrome P450 2B6,Humans,inducer
+DB01234,BE0003536,Cytochrome P450 2C19,Humans,inducer
+DB01234,BE0002887,Cytochrome P450 2C8,Humans,inducer
+DB01234,BE0003533,Cytochrome P450 2E1,Humans,inducer
+DB01234,BE0003550,Cytochrome P450 3A43,Humans,inducer
+DB01234,BE0000421,Cytochrome P450 4A11,Humans,inducer
+DB01234,BE0000731,"Cytochrome P450 11B1, mitochondrial",Humans,inhibitor
+DB01244,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB01244,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB01244,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01274,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB01274,BE0003536,Cytochrome P450 2C19,Humans,substrate
+DB01274,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB01274,BE0003336,Cytochrome P450 2A6,Humans,substrate
+DB01393,BE0003543,Cytochrome P450 1A1,Humans,inducer
+DB01393,BE0002887,Cytochrome P450 2C8,Humans,inhibitor
+DB01393,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01424,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB01424,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB01424,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB01424,BE0003611,Cytochrome P450 2C18,Humans,substrate
+DB01424,BE0000344,"Steroid 17-alpha-hydroxylase/17,20 lyase",Humans,substrate
+DB01424,BE0003536,Cytochrome P450 2C19,Humans,substrate
+DB01424,BE0002433,Cytochrome P450 1A2,Humans,substrate
+DB01424,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB05239,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB05239,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB05239,BE0003679,UDP-glucuronosyltransferase 2B7,Humans,substrate
+DB05239,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB05239,BE0002362,Cytochrome P450 3A5,Humans,
+DB06016,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB06016,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB06016,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB06016,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB06016,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB06016,BE0002362,Cytochrome P450 3A5,Humans,inducer
+DB06016,BE0002433,Cytochrome P450 1A2,Humans,inhibitor
+DB06016,BE0002793,Cytochrome P450 2C9,Humans,inhibitor
+DB06016,BE0003536,Cytochrome P450 2C19,Humans,inhibitor
+DB06016,BE0003533,Cytochrome P450 2E1,Humans,inhibitor
+DB06144,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB06144,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB06150,BE0002793,Cytochrome P450 2C9,Humans,inhibitor
+DB06228,BE0003683,Cytochrome P450 2J2,Humans,substrate
+DB06228,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB06228,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB06701,BE0004387,Carboxylesterase,Alcaligenes sp.,substrate
+DB06708,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB06708,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB06712,BE0003336,Cytochrome P450 2A6,Humans,inhibitor
+DB06712,BE0003536,Cytochrome P450 2C19,Humans,inhibitor
+DB06712,BE0002887,Cytochrome P450 2C8,Humans,inhibitor
+DB06712,BE0003533,Cytochrome P450 2E1,Humans,substrate
+DB06712,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB06712,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB06736,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB06791,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB08868,BE0004728,Sphingosine kinase 1,Humans,substrate
+DB08868,BE0004728,Sphingosine kinase 1,Humans,inhibitor
+DB08868,BE0003533,Cytochrome P450 2E1,Humans,substrate
+DB08868,BE0004727,Cytochrome P450 4F2,Humans,substrate
+DB08868,BE0004727,Cytochrome P450 4F2,Humans,inducer
+DB09063,BE0002793,Cytochrome P450 2C9,Humans,inhibitor
+DB09063,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB09063,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB09124,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB09143,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB11672,BE0002793,Cytochrome P450 2C9,Humans,inhibitor
+DB11672,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB11672,BE0003549,Cytochrome P450 2B6,Humans,inhibitor
+DB11672,BE0002433,Cytochrome P450 1A2,Humans,inhibitor
+DB11672,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB11672,BE0002281,Glutathione S-transferase A1,Humans,inhibitor
+DB11672,BE0000807,Glutathione S-transferase Mu 1,Humans,inhibitor
+DB11672,BE0000814,Glutathione S-transferase P,Humans,inhibitor
+DB11682,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB11682,BE0002887,Cytochrome P450 2C8,Humans,inhibitor
+DB11682,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB11703,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB11703,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB11703,BE0002362,Cytochrome P450 3A5,Humans,inhibitor
+DB11703,BE0004866,Cytochrome P450 3A Subfamily,Humans,substrate
+DB11791,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB11791,BE0003539,Aldehyde oxidase,Humans,substrate
+DB11791,BE0002433,Cytochrome P450 1A2,Humans,inhibitor
+DB12095,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB12095,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB12095,BE0003549,Cytochrome P450 2B6,Humans,inducer
+DB12095,BE0002705,Liver carboxylesterase 1,Humans,substrate
+DB12095,BE0004712,Cocaine esterase,Humans,substrate
+DB12095,BE0003681,UDP-glucuronosyltransferase 2B4,Humans,inducer
+DB12095,BE0003679,UDP-glucuronosyltransferase 2B7,Humans,inducer
+DB12095,BE0002793,Cytochrome P450 2C9,Humans,inhibitor
+DB12095,BE0003536,Cytochrome P450 2C19,Humans,inhibitor
+DB12095,BE0002363,Cytochrome P450 2D6,Humans,inhibitor
+DB12095,BE0002887,Cytochrome P450 2C8,Humans,inhibitor
+DB12329,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB12329,BE0002198,Amine oxidase [flavin-containing] A,Humans,substrate
+DB13074,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB13946,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB13946,BE0002638,Cytochrome P450 3A4,Humans,inhibitor
+DB13946,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB13946,BE0002198,Amine oxidase [flavin-containing] A,Humans,inducer
+DB13946,BE0003537,"Cholesterol side-chain cleavage enzyme, mitochondrial",Humans,inhibitor
+DB13946,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB13946,BE0003612,Cytochrome P450 3A7,Humans,substrate
+DB13946,BE0003543,Cytochrome P450 1A1,Humans,substrate
+DB13946,BE0001111,Cytochrome P450 1B1,Humans,substrate
+DB13946,BE0003534,Cytochrome P450 2A13,Humans,substrate
+DB13946,BE0003549,Cytochrome P450 2B6,Humans,substrate
+DB13946,BE0003536,Cytochrome P450 2C19,Humans,substrate
+DB13946,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB13946,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB13946,BE0003550,Cytochrome P450 3A43,Humans,substrate
+DB13946,BE0004887,3-oxo-5-alpha-steroid 4-dehydrogenase,Humans,substrate
+DB13946,BE0002090,Aromatase,Humans,substrate
+DB13952,BE0002433,Cytochrome P450 1A2,Humans,substrate
+DB13952,BE0002433,Cytochrome P450 1A2,Humans,inhibitor
+DB13952,BE0003541,UDP-glucuronosyltransferase 1A1,Humans,substrate
+DB13952,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB13952,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB13952,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB13952,BE0003612,Cytochrome P450 3A7,Humans,substrate
+DB13952,BE0003543,Cytochrome P450 1A1,Humans,substrate
+DB13952,BE0001111,Cytochrome P450 1B1,Humans,substrate
+DB13952,BE0003536,Cytochrome P450 2C19,Humans,substrate
+DB13952,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB13952,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB14539,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB14539,BE0002638,Cytochrome P450 3A4,Humans,inducer
+DB14539,BE0002362,Cytochrome P450 3A5,Humans,substrate
+DB14539,BE0003612,Cytochrome P450 3A7,Humans,substrate
+DB14539,BE0000731,"Cytochrome P450 11B1, mitochondrial",Humans,substrate
+DB14539,BE0003542,"Cytochrome P450 11B2, mitochondrial",Humans,substrate
+DB14539,BE0002887,Cytochrome P450 2C8,Humans,inducer
+DB15149,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB15149,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB15149,BE0002363,Cytochrome P450 2D6,Humans,substrate
+DB17083,BE0002793,Cytochrome P450 2C9,Humans,substrate
+DB17083,BE0002638,Cytochrome P450 3A4,Humans,substrate
+DB17083,BE0002887,Cytochrome P450 2C8,Humans,substrate
+DB17083,BE0002887,Cytochrome P450 2C8,Humans,inhibitor

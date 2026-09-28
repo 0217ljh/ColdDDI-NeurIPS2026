@@ -1,0 +1,30 @@
+drugbank_id,pathway_id,pathway_name
+DB00318,SMP0000621,Codeine Metabolism Pathway
+DB00318,SMP0000405,Codeine Action Pathway
+DB00335,SMP0000298,Atenolol Action Pathway
+DB00352,SMP0000430,Thioguanine Action Pathway
+DB00352,SMP0000647,Thioguanine Metabolism Pathway
+DB00479,SMP0000253,Amikacin Action Pathway
+DB00495,SMP0000747,Zidovudine Action Pathway
+DB00497,SMP0000409,Oxycodone Action Pathway
+DB00564,SMP0000634,Carbamazepine Metabolism Pathway
+DB00570,SMP0000436,Vinblastine Action Pathway
+DB00647,SMP0000672,Propoxyphene Action Pathway
+DB00741,SMP0000372,Adrenal Hyperplasia Type 5 or Congenital Adrenal Hyperplasia Due to 17 alpha-Hydroxylase Deficiency
+DB00741,SMP0000577,Corticosterone Methyl Oxidase I Deficiency (CMO I)
+DB00741,SMP0000718,3-beta-Hydroxysteroid Dehydrogenase Deficiency
+DB00741,SMP0000310,Corticotropin Activation of Cortisol Production
+DB00741,SMP0000371,Congenital Lipoid Adrenal Hyperplasia (CLAH) or Lipoid CAH
+DB00741,SMP0000575,11-beta-Hydroxylase Deficiency (CYP11B1)
+DB00741,SMP0000717,Apparent Mineralocorticoid Excess Syndrome
+DB00741,SMP0000130,Steroidogenesis
+DB00741,SMP0000373,Adrenal Hyperplasia Type 3 or Congenital Adrenal Hyperplasia Due to 21-Hydroxylase Deficiency
+DB00741,SMP0000566,17-alpha-Hydroxylase Deficiency (CYP17)
+DB00741,SMP0000576,21-Hydroxylase Deficiency (CYP21)
+DB00741,SMP0000578,Corticosterone Methyl Oxidase II Deficiency (CMO II)
+DB01009,SMP0000085,Ketoprofen Action Pathway
+DB01101,SMP0000469,Capecitabine Action Pathway
+DB01101,SMP0000607,Capecitabine Metabolism Pathway
+DB01115,SMP0000379,Nifedipine Action Pathway
+DB08801,SMP0057582,Dimetindene H1-Antihistamine Action
+DB12877,SMP0059044,Oxatomide H1-Antihistamine Action

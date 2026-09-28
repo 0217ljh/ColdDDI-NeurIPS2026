@@ -1,0 +1,524 @@
+drug_a_id,drug_b_id,pk_pd_label,action_drug_a,action_drug_b,match_pattern,mechanism_chain,chain_type,confidence
+DB00231,DB01198,PD,modulator,agonist,modulator-agonist,Temazepam --[modulator]--> Translocator protein <--[agonist]-- Zopiclone,PD_opposing_target,low
+DB00318,DB00497,PD,agonist,agonist,agonist-agonist,Codeine --[agonist]--> Kappa-type opioid receptor <--[agonist]-- Oxycodone,PD_convergent_target,high
+DB00318,DB00647,PD,agonist,agonist,agonist-agonist,Codeine --[agonist]--> Delta-type opioid receptor <--[agonist]-- Dextropropoxyphene,PD_convergent_target,high
+DB00318,DB00857,PK,substrate,inducer,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB00679,PK,substrate,inhibitor,inhibitor-substrate,Thioridazine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB01182,PK,substrate,inhibitor,inhibitor-substrate,Propafenone --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB01244,PK,substrate,inhibitor,inhibitor-substrate,Bepridil --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB01115,PK,substrate,inhibitor,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB00570,PK,substrate,inhibitor,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB00564,PK,substrate,inducer,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00318,DB12095,PK,substrate,inducer,inducer-substrate,Telotristat ethyl --[inducer]--> UDP-glucuronosyltransferase 2B4 --[substrate: metabolizes]--> Codeine,PK_through_enzyme,high
+DB00324,DB01234,PD,agonist,agonist,agonist-agonist,Fluorometholone --[agonist]--> Glucocorticoid receptor <--[agonist]-- Dexamethasone,PD_convergent_target,high
+DB00324,DB09091,PD,agonist,binder,agonist-binder,Fluorometholone --[agonist]--> Glucocorticoid receptor <--[binder]-- Tixocortol,PD_convergent_target,high
+DB00324,DB14539,PD,agonist,agonist,agonist-agonist,Fluorometholone --[agonist]--> Glucocorticoid receptor <--[agonist]-- Hydrocortisone acetate,PD_convergent_target,high
+DB00324,DB00957,PK,substrate,inducer,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Fluorometholone,PK_through_enzyme,high
+DB00324,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Fluorometholone,PK_through_enzyme,high
+DB00335,DB01182,PD,antagonist,antagonist,antagonist-antagonist,Atenolol --[antagonist]--> Beta-1 adrenergic receptor <--[antagonist]-- Propafenone,PD_convergent_target,high
+DB00335,DB00857,PK,substrate,inhibitor,inhibitor-substrate,Terbinafine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Atenolol,PK_through_enzyme,high
+DB00335,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Atenolol,PK_through_enzyme,high
+DB00335,DB00679,PK,substrate,inhibitor,inhibitor-substrate,Thioridazine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Atenolol,PK_through_enzyme,high
+DB00335,DB00871,PD,antagonist,antagonist,antagonist-antagonist,Atenolol --[antagonist]--> Beta-1 adrenergic receptor <--[antagonist]-- Terbutaline,PD_convergent_target,high
+DB00335,DB00938,PD,antagonist,inverse agonist,antagonist-inverse agonist,Atenolol --[antagonist]--> Beta-1 adrenergic receptor <--[inverse agonist]-- Salmeterol,PD_convergent_target,high
+DB00335,DB01274,PD,antagonist,agonist,antagonist-agonist,Atenolol --[antagonist]--> Beta-2 adrenergic receptor <--[agonist]-- Arformoterol,PD_opposing_target,low
+DB00335,DB01234,PK,substrate,inducer,inducer-substrate,Dexamethasone --[inducer]--> Bile salt export pump --[substrate: transports]--> Atenolol,PK_through_transporter,high
+DB00335,DB00570,PK,substrate,inhibitor,inhibitor-substrate,Vinblastine --[inhibitor]--> Bile salt export pump --[substrate: transports]--> Atenolol,PK_through_transporter,high
+DB00335,DB00647,PK,substrate,inhibitor,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Atenolol,PK_through_enzyme,high
+DB00335,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Atenolol,PK_through_enzyme,high
+DB00495,DB00741,PK,substrate,inducer,inducer-substrate,Hydrocortisone --[inducer]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Zidovudine,PK_through_transporter,high
+DB00495,DB01067,PK,inducer,substrate,inducer-substrate,Zidovudine --[inducer]--> UDP-glucuronosyltransferase 1A1 --[substrate: metabolizes]--> Glipizide,PK_through_enzyme,high
+DB00495,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB00957,PK,substrate,inducer,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB01006,PK,substrate,inhibitor,inhibitor-substrate,Letrozole --[inhibitor]--> Cytochrome P450 2A6 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB01115,PK,substrate,inhibitor,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB01117,PK,substrate,inhibitor,inhibitor-substrate,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB01101,PK,substrate,inhibitor,inhibitor-substrate,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB11791,PK,substrate,inhibitor,inhibitor-substrate,Capmatinib --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Zidovudine,PK_through_transporter,high
+DB00495,DB00836,PK,substrate,inhibitor,inhibitor-substrate,Loperamide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00495,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zidovudine,PK_through_enzyme,high
+DB00497,DB00647,PD,agonist,agonist,agonist-agonist,Oxycodone --[agonist]--> Delta-type opioid receptor <--[agonist]-- Dextropropoxyphene,PD_convergent_target,high
+DB00497,DB00857,PK,substrate,inducer,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB00679,PK,substrate,inhibitor,inhibitor-substrate,Thioridazine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB01182,PK,substrate,inhibitor,inhibitor-substrate,Propafenone --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB00741,PK,substrate,inducer,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB00564,PK,substrate,inducer,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB01244,PK,substrate,inhibitor,inhibitor-substrate,Bepridil --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB01115,PK,substrate,inhibitor,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB00570,PK,substrate,inhibitor,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00497,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Oxycodone,PK_through_enzyme,high
+DB00539,DB01220,PK,substrate,inducer,inducer-substrate,Rifaximin --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB00957,PK,substrate,inducer,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Toremifene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB00539,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB00570,PK,substrate,inhibitor,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB00564,PK,substrate,inducer,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Toremifene,PK_through_enzyme,high
+DB00539,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Toremifene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB00564,DB00957,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00564,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Carbamazepine --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB00564,DB01182,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB00564,DB09009,PD,inhibitor,inhibitor,inhibitor-inhibitor,Carbamazepine --[inhibitor]--> Voltage-gated sodium channel alpha subunit <--[inhibitor]-- Articaine,PD_convergent_target,high
+DB00564,DB00570,PK,substrate,inhibitor,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB00741,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Hydrocortisone,PK_through_enzyme,high
+DB00564,DB00857,PK,inhibitor,substrate,inhibitor-substrate,Carbamazepine --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00564,DB13952,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB00564,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB01115,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Nifedipine,PK_through_enzyme,high
+DB00564,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB06791,PK,substrate,inhibitor,inhibitor-substrate,Lanreotide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB00647,PK,substrate,inhibitor,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB00938,PK,substrate,inhibitor,inhibitor-substrate,Salmeterol --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB06228,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB00564,DB11791,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB00564,DB00836,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00564,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB06016,PK,substrate,inducer,inducer-substrate,Cariprazine --[inducer]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB06144,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB00564,DB01198,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB00564,DB01006,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Letrozole,PK_through_enzyme,high
+DB00564,DB01117,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Atovaquone,PK_through_enzyme,high
+DB00564,DB01244,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bepridil,PK_through_enzyme,high
+DB00564,DB01393,PK,substrate,inhibitor,inhibitor-substrate,Bezafibrate --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB06708,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Lumefantrine,PK_through_enzyme,high
+DB00564,DB12329,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Eravacycline,PK_through_enzyme,high
+DB00564,DB13074,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Macimorelin,PK_through_enzyme,high
+DB00564,DB01234,PK,substrate,inducer,inducer-substrate,Dexamethasone --[inducer]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB09143,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB00564,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB12095,PK,substrate,inducer,inducer-substrate,Telotristat ethyl --[inducer]--> UDP-glucuronosyltransferase 2B7 --[substrate: metabolizes]--> Carbamazepine,PK_through_enzyme,high
+DB00564,DB15149,PK,inducer,substrate,inducer-substrate,Carbamazepine --[inducer]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB00570,DB01198,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB00570,DB01067,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Bile salt export pump --[substrate: transports]--> Glipizide,PK_through_transporter,high
+DB00570,DB01182,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB00570,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB00957,PK,substrate,inducer,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB01115,PK,substrate,inhibitor,inhibitor-substrate,Nifedipine --[inhibitor]--> Bile salt export pump --[substrate: transports]--> Vinblastine,PK_through_transporter,high
+DB00570,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB00575,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00570,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB00741,PK,substrate,inducer,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB00857,PK,substrate,inducer,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB09143,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB00570,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB06791,PK,substrate,inhibitor,inhibitor-substrate,Lanreotide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB00647,PK,substrate,inhibitor,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB00679,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Thioridazine,PK_through_enzyme,high
+DB00570,DB01274,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB00570,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB00570,DB06144,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB00570,DB01244,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bepridil,PK_through_enzyme,high
+DB00570,DB06228,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB00570,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB00570,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB00836,PK,substrate,inhibitor,inhibitor-substrate,Loperamide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Vinblastine,PK_through_enzyme,high
+DB00570,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Vinblastine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB00575,DB00857,PK,substrate,inducer,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB00741,PK,substrate,inducer,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB06791,PK,substrate,inhibitor,inhibitor-substrate,Lanreotide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB01182,PK,substrate,inhibitor,inhibitor-substrate,Propafenone --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB00679,PD,agonist,antagonist,agonist-antagonist,Clonidine --[agonist]--> Alpha-1B adrenergic receptor <--[antagonist]-- Thioridazine,PD_opposing_target,low
+DB00575,DB06016,PD,agonist,antagonist,agonist-antagonist,Clonidine --[agonist]--> Alpha-1A adrenergic receptor <--[antagonist]-- Cariprazine,PD_opposing_target,low
+DB00575,DB11791,PK,substrate,inhibitor,inhibitor-substrate,Capmatinib --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00575,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Clonidine,PK_through_enzyme,high
+DB00647,DB01198,PK,inhibitor,substrate,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB00647,DB00857,PK,substrate,inducer,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB06708,PK,inhibitor,substrate,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Lumefantrine,PK_through_enzyme,high
+DB00647,DB00679,PK,substrate,inhibitor,inhibitor-substrate,Thioridazine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB01182,PK,inhibitor,substrate,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB00647,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB09143,PK,inhibitor,substrate,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB00647,DB01274,PK,inhibitor,substrate,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB00647,DB01115,PK,substrate,inhibitor,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB01244,PK,inhibitor,substrate,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bepridil,PK_through_enzyme,high
+DB00647,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Dextropropoxyphene --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB00647,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00647,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dextropropoxyphene,PK_through_enzyme,high
+DB00679,DB00915,PD,antagonist,agonist,antagonist-agonist,Thioridazine --[antagonist]--> D(2) dopamine receptor <--[agonist]-- Amantadine,PD_opposing_target,low
+DB00679,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Thioridazine,PK_through_enzyme,high
+DB00679,DB00857,PK,substrate,inhibitor,inhibitor-substrate,Terbinafine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Thioridazine,PK_through_enzyme,high
+DB00679,DB06016,PD,antagonist,antagonist,antagonist-antagonist,Thioridazine --[antagonist]--> 5-hydroxytryptamine receptor 2A <--[antagonist]-- Cariprazine,PD_convergent_target,high
+DB00679,DB06144,PK,inhibitor,substrate,inhibitor-substrate,Thioridazine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB00679,DB01182,PD,inhibitor,inhibitor,inhibitor-inhibitor,Thioridazine --[inhibitor]--> Voltage-gated inwardly rectifying potassium channel KCNH2 <--[inhibitor]-- Propafenone,PD_convergent_target,high
+DB00679,DB01274,PK,inhibitor,substrate,inhibitor-substrate,Thioridazine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB00679,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Thioridazine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB00679,DB01244,PK,substrate,inhibitor,inhibitor-substrate,Bepridil --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Thioridazine,PK_through_enzyme,high
+DB00679,DB01006,PK,substrate,inhibitor,inhibitor-substrate,Letrozole --[inhibitor]--> Cytochrome P450 2C19 --[substrate: metabolizes]--> Thioridazine,PK_through_enzyme,high
+DB00679,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Thioridazine,PK_through_enzyme,high
+DB00741,DB00787,PK,substrate,inhibitor,inhibitor-substrate,Acyclovir --[inhibitor]--> Organic anion transporter 3 --[substrate: transports]--> Hydrocortisone,PK_through_transporter,high
+DB00741,DB00957,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00741,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Hydrocortisone,PK_through_enzyme,high
+DB00741,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Hydrocortisone,PK_through_enzyme,high
+DB00741,DB09143,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB00741,DB06228,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB00741,DB00857,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00741,DB01198,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB00741,DB01006,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Letrozole,PK_through_enzyme,high
+DB00741,DB01115,PK,substrate,inhibitor,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Hydrocortisone,PK_through_enzyme,high
+DB00741,DB13952,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 2C19 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB00741,DB11791,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB00741,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Hydrocortisone,PK_through_enzyme,high
+DB00741,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Hydrocortisone,PK_through_enzyme,high
+DB00741,DB00836,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00741,DB01234,PK,substrate,inducer,inducer-substrate,Dexamethasone --[inducer]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Hydrocortisone,PK_through_enzyme,high
+DB00741,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Hydrocortisone,PK_through_enzyme,high
+DB00741,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Hydrocortisone,PK_through_enzyme,high
+DB00741,DB11682,PK,inducer,substrate,inducer-substrate,Hydrocortisone --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Daprodustat,PK_through_enzyme,high
+DB00787,DB01009,PK,substrate,inhibitor,inhibitor-substrate,Ketoprofen --[inhibitor]--> Solute carrier family 22 member 6 --[substrate: transports]--> Acyclovir,PK_through_transporter,high
+DB00787,DB01234,PK,inhibitor,substrate,inhibitor-substrate,Acyclovir --[inhibitor]--> Organic anion transporter 3 --[substrate: transports]--> Dexamethasone,PK_through_transporter,high
+DB00787,DB13946,PK,substrate,inducer,inducer-substrate,Testosterone undecanoate --[inducer]--> Multidrug and toxin extrusion protein 1 --[substrate: transports]--> Acyclovir,PK_through_transporter,high
+DB00836,DB00938,PK,substrate,inhibitor,inhibitor-substrate,Salmeterol --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00836,DB01244,PD,inhibitor,binder,inhibitor-binder,Loperamide --[inhibitor]--> Calmodulin <--[binder]-- Bepridil,PD_convergent_target,high
+DB00836,DB01198,PK,inhibitor,substrate,inhibitor-substrate,Loperamide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB00836,DB00857,PK,substrate,inducer,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00836,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00836,DB01115,PD,inhibitor,inhibitor,inhibitor-inhibitor,Loperamide --[inhibitor]--> Calmodulin <--[inhibitor]-- Nifedipine,PD_convergent_target,high
+DB00836,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00836,DB01182,PK,substrate,inhibitor,inhibitor-substrate,Propafenone --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Loperamide,PK_through_transporter,high
+DB00836,DB01393,PK,substrate,inhibitor,inhibitor-substrate,Bezafibrate --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00836,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Loperamide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB00836,DB00957,PK,substrate,inhibitor,inhibitor-substrate,Norgestimate --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Loperamide,PK_through_transporter,high
+DB00836,DB01234,PK,substrate,inducer,inducer-substrate,Dexamethasone --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00836,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00836,DB06228,PK,inhibitor,substrate,inhibitor-substrate,Loperamide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB00836,DB11791,PK,substrate,inhibitor,inhibitor-substrate,Capmatinib --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Loperamide,PK_through_transporter,high
+DB00836,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00836,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00836,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Loperamide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB00836,DB11682,PK,substrate,inhibitor,inhibitor-substrate,Daprodustat --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Loperamide,PK_through_enzyme,high
+DB00857,DB01115,PK,substrate,inhibitor,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB01274,PK,inhibitor,substrate,inhibitor-substrate,Terbinafine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB00857,DB01182,PK,inducer,substrate,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB00857,DB01244,PK,inducer,substrate,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bepridil,PK_through_enzyme,high
+DB00857,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Terbinafine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB00857,DB06144,PK,inducer,substrate,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB00857,DB00938,PK,substrate,inhibitor,inhibitor-substrate,Salmeterol --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB00957,PK,substrate,inducer,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB09143,PK,inducer,substrate,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB00857,DB01009,PK,substrate,inhibitor,inhibitor-substrate,Ketoprofen --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB01198,PK,inducer,substrate,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB00857,DB13952,PK,substrate,inhibitor,inhibitor-substrate,Estradiol acetate --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB01117,PK,substrate,inhibitor,inhibitor-substrate,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB01101,PK,substrate,inhibitor,inhibitor-substrate,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB11791,PK,inducer,substrate,inducer-substrate,Terbinafine --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB00857,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB01234,PK,substrate,inducer,inducer-substrate,Dexamethasone --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00857,DB12095,PK,inhibitor,inhibitor,inhibitor-inhibitor,Terbinafine --[inhibitor]--> Cytochrome P450 2D6 <--[inhibitor]-- Telotristat ethyl,PK_through_enzyme,high
+DB00857,DB11682,PK,substrate,inhibitor,inhibitor-substrate,Daprodustat --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Terbinafine,PK_through_enzyme,high
+DB00871,DB00938,PD,antagonist,inverse agonist,antagonist-inverse agonist,Terbutaline --[antagonist]--> Beta-1 adrenergic receptor <--[inverse agonist]-- Salmeterol,PD_convergent_target,high
+DB00871,DB01274,PD,agonist,agonist,agonist-agonist,Terbutaline --[agonist]--> Beta-2 adrenergic receptor <--[agonist]-- Arformoterol,PD_convergent_target,high
+DB00871,DB01182,PD,antagonist,antagonist,antagonist-antagonist,Terbutaline --[antagonist]--> Beta-1 adrenergic receptor <--[antagonist]-- Propafenone,PD_convergent_target,high
+DB00871,DB13952,PK,substrate,inhibitor,inhibitor-substrate,Estradiol acetate --[inhibitor]--> Solute carrier family 22 member 2 --[substrate: transports]--> Terbutaline,PK_through_transporter,high
+DB00915,DB06016,PD,agonist,partial agonist,agonist-partial agonist,Amantadine --[agonist]--> D(2) dopamine receptor <--[partial agonist]-- Cariprazine,PD_convergent_target,high
+DB00915,DB06144,PD,agonist,antagonist,agonist-antagonist,Amantadine --[agonist]--> D(2) dopamine receptor <--[antagonist]-- Sertindole,PD_opposing_target,low
+DB00915,DB00938,PK,substrate,inhibitor,inhibitor-substrate,Salmeterol --[inhibitor]--> Solute carrier family 22 member 2 --[substrate: transports]--> Amantadine,PK_through_transporter,high
+DB00915,DB13952,PK,substrate,inhibitor,inhibitor-substrate,Estradiol acetate --[inhibitor]--> Solute carrier family 22 member 2 --[substrate: transports]--> Amantadine,PK_through_transporter,high
+DB00915,DB13946,PK,substrate,inducer,inducer-substrate,Testosterone undecanoate --[inducer]--> Solute carrier family 22 member 2 --[substrate: transports]--> Amantadine,PK_through_transporter,high
+DB00938,DB06712,PK,inhibitor,inhibitor,inhibitor-inhibitor,Salmeterol --[inhibitor]--> Cytochrome P450 2C8 <--[inhibitor]-- Nilvadipine,PK_through_enzyme,high
+DB00938,DB01198,PK,inhibitor,substrate,inhibitor-substrate,Salmeterol --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB00938,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Salmeterol --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB00938,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Salmeterol --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB00938,DB01274,PD,agonist,agonist,agonist-agonist,Salmeterol --[agonist]--> Beta-2 adrenergic receptor <--[agonist]-- Arformoterol,PD_convergent_target,high
+DB00938,DB01182,PD,inverse agonist,antagonist,inverse agonist-antagonist,Salmeterol --[inverse agonist]--> Beta-1 adrenergic receptor <--[antagonist]-- Propafenone,PD_convergent_target,high
+DB00938,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Salmeterol,PK_through_enzyme,high
+DB00938,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Salmeterol,PK_through_enzyme,high
+DB00938,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Salmeterol,PK_through_enzyme,high
+DB00938,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Salmeterol,PK_through_enzyme,high
+DB00938,DB12095,PK,inhibitor,inhibitor,inhibitor-inhibitor,Salmeterol --[inhibitor]--> Cytochrome P450 2C8 <--[inhibitor]-- Telotristat ethyl,PK_through_enzyme,high
+DB00938,DB11682,PK,inhibitor,substrate,inhibitor-substrate,Salmeterol --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Daprodustat,PK_through_enzyme,high
+DB00957,DB01220,PK,substrate,inducer,inducer-substrate,Rifaximin --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB12329,PK,inducer,substrate,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Eravacycline,PK_through_enzyme,high
+DB00957,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB09143,PK,inducer,substrate,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB00957,DB01117,PK,substrate,inhibitor,inhibitor-substrate,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB01198,PK,inducer,substrate,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB00957,DB01424,PK,inducer,substrate,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB00957,DB01101,PK,substrate,inhibitor,inhibitor-substrate,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB11791,PK,inducer,substrate,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB00957,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Norgestimate,PK_through_enzyme,high
+DB00957,DB15149,PK,inducer,substrate,inducer-substrate,Norgestimate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB01006,DB01115,PK,substrate,inhibitor,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Letrozole,PK_through_enzyme,high
+DB01006,DB01274,PK,inhibitor,substrate,inhibitor-substrate,Letrozole --[inhibitor]--> Cytochrome P450 2A6 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB01006,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Letrozole,PK_through_enzyme,high
+DB01006,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Letrozole,PK_through_enzyme,high
+DB01006,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Letrozole,PK_through_enzyme,high
+DB01006,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Letrozole,PK_through_enzyme,high
+DB01006,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Letrozole,PK_through_enzyme,high
+DB01009,DB06736,PD,inhibitor,inhibitor,inhibitor-inhibitor,Ketoprofen --[inhibitor]--> Prostaglandin G/H synthase 1 <--[inhibitor]-- Aceclofenac,PD_convergent_target,high
+DB01009,DB08981,PD,inhibitor,inhibitor,inhibitor-inhibitor,Ketoprofen --[inhibitor]--> Prostaglandin G/H synthase 1 <--[inhibitor]-- Fenbufen,PD_convergent_target,high
+DB01009,DB13952,PK,inhibitor,inhibitor,inhibitor-inhibitor,Ketoprofen --[inhibitor]--> Solute carrier organic anion transporter family member 1A2 <--[inhibitor]-- Estradiol acetate,PK_through_transporter,high
+DB01009,DB01198,PK,inhibitor,substrate,inhibitor-substrate,Ketoprofen --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01009,DB11201,PD,inhibitor,antagonist,inhibitor-antagonist,Ketoprofen --[inhibitor]--> Prostaglandin G/H synthase 1 <--[antagonist]-- Menthyl salicylate,PD_convergent_target,high
+DB01009,DB11682,PK,inhibitor,substrate,inhibitor-substrate,Ketoprofen --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Daprodustat,PK_through_enzyme,high
+DB01067,DB01115,PK,substrate,inhibitor,inhibitor-substrate,Nifedipine --[inhibitor]--> Bile salt export pump --[substrate: transports]--> Glipizide,PK_through_transporter,high
+DB01067,DB01117,PK,substrate,inhibitor,inhibitor-substrate,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Glipizide,PK_through_enzyme,high
+DB01067,DB01101,PK,substrate,inhibitor,inhibitor-substrate,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Glipizide,PK_through_enzyme,high
+DB01078,DB01244,PD,inhibitor,inhibitor,inhibitor-inhibitor,Deslanoside --[inhibitor]--> Sodium/potassium-transporting ATPase subunit alpha-1 <--[inhibitor]-- Bepridil,PD_convergent_target,high
+DB01101,DB06813,PD,inhibitor,inhibitor,inhibitor-inhibitor,Capecitabine --[inhibitor]--> Thymidylate synthase <--[inhibitor]-- Pralatrexate,PD_convergent_target,high
+DB01101,DB01198,PK,inhibitor,substrate,inhibitor-substrate,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01101,DB01274,PK,inhibitor,substrate,inhibitor-substrate,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB01101,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01101,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB01101,DB01117,PK,inhibitor,inhibitor,inhibitor-inhibitor,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 <--[inhibitor]-- Atovaquone,PK_through_enzyme,high
+DB01101,DB09063,PK,inhibitor,inhibitor,inhibitor-inhibitor,Capecitabine --[inhibitor]--> Cytochrome P450 2C9 <--[inhibitor]-- Ceritinib,PK_through_enzyme,high
+DB01115,DB01244,PD,inhibitor,binder,inhibitor-binder,Nifedipine --[inhibitor]--> Calmodulin <--[binder]-- Bepridil,PD_convergent_target,high
+DB01115,DB06712,PD,inhibitor,inhibitor,inhibitor-inhibitor,Nifedipine --[inhibitor]--> Voltage-dependent L-type calcium channel subunit alpha-1D <--[inhibitor]-- Nilvadipine,PD_convergent_target,high
+DB01115,DB06708,PK,inhibitor,substrate,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Lumefantrine,PK_through_enzyme,high
+DB01115,DB06813,PK,inducer,substrate,inducer-substrate,Nifedipine --[inducer]--> ATP-binding cassette sub-family C member 3 --[substrate: transports]--> Pralatrexate,PK_through_transporter,high
+DB01115,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Nifedipine,PK_through_enzyme,high
+DB01115,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Nifedipine,PK_through_enzyme,high
+DB01115,DB06228,PK,inducer,substrate,inducer-substrate,Nifedipine --[inducer]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Rivaroxaban,PK_through_transporter,high
+DB01115,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01115,DB13946,PK,substrate,inhibitor,inhibitor-substrate,Testosterone undecanoate --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Nifedipine,PK_through_transporter,high
+DB01115,DB13952,PK,substrate,inhibitor,inhibitor-substrate,Estradiol acetate --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Nifedipine,PK_through_enzyme,high
+DB01115,DB06144,PK,inhibitor,substrate,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB01115,DB01274,PK,inhibitor,substrate,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB01115,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Nifedipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB01115,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Nifedipine,PK_through_enzyme,high
+DB01115,DB01234,PK,substrate,inducer,inducer-substrate,Dexamethasone --[inducer]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Nifedipine,PK_through_enzyme,high
+DB01115,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Nifedipine,PK_through_enzyme,high
+DB01115,DB12095,PK,inhibitor,inhibitor,inhibitor-inhibitor,Nifedipine --[inhibitor]--> Cytochrome P450 2D6 <--[inhibitor]-- Telotristat ethyl,PK_through_enzyme,high
+DB01117,DB01198,PK,inhibitor,substrate,inhibitor-substrate,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01117,DB01274,PK,inhibitor,substrate,inhibitor-substrate,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB01117,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01117,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB01117,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Atovaquone,PK_through_enzyme,high
+DB01117,DB01167,PK,substrate,inhibitor,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Atovaquone,PK_through_enzyme,high
+DB01117,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Atovaquone,PK_through_enzyme,high
+DB01117,DB11672,PK,inhibitor,inhibitor,inhibitor-inhibitor,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 <--[inhibitor]-- Curcumin,PK_through_enzyme,high
+DB01117,DB12095,PK,inhibitor,inhibitor,inhibitor-inhibitor,Atovaquone --[inhibitor]--> Cytochrome P450 2C9 <--[inhibitor]-- Telotristat ethyl,PK_through_enzyme,high
+DB01167,DB01220,PK,substrate,inducer,inducer-substrate,Rifaximin --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB06708,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Lumefantrine,PK_through_enzyme,high
+DB01167,DB13074,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Macimorelin,PK_through_enzyme,high
+DB01167,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB01198,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01167,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB01234,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Dexamethasone,PK_through_enzyme,high
+DB01167,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01167,DB01244,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bepridil,PK_through_enzyme,high
+DB01167,DB01182,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB01167,DB06228,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB01167,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB09143,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB01167,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB01393,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bezafibrate,PK_through_enzyme,high
+DB01167,DB06016,PK,substrate,inhibitor,inhibitor-substrate,Cariprazine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB06144,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB01167,DB12329,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Eravacycline,PK_through_enzyme,high
+DB01167,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB01167,DB06813,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Broad substrate specificity ATP-binding cassette transporter ABCG2 --[substrate: transports]--> Pralatrexate,PK_through_transporter,high
+DB01167,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Itraconazole,PK_through_enzyme,high
+DB01167,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Itraconazole --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB01182,DB01220,PK,substrate,inducer,inducer-substrate,Rifaximin --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB01182,DB01244,PD,inhibitor,inhibitor,inhibitor-inhibitor,Propafenone --[inhibitor]--> Voltage-gated inwardly rectifying potassium channel KCNH2 <--[inhibitor]-- Bepridil,PD_convergent_target,high
+DB01182,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB01182,DB06144,PK,inhibitor,substrate,inhibitor-substrate,Propafenone --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB01182,DB06228,PK,inhibitor,substrate,inhibitor-substrate,Propafenone --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Rivaroxaban,PK_through_transporter,high
+DB01182,DB01274,PK,inhibitor,substrate,inhibitor-substrate,Propafenone --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB01182,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB01182,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB01182,DB11791,PK,substrate,inhibitor,inhibitor-substrate,Capmatinib --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB01182,DB01234,PK,substrate,inhibitor,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB01182,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB01182,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Propafenone,PK_through_enzyme,high
+DB01182,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Propafenone --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB01198,DB01234,PK,substrate,inducer,inducer-substrate,Dexamethasone --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB06791,PK,substrate,inhibitor,inhibitor-substrate,Lanreotide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB13946,PK,substrate,inhibitor,inhibitor-substrate,Testosterone undecanoate --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB01393,PK,substrate,inhibitor,inhibitor-substrate,Bezafibrate --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01198,DB11682,PK,substrate,inhibitor,inhibitor-substrate,Daprodustat --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Zopiclone,PK_through_enzyme,high
+DB01220,DB11791,PK,inducer,substrate,inducer-substrate,Rifaximin --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB01220,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rifaximin,PK_through_enzyme,high
+DB01220,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rifaximin,PK_through_enzyme,high
+DB01234,DB09091,PD,agonist,binder,agonist-binder,Dexamethasone --[agonist]--> Glucocorticoid receptor <--[binder]-- Tixocortol,PD_convergent_target,high
+DB01234,DB14539,PD,agonist,agonist,agonist-agonist,Dexamethasone --[agonist]--> Annexin A1 <--[agonist]-- Hydrocortisone acetate,PD_convergent_target,high
+DB01234,DB13952,PK,inducer,substrate,inducer-substrate,Dexamethasone --[inducer]--> Cytochrome P450 3A5 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB01234,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB01234,DB06712,PK,inducer,substrate,inducer-substrate,Dexamethasone --[inducer]--> Cytochrome P450 2E1 --[substrate: metabolizes]--> Nilvadipine,PK_through_enzyme,high
+DB01234,DB01393,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bezafibrate,PK_through_enzyme,high
+DB01234,DB06228,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB01234,DB01244,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bepridil,PK_through_enzyme,high
+DB01234,DB06016,PK,substrate,inhibitor,inhibitor-substrate,Cariprazine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dexamethasone,PK_through_enzyme,high
+DB01234,DB06144,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB01234,DB06708,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Lumefantrine,PK_through_enzyme,high
+DB01234,DB12329,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Eravacycline,PK_through_enzyme,high
+DB01234,DB13074,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Macimorelin,PK_through_enzyme,high
+DB01234,DB05239,PK,substrate,inhibitor,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dexamethasone,PK_through_enzyme,high
+DB01234,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dexamethasone,PK_through_enzyme,high
+DB01234,DB09143,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB01234,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dexamethasone,PK_through_enzyme,high
+DB01234,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Dexamethasone,PK_through_enzyme,high
+DB01234,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Dexamethasone --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB01234,DB11682,PK,inducer,substrate,inducer-substrate,Dexamethasone --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Daprodustat,PK_through_enzyme,high
+DB01244,DB06712,PD,inhibitor,inhibitor,inhibitor-inhibitor,Bepridil --[inhibitor]--> Voltage-dependent T-type calcium channel subunit alpha-1H <--[inhibitor]-- Nilvadipine,PD_convergent_target,high
+DB01244,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Bepridil,PK_through_enzyme,high
+DB01244,DB06144,PK,inhibitor,substrate,inhibitor-substrate,Bepridil --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB01244,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bepridil,PK_through_enzyme,high
+DB01244,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bepridil,PK_through_enzyme,high
+DB01274,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB01274,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB01274,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Arformoterol,PK_through_enzyme,high
+DB01393,DB01424,PK,inhibitor,substrate,inhibitor-substrate,Bezafibrate --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01393,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Bezafibrate --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB01393,DB06712,PK,inhibitor,inhibitor,inhibitor-inhibitor,Bezafibrate --[inhibitor]--> Cytochrome P450 2C8 <--[inhibitor]-- Nilvadipine,PK_through_enzyme,high
+DB01393,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Bezafibrate,PK_through_enzyme,high
+DB01393,DB12095,PK,inhibitor,inhibitor,inhibitor-inhibitor,Bezafibrate --[inhibitor]--> Cytochrome P450 2C8 <--[inhibitor]-- Telotristat ethyl,PK_through_enzyme,high
+DB01393,DB11682,PK,inhibitor,substrate,inhibitor-substrate,Bezafibrate --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Daprodustat,PK_through_enzyme,high
+DB01424,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01424,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01424,DB13952,PK,substrate,inhibitor,inhibitor-substrate,Estradiol acetate --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01424,DB11791,PK,substrate,inhibitor,inhibitor-substrate,Capmatinib --[inhibitor]--> Cytochrome P450 1A2 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01424,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01424,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01424,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01424,DB11682,PK,substrate,inhibitor,inhibitor-substrate,Daprodustat --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Aminophenazone,PK_through_enzyme,high
+DB01616,DB06016,PD,antagonist,partial agonist,antagonist-partial agonist,Alverine --[antagonist]--> 5-hydroxytryptamine receptor 1A <--[partial agonist]-- Cariprazine,PD_convergent_target,high
+DB05239,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Cobimetinib,PK_through_enzyme,high
+DB05239,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Cobimetinib,PK_through_enzyme,high
+DB05239,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Cobimetinib,PK_through_enzyme,high
+DB05239,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Cobimetinib,PK_through_enzyme,high
+DB05239,DB06791,PK,substrate,inhibitor,inhibitor-substrate,Lanreotide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Cobimetinib,PK_through_enzyme,high
+DB05239,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Cobimetinib,PK_through_enzyme,high
+DB05239,DB09143,PK,inhibitor,substrate,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB05239,DB06228,PK,inhibitor,substrate,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB05239,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB05239,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Cobimetinib,PK_through_enzyme,high
+DB05239,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Cobimetinib,PK_through_enzyme,high
+DB05239,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Cobimetinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB06016,DB06144,PD,antagonist,antagonist,antagonist-antagonist,Cariprazine --[antagonist]--> 5-hydroxytryptamine receptor 2A <--[antagonist]-- Sertindole,PD_convergent_target,high
+DB06016,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Cariprazine,PK_through_enzyme,high
+DB06016,DB11672,PK,inhibitor,inhibitor,inhibitor-inhibitor,Cariprazine --[inhibitor]--> Cytochrome P450 2C9 <--[inhibitor]-- Curcumin,PK_through_enzyme,high
+DB06016,DB12095,PK,inhibitor,inhibitor,inhibitor-inhibitor,Cariprazine --[inhibitor]--> Cytochrome P450 2C9 <--[inhibitor]-- Telotristat ethyl,PK_through_enzyme,high
+DB06144,DB06708,PK,substrate,inhibitor,inhibitor-substrate,Lumefantrine --[inhibitor]--> Cytochrome P450 2D6 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB06144,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB06144,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB06144,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sertindole,PK_through_enzyme,high
+DB06228,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB06228,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB06228,DB09063,PK,substrate,inhibitor,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB06228,DB11791,PK,substrate,inhibitor,inhibitor-substrate,Capmatinib --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Rivaroxaban,PK_through_transporter,high
+DB06228,DB06712,PK,substrate,inhibitor,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB06228,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB06228,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Rivaroxaban,PK_through_enzyme,high
+DB06228,DB15149,PK,substrate,inhibitor,inhibitor-substrate,Futibatinib --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Rivaroxaban,PK_through_transporter,high
+DB06708,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Lumefantrine,PK_through_enzyme,high
+DB06708,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Lumefantrine,PK_through_enzyme,high
+DB06712,DB09143,PK,inhibitor,substrate,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB06712,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Nilvadipine,PK_through_enzyme,high
+DB06712,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB06712,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB06712,DB12329,PK,inhibitor,substrate,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Eravacycline,PK_through_enzyme,high
+DB06712,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Nilvadipine,PK_through_enzyme,high
+DB06712,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Nilvadipine,PK_through_enzyme,high
+DB06712,DB12095,PK,inhibitor,inhibitor,inhibitor-inhibitor,Nilvadipine --[inhibitor]--> Cytochrome P450 2C8 <--[inhibitor]-- Telotristat ethyl,PK_through_enzyme,high
+DB06712,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB06712,DB11682,PK,inhibitor,substrate,inhibitor-substrate,Nilvadipine --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Daprodustat,PK_through_enzyme,high
+DB06736,DB08981,PD,inhibitor,inhibitor,inhibitor-inhibitor,Aceclofenac --[inhibitor]--> Prostaglandin G/H synthase 1 <--[inhibitor]-- Fenbufen,PD_convergent_target,high
+DB06736,DB11201,PD,inhibitor,antagonist,inhibitor-antagonist,Aceclofenac --[inhibitor]--> Prostaglandin G/H synthase 1 <--[antagonist]-- Menthyl salicylate,PD_convergent_target,high
+DB06791,DB11703,PK,inhibitor,substrate,inhibitor-substrate,Lanreotide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Acalabrutinib,PK_through_enzyme,high
+DB06791,DB09143,PK,inhibitor,substrate,inhibitor-substrate,Lanreotide --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB06813,DB13952,PK,substrate,inhibitor,inhibitor-substrate,Estradiol acetate --[inhibitor]--> Broad substrate specificity ATP-binding cassette transporter ABCG2 --[substrate: transports]--> Pralatrexate,PK_through_transporter,high
+DB06813,DB11791,PK,substrate,inhibitor,inhibitor-substrate,Capmatinib --[inhibitor]--> Broad substrate specificity ATP-binding cassette transporter ABCG2 --[substrate: transports]--> Pralatrexate,PK_through_transporter,high
+DB08981,DB11201,PD,inhibitor,antagonist,inhibitor-antagonist,Fenbufen --[inhibitor]--> Prostaglandin G/H synthase 1 <--[antagonist]-- Menthyl salicylate,PD_convergent_target,high
+DB09063,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB09063,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Ceritinib,PK_through_enzyme,high
+DB09063,DB09143,PK,inhibitor,substrate,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB09063,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB09063,DB11672,PK,inhibitor,inhibitor,inhibitor-inhibitor,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 <--[inhibitor]-- Curcumin,PK_through_enzyme,high
+DB09063,DB12095,PK,inhibitor,inhibitor,inhibitor-inhibitor,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 <--[inhibitor]-- Telotristat ethyl,PK_through_enzyme,high
+DB09063,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Ceritinib --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB09091,DB14539,PD,binder,agonist,binder-agonist,Tixocortol --[binder]--> Glucocorticoid receptor <--[agonist]-- Hydrocortisone acetate,PD_convergent_target,high
+DB09143,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB09143,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB09143,DB11703,PK,substrate,inhibitor,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB09143,DB11672,PK,substrate,inhibitor,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB09143,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Sonidegib,PK_through_enzyme,high
+DB11672,DB11703,PK,inhibitor,substrate,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Acalabrutinib,PK_through_enzyme,high
+DB11672,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB11672,DB12329,PK,inhibitor,substrate,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Eravacycline,PK_through_enzyme,high
+DB11672,DB13074,PK,inhibitor,substrate,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Macimorelin,PK_through_enzyme,high
+DB11672,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB11672,DB14539,PK,inhibitor,substrate,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Hydrocortisone acetate,PK_through_enzyme,high
+DB11672,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Curcumin --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB11672,DB12095,PK,inhibitor,inhibitor,inhibitor-inhibitor,Curcumin --[inhibitor]--> Cytochrome P450 2C9 <--[inhibitor]-- Telotristat ethyl,PK_through_enzyme,high
+DB11682,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Daprodustat --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB11703,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Acalabrutinib,PK_through_enzyme,high
+DB11703,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Acalabrutinib,PK_through_enzyme,high
+DB11703,DB11791,PK,inhibitor,substrate,inhibitor-substrate,Acalabrutinib --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB11703,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Acalabrutinib,PK_through_enzyme,high
+DB11791,DB13946,PK,substrate,inhibitor,inhibitor-substrate,Testosterone undecanoate --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB11791,DB13952,PK,substrate,inducer,inducer-substrate,Estradiol acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB11791,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB11791,DB12095,PK,substrate,inhibitor,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Capmatinib,PK_through_enzyme,high
+DB11791,DB15149,PK,substrate,inhibitor,inhibitor-substrate,Futibatinib --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Capmatinib,PK_through_transporter,high
+DB12095,DB12329,PK,inhibitor,substrate,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Eravacycline,PK_through_enzyme,high
+DB12095,DB13074,PK,inhibitor,substrate,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Macimorelin,PK_through_enzyme,high
+DB12095,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high
+DB12095,DB14539,PK,inhibitor,substrate,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 3A4 --[substrate: metabolizes]--> Hydrocortisone acetate,PK_through_enzyme,high
+DB12095,DB15149,PK,inhibitor,substrate,inhibitor-substrate,Telotristat ethyl --[inhibitor]--> Cytochrome P450 2C9 --[substrate: metabolizes]--> Futibatinib,PK_through_enzyme,high
+DB13946,DB13952,PK,inhibitor,substrate,inhibitor-substrate,Testosterone undecanoate --[inhibitor]--> ATP-dependent translocase ABCB1 --[substrate: transports]--> Estradiol acetate,PK_through_transporter,high
+DB13952,DB14539,PK,substrate,inducer,inducer-substrate,Hydrocortisone acetate --[inducer]--> Cytochrome P450 2C8 --[substrate: metabolizes]--> Estradiol acetate,PK_through_enzyme,high

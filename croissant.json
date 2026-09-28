@@ -1,0 +1,135 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {"@id": "cr:data", "@type": "@json"},
+    "dataType": {"@id": "cr:dataType", "@type": "@vocab"},
+    "dct": "http://purl.org/dc/terms/",
+    "examples": {"@id": "cr:examples", "@type": "@json"},
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "name": "ColdDDI",
+  "description": "ColdDDI is a cold-start drug-drug interaction (DDI) prediction benchmark derived from DrugBank 5.1.13, containing 1,900 approved small-molecule drugs and 565,731 positive DDI pairs. It evaluates models under three drug-novelty regimes (S0 transductive, S1 semi-inductive, S2 fully inductive) and stratifies each interaction by pharmacokinetic vs pharmacodynamic mechanism (PK / PD) and by whether shared mediating entities (enzymes, transporters, targets, carriers) appear in the knowledge graph (Type A / Type B). The repository releases derivative artifacts (mechanism annotations, drug-wise split indices, prompt templates, evaluation code) plus a deterministic reconstruction pipeline. Underlying DrugBank records are not redistributed; users must independently obtain DrugBank 5.1.13.",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "url": "https://anonymous.4open.science/r/ColdDDI-101A/",
+  "version": "0.1.0",
+  "datePublished": "2026-05-06",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "citeAs": "@misc{coldddi2026, title={ColdDDI: Evaluating Knowledge Utilization in Cold-Start Drug-Drug Interaction Prediction}, author={Anonymous}, year={2026}, note={Under review at NeurIPS 2026 Evaluations \\& Datasets Track}}",
+  "keywords": [
+    "drug-drug interaction",
+    "cold-start",
+    "benchmark",
+    "pharmacology",
+    "knowledge graph",
+    "DrugBank",
+    "evaluation",
+    "language models"
+  ],
+  "isLiveDataset": false,
+  "rai:dataCollection": "PK-vs-PD mechanism labels are derived from DrugBank interaction descriptions via a rule-based taxonomy mapped to ATC and ADME mechanism keywords, then audited against an independent human-coded subset. A-vs-B mediator labels are computed deterministically from a knowledge graph constructed over DrugBank's enzyme, transporter, target, and carrier annotations. Drug-wise S0 / S1 / S2 splits are induced by partitioning the 1,900-drug pool into seen and unseen subsets, then deriving test-pair categories from how many drugs in each pair are unseen.",
+  "rai:dataBiases": "Coverage is restricted to FDA-approved small-molecule drugs documented in DrugBank, under-representing biologics, investigational compounds, veterinary drugs, and drugs whose primary regulatory record is outside North America or Europe. Mechanism labels are inferred from English-language interaction descriptions; multi-mechanism or ambiguous interactions are assigned to the dominant pharmacological class.",
+  "rai:dataLimitations": "(i) Underlying DrugBank records are not redistributed because of DrugBank's academic license; users must obtain DrugBank 5.1.13 independently. (ii) Labels are binary clinical-significance flags and do not encode interaction severity, time course, dose dependence, or quantitative PK parameters. (iii) The knowledge graph is restricted to enzyme, transporter, target, and carrier relations from DrugBank and does not include external pathway, expression, or genetic-variant resources. (iv) This Croissant file describes the pre-release v0.1 snapshot. Field-level source bindings to released CSV files will be added in the camera-ready version once the final artifact bundle is tagged.",
+  "rai:personalSensitiveInformation": "None. The dataset describes drug-drug pharmacological interactions at the molecule and KG-entity level and does not contain patient records, individual-level identifiers, demographic attributes, or any protected health information.",
+  "rai:dataUseCases": "(i) Benchmarking cold-start DDI prediction methods. (ii) Diagnosing knowledge utilization in molecular GNNs, KG-augmented models, and language-model-based predictors. (iii) Studying mechanism-stratified failure modes in DDI prediction. The dataset is intended for research and methodological evaluation. Predictions from models trained on this benchmark should not be used to make individual prescribing decisions without independent clinical review.",
+  "rai:dataSocialImpact": "Improved cold-start DDI prediction can support post-marketing surveillance, drug-repurposing screening, and early-stage safety signals for newly approved compounds. Because the benchmark is designed to expose failure modes rather than to produce deployable predictors, the immediate societal effect is on evaluation methodology rather than on clinical care.",
+  "rai:annotationsPerItem": "Each positive DDI pair carries one PK-vs-PD mechanism label and one A-vs-B mediator label. Mechanism labels are programmatically derived and audited against a human-coded subset (Cohen's kappa reported in the paper appendix). Mediator labels are computed deterministically from KG entity overlap.",
+  "rai:dataReleaseMaintenancePlan": "Derivative artifacts and code will be archived on Zenodo with a citable DOI upon de-anonymization and mirrored on a public GitHub repository. The version reviewed by NeurIPS 2026 corresponds to git tag v0.1-neurips-submission. Subsequent updates will be issued as new tagged versions; only updates that do not alter experimental conclusions will be applied between submission and camera-ready.",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "coldddi-repository",
+      "name": "ColdDDI repository (anonymous review snapshot)",
+      "description": "Anonymous review snapshot containing derivative mechanism annotations, drug-wise split indices, prompt templates, eight baseline implementations, the LLM fine-tuning and inference pipeline, diagnostic metrics, and the deterministic reconstruction pipeline that rebuilds the benchmark from a user-provided DrugBank 5.1.13 XML. The reviewed snapshot corresponds to git tag v0.1-neurips-submission.",
+      "contentUrl": "https://anonymous.4open.science/r/ColdDDI-101A/",
+      "encodingFormat": "text/html"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "ddi-pair-records",
+      "name": "ddi-pair-records",
+      "description": "Schema for one row of a DDI pair record produced by the reconstruction pipeline. Source bindings to released CSV files will be added in the camera-ready Croissant once the v0.1-neurips-submission artifact bundle is tagged.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "ddi-pair-records/drug_a_id",
+          "name": "drug_a_id",
+          "description": "DrugBank identifier of the first drug in the pair, in the form DBxxxxx.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "ddi-pair-records/drug_b_id",
+          "name": "drug_b_id",
+          "description": "DrugBank identifier of the second drug in the pair.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "ddi-pair-records/label",
+          "name": "label",
+          "description": "Binary label. 1 indicates a clinically significant DDI in DrugBank 5.1.13. 0 indicates a sampled non-interaction.",
+          "dataType": "sc:Boolean"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "ddi-pair-records/mechanism",
+          "name": "mechanism",
+          "description": "Pharmacological mechanism class. One of PK (pharmacokinetic, changes drug exposure) or PD (pharmacodynamic, changes drug effect).",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "ddi-pair-records/mediator",
+          "name": "mediator",
+          "description": "KG mediator availability. A indicates at least one shared enzyme, transporter, target, or carrier in the knowledge graph. B indicates no shared mediator.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "ddi-pair-records/split",
+          "name": "split",
+          "description": "Evaluation split. S0 indicates both drugs were seen during training. S1 indicates exactly one drug is unseen. S2 indicates both drugs are unseen.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "ddi-pair-records/seed",
+          "name": "seed",
+          "description": "Random seed identifying the split realization. The released benchmark uses three seeds.",
+          "dataType": "sc:Integer"
+        }
+      ]
+    }
+  ]
+}

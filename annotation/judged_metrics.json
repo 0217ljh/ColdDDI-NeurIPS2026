@@ -1,0 +1,85 @@
+{
+  "n_total_pairs": 500,
+  "n_disagreements": {
+    "PK_PD": 39,
+    "AB": 36,
+    "either": 68,
+    "both": 7
+  },
+  "judge_calls": {
+    "auto_correct_60pct": 40,
+    "auto_wrong_40pct": 28
+  },
+  "kappa_A1_vs_A2": {
+    "PK_PD_per_pair_n500": 0.8423350582147477,
+    "PK_PD_type_level_n50_majority_vote": 0.8392282958199357,
+    "AB_per_pair_n500": 0.8053506931678094
+  },
+  "auto_vs_final_consensus_PKPD_per_pair_n500": {
+    "PK_positive": {
+      "P": 0.84,
+      "R": 0.9333333333333333,
+      "F1": 0.8842105263157894
+    },
+    "PD_positive": {
+      "P": 0.94,
+      "R": 0.8545454545454545,
+      "F1": 0.8952380952380953
+    },
+    "overall_agreement": 0.89,
+    "n_correct": 445
+  },
+  "auto_vs_final_consensus_PKPD_type_level": {
+    "n_types": 50,
+    "PK_positive": {
+      "P": 0.88,
+      "R": 1.0,
+      "F1": 0.9361702127659575
+    },
+    "PD_positive": {
+      "P": 1.0,
+      "R": 0.8928571428571429,
+      "F1": 0.9433962264150944
+    },
+    "overall_agreement": 0.94,
+    "n_correct": 47
+  },
+  "auto_vs_final_consensus_AB_n500": {
+    "overall_agreement": 0.938,
+    "n_correct": 469,
+    "per_quadrant": {
+      "PK-A": {
+        "n": 131,
+        "agree": 102,
+        "pct": 0.7786259541984732
+      },
+      "PK-B": {
+        "n": 119,
+        "agree": 119,
+        "pct": 1.0
+      },
+      "PD-A": {
+        "n": 29,
+        "agree": 27,
+        "pct": 0.9310344827586207
+      },
+      "PD-B": {
+        "n": 221,
+        "agree": 221,
+        "pct": 1.0
+      }
+    }
+  },
+  "sample_composition": {
+    "types_by_auto_pkpd": {
+      "PD": 25,
+      "PK": 25
+    },
+    "pairs_by_subtype": {
+      "PD-B": 221,
+      "PK-A": 131,
+      "PK-B": 119,
+      "PD-A": 29
+    }
+  }
+}

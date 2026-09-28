@@ -1,0 +1,85 @@
+{
+  "n_total_pairs": 500,
+  "n_replaced_question_marks": 116,
+  "n_collapsed_mixed_to_PK": 10,
+  "consensus_sizes": {
+    "PK_PD": 461,
+    "AB": 464
+  },
+  "kappa": {
+    "PK_PD_per_pair_n500": 0.8423350582147477,
+    "PK_PD_type_level_majority_vote": {
+      "n_types": 50,
+      "kappa": 0.8392282958199357
+    },
+    "AB_per_pair_n500": 0.8053506931678094
+  },
+  "auto_vs_consensus_PKPD_per_pair": {
+    "n": 461,
+    "PK_positive": {
+      "P": 0.8589743589743589,
+      "R": 0.9852941176470589,
+      "F1": 0.9178082191780822,
+      "n_auto_pos": 234
+    },
+    "PD_positive": {
+      "P": 0.986784140969163,
+      "R": 0.8715953307392996,
+      "F1": 0.9256198347107438,
+      "n_auto_pos": 227
+    },
+    "overall_agreement": 0.9219088937093276
+  },
+  "auto_vs_consensus_PKPD_type_level": {
+    "n_types": 48,
+    "PK_positive": {
+      "P": 0.84,
+      "R": 1.0,
+      "F1": 0.9130434782608695
+    },
+    "PD_positive": {
+      "P": 1.0,
+      "R": 0.8518518518518519,
+      "F1": 0.92
+    },
+    "overall_agreement": 0.9166666666666666
+  },
+  "auto_vs_consensus_AB": {
+    "n": 464,
+    "overall_agreement": 0.9568965517241379,
+    "per_quadrant": {
+      "PK-A": {
+        "n": 98,
+        "agree": 79,
+        "pct": 0.8061224489795918
+      },
+      "PK-B": {
+        "n": 119,
+        "agree": 119,
+        "pct": 1.0
+      },
+      "PD-A": {
+        "n": 26,
+        "agree": 25,
+        "pct": 0.9615384615384616
+      },
+      "PD-B": {
+        "n": 221,
+        "agree": 221,
+        "pct": 1.0
+      }
+    }
+  },
+  "sample_composition": {
+    "types_by_auto_pkpd": {
+      "PD": 25,
+      "PK": 25
+    },
+    "pairs_by_subtype": {
+      "PD-B": 221,
+      "PK-A": 131,
+      "PK-B": 119,
+      "PD-A": 29
+    }
+  }
+}
