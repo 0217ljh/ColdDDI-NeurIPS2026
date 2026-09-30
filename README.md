@@ -88,21 +88,40 @@ data/
 - **NumPy**: 1.26.x or 2.x
 - **PyTorch**: ≥ 2.0 (CUDA)
 
-Full dependency list: `requirements.txt`.
+For the one-command LLM pipeline below, use `requirements-benchmark.txt`. Conventional baseline dependencies are listed in `requirements.txt`.
 
 <a id="quick-start"></a>
 
 ## ⚡ Quick Start
 
+Start with the prepared toy dataset shipped in this repository. The command below runs P4 training, checkpoint selection, S0/S1/S2 evaluation, and KPS/KSAI diagnostics on a small sample. No data reconstruction is needed for this example.
+
+Use a fresh Python environment. For GPU runs, install the appropriate CUDA build of PyTorch before installing the remaining dependencies.
+
 ```bash
-# 1. Clone & install (Linux / Python 3.10)
+# 1. Clone and install
 git clone https://github.com/0217ljh/ColdDDI-NeurIPS2026.git
 cd ColdDDI-NeurIPS2026
-pip install -r requirements.txt
+python -m pip install -r requirements-benchmark.txt
 
-# 2. Smoke tests
-python -m pytest tests/ -v
+# 2. Run the pipeline with the included toy data (CPU is sufficient)
+python scripts/run_benchmark.py --data data/public/intermediate --ab-parquet annotations/ab_sample.parquet --model tiny-random-qwen --smoke --device cpu
 ```
+
+The first run downloads a tiny random model. This example checks that the workflow runs; its scores are not benchmark results. Outputs are saved under `runs/`.
+
+To use your own dataset, prepare it in the [same input format](docs/benchmark.md#input-layout), then replace both input paths:
+
+```bash
+# Replace --data with your prepared data directory and --ab-parquet with its matching A/B annotations.
+# The data directory must include drug tables, KG tables, and positive/negative S0/S1/S2 splits.
+# Omit --smoke to use all supplied examples, and use a pretrained model for actual evaluation.
+python scripts/run_benchmark.py --data /path/to/intermediate --ab-parquet /path/to/ab.parquet --model qwen-0.5b
+```
+
+Add `--check-only` to validate inputs without downloading a model or training. To continue an interrupted run, repeat the same command with `--resume`.
+
+This entry point runs one model with P4 and one seed, not the full paper experiment grid. See the [runner guide](docs/benchmark.md) for the input specification, outputs, and full DrugBank paths.
 
 Expected toy numbers: **86 drugs / 1,383 edges / 24 ddi_types after Step 7**, **523 Type-A pairs** with mediating-entity coverage.
 
@@ -152,7 +171,7 @@ The LLM pipeline is layered so each stage can be tested in isolation and chained
 
 ### 🚀 Running the LLM Pipeline
 
-`run_llm.py` is the canonical runner. Single cells reproduce by varying CLI flags:
+For the integrated P4 workflow with diagnostics, use `run_benchmark.py` in [Quick Start](#quick-start). The existing `run_llm.py` remains available for individual P1–P5 training/prediction cells:
 
 ```bash
 # Qwen2.5-0.5B + P4 + 800-drug + seed 42 (smallest paper-grade cell)
@@ -227,6 +246,7 @@ coldddi/
 reconstruct.py       # Data-pipeline driver
 evaluate.py          # Baseline / LLM eval driver
 scripts/run_llm.py   # Paper-grade one-click runner
+scripts/run_benchmark.py  # Prepared dataset -> P4 training, evaluation, and diagnostics
 tests/               # pytest suite
 ```
 
