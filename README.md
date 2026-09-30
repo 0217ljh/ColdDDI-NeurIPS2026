@@ -94,36 +94,17 @@ For the one-command LLM pipeline below, use `requirements-benchmark.txt`. Conven
 
 ## ⚡ Quick Start
 
-Start with the prepared toy dataset shipped in this repository. The command below runs P4 training, checkpoint selection, S0/S1/S2 evaluation, and KPS/KSAI diagnostics on a small sample. No data reconstruction is needed for this example.
-
-Use a fresh Python environment. For GPU runs, install the appropriate CUDA build of PyTorch before installing the remaining dependencies.
-
 ```bash
-# 1. Clone and install
-git clone https://github.com/0217ljh/ColdDDI-NeurIPS2026.git
-cd ColdDDI-NeurIPS2026
-python -m pip install -r requirements-benchmark.txt
-
-# 2. Run the pipeline with the included toy data (CPU is sufficient)
-python scripts/run_benchmark.py --data data/public/intermediate --ab-parquet annotations/ab_sample.parquet --model tiny-random-qwen --smoke --device cpu
+# Run the toy example
+python scripts/run_benchmark.py \
+  --data data/public/intermediate \
+  --ab-parquet annotations/ab_sample.parquet \
+  --model qwen-0.5b \
+  --device cuda \
+  --smoke  # option for quick test
 ```
 
-The first run downloads a tiny random model. This example checks that the workflow runs; its scores are not benchmark results. Outputs are saved under `runs/`.
-
-To use your own dataset, prepare it in the [same input format](docs/benchmark.md#input-layout), then replace both input paths:
-
-```bash
-# Replace --data with your prepared data directory and --ab-parquet with its matching A/B annotations.
-# The data directory must include drug tables, KG tables, and positive/negative S0/S1/S2 splits.
-# Omit --smoke to use all supplied examples, and use a pretrained model for actual evaluation.
-python scripts/run_benchmark.py --data /path/to/intermediate --ab-parquet /path/to/ab.parquet --model qwen-0.5b
-```
-
-Add `--check-only` to validate inputs without downloading a model or training. To continue an interrupted run, repeat the same command with `--resume`.
-
-This entry point runs one model with P4 and one seed, not the full paper experiment grid. See the [runner guide](docs/benchmark.md) for the input specification, outputs, and full DrugBank paths.
-
-Expected toy numbers: **86 drugs / 1,383 edges / 24 ddi_types after Step 7**, **523 Type-A pairs** with mediating-entity coverage.
+To use your own dataset, replace `--data` and `--ab-parquet` with paths to your data and annotations in the [same format](docs/benchmark.md#input-layout).
 
 <a id="reproducing-on-the-full-drugbank-xml"></a>
 
