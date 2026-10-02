@@ -724,6 +724,10 @@ def _resolve_subset(
     :meth:`PairDataset.from_release_dir` so the user gets a clear
     error if ``reconstruct.py`` hasn't been run yet.
     """
+    if subset == "800":
+        release = repo_root / "data/private/subsets/800" / f"seed{seed}" / "intermediate"
+        if release.is_dir():
+            return release
     template = SUBSET_PATHS[subset]
     # Format the seed into the path string (no-op for the 1900 dir).
     return repo_root / Path(str(template).format(seed=seed))

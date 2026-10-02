@@ -102,6 +102,9 @@ def _resolve_dataset(name: str, seed: int) -> tuple[Path | None, Path | None]:
     if name == "1900-drug":
         return REPO_ROOT / "data" / "private" / "intermediate", None
     if name == "800-drug":
+        release = REPO_ROOT / "data/private/subsets/800" / f"seed{seed}" / "intermediate"
+        if release.is_dir():
+            return release, None
         return None, (
             REPO_ROOT / "data" / "private" / "outputs_full"
             / "splits_legacy" / "800drug"

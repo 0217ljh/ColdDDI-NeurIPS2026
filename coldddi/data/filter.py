@@ -296,6 +296,16 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     log(f"Step 6: {len(drugs_df):,} drugs, {len(edges):,} edges, {edges['ddi_type'].nunique()} types")
 
     # --- Step 7: remove low-degree drugs (degree < 10) ---
+    # The original 800-drug sampler consumes this degree-ordered pool.
+    # Explicit quicksort preserves pandas 2.x tie ordering under pandas 3.x.
+    # Upstream counted canonical (min-ID, max-ID) pairs. Preserve that
+    # first-occurrence order without changing the released edge orientation.
+    ordered = edges["drug_a_id"] <= edges["drug_b_id"]
+    first = edges["drug_a_id"].where(ordered, edges["drug_b_id"])
+    second = edges["drug_b_id"].where(ordered, edges["drug_a_id"])
+    degree_order = pd.concat([first, second]).value_counts(sort=False)
+    degree_order = degree_order.sort_values(ascending=False, kind="quicksort")
+    subset_candidates = degree_order[degree_order >= LOW_DEGREE_DRUG_THRESHOLD].index.tolist()
     deg: Counter = Counter()
     deg.update(edges["drug_a_id"].tolist())
     deg.update(edges["drug_b_id"].tolist())
@@ -337,6 +347,7 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
         .to_dict()
     )
 
+    drugs_df.attrs["subset_candidates"] = subset_candidates
     return FilterReport(
         drugs=drugs_df,
         edges=edges[["drug_a_id", "drug_b_id", "description", "ddi_type"]].reset_index(drop=True),
@@ -372,6 +383,10 @@ def write_filter_report(report: FilterReport, out_dir: Path) -> None:
     for attr, fname in _FILTERED_TABLE_FILES:
         df = getattr(report, attr)
         df.to_csv(out_dir / fname, index=False)
+    if "subset_candidates" in report.drugs.attrs:
+        (out_dir / "subset_candidates.json").write_text(
+            json.dumps(report.drugs.attrs["subset_candidates"], indent=2) + "\n", encoding="utf-8",
+        )
     (out_dir / "stats.json").write_text(
         json.dumps([asdict(s) for s in report.step_stats], indent=2)
     )

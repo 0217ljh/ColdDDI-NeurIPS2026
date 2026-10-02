@@ -37,6 +37,7 @@ CLI
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
 from pathlib import Path
@@ -431,6 +432,12 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Seeds for Stage-4 splits.",
     )
     parser.add_argument(
+        "--include-subset",
+        choices=("800", "full", "both"),
+        default="full",
+        help="Build the full dataset, a seeded 800-drug sample, or both. Existing full-only default is retained.",
+    )
+    parser.add_argument(
         "--release-mode",
         choices=["full", "sample"],
         default=None,
@@ -491,16 +498,49 @@ def main(argv: list[str] | None = None) -> int:
     if release_mode is None:
         release_mode = "sample" if args.toy else "full"
 
+    if args.include_subset != "full" and "stage4" in args.skip_stages:
+        parser.error("--include-subset 800/both requires stage4")
+    if len(set(args.seeds)) != len(args.seeds) or any(seed < 0 for seed in args.seeds):
+        parser.error("--seeds must contain distinct nonnegative integers")
+    if args.toy and args.include_subset != "full":
+        parser.error("The toy dataset has fewer than 800 drugs; use --include-subset full")
+    if args.include_subset != "full":
+        for seed in args.seeds:
+            target = args.output / "subsets/800" / f"seed{seed}"
+            if target.exists() and (not target.is_dir() or any(target.iterdir())):
+                parser.error(f"Subset output is not empty: {target}. Choose a new --output.")
+    skip_stages = list(args.skip_stages)
+    if args.include_subset == "800":
+        skip_stages.append("stage4")
     run_reconstruction(
         drugbank=drugbank,
         output=args.output,
         seeds=args.seeds,
         release_mode=release_mode,
         n_train_negative_epochs=args.n_train_negative_epochs,
-        skip_stages=args.skip_stages,
+        skip_stages=skip_stages,
         full_pkpd_csv=args.full_pkpd,
         quiet=args.quiet,
     )
+    from coldddi.data.subsets import build_subset
+    from coldddi.sanity_check import write_checksums
+
+    datasets = []
+    if args.include_subset != "800" and "stage4" not in skip_stages:
+        write_checksums(args.output / "intermediate")
+        datasets.append("intermediate")
+    if args.include_subset != "full":
+        for seed in args.seeds:
+            root = build_subset(
+                args.output / "intermediate", args.output / "subsets/800" / f"seed{seed}",
+                seed=seed, n_train_negative_epochs=args.n_train_negative_epochs, quiet=args.quiet,
+            )
+            datasets.append(root.relative_to(args.output.resolve()).as_posix())
+    if datasets:
+        (args.output / "reconstruction.json").write_text(
+            json.dumps({"include_subset": args.include_subset, "datasets": datasets}, indent=2) + "\n",
+            encoding="utf-8",
+        )
     return 0
 
 
