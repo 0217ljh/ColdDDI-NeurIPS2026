@@ -1,15 +1,23 @@
-# ColdDDI dependencies (Linux, Python 3.10).
-# Tested under conda env `project_1` with the versions noted below.
+# ColdDDI reconstruction, conventional baselines, and LLM pipeline.
+# Install the appropriate CPU/CUDA build of PyTorch first.
 
-numpy>=1.26          # 1.x + bundle-pickle shim (coldddi/data/dataset.py)
-pandas>=2.0
+numpy>=1.26,<3
+pandas>=2.0,<4
 pyarrow>=14.0        # parquet I/O
 rdkit>=2023.09       # SMILES parsing + Morgan fingerprints
-scikit-learn>=1.3    # PCA + ROC-AUC
-torch>=2.0           # all baselines
+scikit-learn>=1.3,<2  # PCA + ROC-AUC
+torch>=2.6,<3
 torch-geometric>=2.5 # SSI-DDI / DSN-DDI / HDN-DDI / TIGER
 networkx>=3.0        # TIGER shortest-path encoding
 gensim>=4.3          # TIGER random-walk Word2Vec embeddings
 
+# LLM training and inference
+transformers==4.57.1
+peft==0.17.1
+accelerate>=1.10,<2
+huggingface-hub>=0.34,<1
+sentencepiece>=0.2,<0.3
+filelock>=3.16
+
 # Tests
-pytest>=8.0
+pytest>=8,<10
