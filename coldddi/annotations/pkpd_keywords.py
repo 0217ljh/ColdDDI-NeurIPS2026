@@ -1,20 +1,10 @@
 """PK/PD keyword matcher (Appendix A.2).
 
-Given a list of normalized DDI type strings (the output of
-:func:`coldddi.data.filter.run_filter_pipeline`), label each as one of
-``{"PK", "PD", "Mixed", "Unknown"}`` according to the keyword lists below.
+Label normalized DDI types from :func:`coldddi.data.filter.run_filter_pipeline`
+as PK, PD, Mixed, or Unknown. Keywords are frozen for Table A.2's 215-type
+distribution; change them only with a corresponding paper update.
 
-The keyword lists are frozen to match the paper's Table A.2 distribution
-(215 ddi_types → ~half PK, ~half PD, plus a small Mixed bucket); they
-should not be edited unless the paper itself is updated.
-
-Public surface
---------------
-- :data:`PK_KEYWORDS`, :data:`PD_KEYWORDS`
-- :func:`label_ddi_type` — single-string entry point.
-- :func:`label_ddi_types` — DataFrame entry point used by reconstruct.py.
-- :func:`main` — CLI:
-  ``python -m coldddi.annotations.pkpd_keywords --ddi-edges PATH --out PATH``
+``python -m coldddi.annotations.pkpd_keywords --ddi-edges PATH --out PATH``
 """
 
 from __future__ import annotations
@@ -26,8 +16,7 @@ from typing import Iterable
 
 import pandas as pd
 
-# Frozen keyword lists. Order matters only for reporting (the matched
-# keyword list is preserved as-is for downstream summary tables).
+# Frozen keywords; preserve hit order for downstream summary tables.
 PK_KEYWORDS: tuple[str, ...] = (
     "metabolism",
     "excretion",
@@ -70,8 +59,8 @@ LabelKind = str  # "PK" | "PD" | "Mixed" | "Unknown"
 def label_ddi_type(ddi_type: str) -> tuple[LabelKind, list[str], list[str]]:
     """Return ``(label, pk_hits, pd_hits)`` for a single normalized DDI type.
 
-    The match is case-insensitive substring; the same logic as the
-    legacy `Label_ddi_for_PK_and_PD/extract_drug_classification.py`.
+    Match case-insensitive substrings, as in
+    ``Label_ddi_for_PK_and_PD/extract_drug_classification.py``.
     """
     text = ddi_type.lower()
     pk_hits = [kw for kw in PK_KEYWORDS if kw in text]
@@ -99,7 +88,7 @@ def label_ddi_types(types: Iterable[str]) -> pd.DataFrame:
     Returns a DataFrame with columns
     ``ddi_type, pk_pd_label, matched_pk_keywords, matched_pd_keywords``,
     sorted by ``ddi_type``. An empty input yields an empty DataFrame
-    with the same fixed schema (so downstream CLI access does not crash).
+    with the same schema.
     """
     rows: list[dict] = []
     for ddi_type in sorted(set(types)):

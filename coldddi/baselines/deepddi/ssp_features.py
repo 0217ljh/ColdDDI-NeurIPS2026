@@ -1,16 +1,10 @@
-"""
-SSP (Structural Similarity Profile) feature extraction for DeepDDI.
+"""SSP (Structural Similarity Profile) feature extraction for DeepDDI.
 
 For each drug D, SSP(D) = [Tanimoto(Morgan(D), Morgan(D_ref)) for D_ref in reference_set],
 then PCA-reduce to a fixed dim. Reference set uses G1 training drugs (no G2 leakage).
 
-Artifacts cached under <output_dir>/ssp_cache/<seed>.pkl:
-    {
-        "reference_drug_ids": List[str],
-        "pca": fitted sklearn.decomposition.PCA,
-        "ssp": Dict[drug_id, np.ndarray (n_components,)],
-        "drugs_without_smiles": List[str],   # logged, zero-filled
-    }
+Artifacts contain reference IDs, the fitted PCA, per-drug SSP vectors of
+shape (n_components_effective,), and IDs with missing or invalid SMILES.
 """
 from __future__ import annotations
 
@@ -97,17 +91,18 @@ def build_ssp_artifacts(
     n_components: int = DEFAULT_SSP_DIM,
     random_state: int = 42,
 ) -> Dict:
-    """End-to-end SSP construction.
+    """Build SSP vectors with a G1-only reference set and PCA fit.
 
     Args:
-        smiles_dict: drug_id -> SMILES (from bundle.extra["kb"]["drug_id2smiles"])
+        smiles_dict: drug_id -> SMILES
         reference_drug_ids: SSP basis drugs (must be G1 only, no G2 leakage)
         all_drug_ids: every drug we need SSP for (train + val + test)
         train_drug_ids_for_pca_fit: rows used to fit PCA (should be G1 only)
-        n_components: final SSP dim
+        n_components: requested SSP dimension, capped by the PCA training matrix
 
     Returns:
-        dict with keys: "reference_drug_ids", "pca", "ssp", "drugs_without_smiles"
+        dict with keys: "reference_drug_ids", "pca", "ssp", "drugs_without_smiles",
+        and "n_components_effective"
     """
     reference_drug_ids = [str(d) for d in reference_drug_ids]
     all_drug_ids = [str(d) for d in all_drug_ids]
@@ -118,10 +113,8 @@ def build_ssp_artifacts(
     # Tanimoto similarity matrix (all drugs × reference drugs)
     sim_matrix = compute_tanimoto_matrix(fps, all_drug_ids, reference_drug_ids)
 
-    # Fit PCA on the G1 training rows ONLY — never fall back to
-    # all_drug_ids, that would leak G2 into the SSP basis and break the
-    # cold-start promise. If G1 is too small, we cap n_components down
-    # to what G1 can support, raising only if even 2 dims aren't viable.
+    # Fit only G1 rows to avoid G2 leakage; require at least two training drugs.
+    # Cap the component count to the training matrix dimensions.
     train_idx = [i for i, did in enumerate(all_drug_ids) if did in set(train_drug_ids_for_pca_fit)]
     if len(train_idx) < 2:
         raise ValueError(
@@ -134,7 +127,6 @@ def build_ssp_artifacts(
     pca = PCA(n_components=effective_components, random_state=random_state)
     pca.fit(train_sub)
 
-    # Transform all drugs
     transformed = pca.transform(sim_matrix).astype(np.float32)
     ssp: Dict[str, np.ndarray] = {
         did: transformed[i] for i, did in enumerate(all_drug_ids)
@@ -161,7 +153,7 @@ def load_ssp_cache(path: str) -> Dict:
 
 
 def get_ssp_or_zero(artifacts: Dict, drug_id: str) -> np.ndarray:
-    """Safe lookup: returns zero vector if the drug is missing (unparsable SMILES)."""
+    """Return the stored SSP or a zero vector if the drug ID is absent."""
     ssp = artifacts["ssp"]
     did = str(drug_id)
     if did in ssp:

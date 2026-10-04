@@ -1,8 +1,7 @@
 """BKG (Biomedical Knowledge Graph) construction for dual-channel TIGER.
 
-Extracted from upstream ``Code-Released/baseline/TIGER/train_custom_bundle.py``
-(lines ~258-617).  Builds the heterogeneous graph that the KG branch
-of :class:`coldddi.baselines.tiger.model.TIGER` walks over:
+Adapted from ``Code-Released/baseline/TIGER/train_custom_bundle.py``
+(lines ~258-617) for the KG branch's random walks:
 
 * Nodes — all drugs (indices ``0..n_drugs-1``) + entities
   (``n_drugs..n_drugs + n_entities - 1``).
@@ -12,11 +11,9 @@ of :class:`coldddi.baselines.tiger.model.TIGER` walks over:
 * Relations — ``1`` = DDI / self-loop, ``2..6`` = kb categories
   (targets / enzymes / transporters / carriers / pathways).
 
-Paper KG augmentation (``--kg_source drugbank|kegg|ogbl-biokg`` in
-the upstream script) is **not** integrated here because those source
-files are 38 MB+ DrugBank-derived and don't ship with this public
-release.  See the upstream script if you need them for full
-paper-Table-6 reproduction.
+Upstream ``--kg_source drugbank|kegg|ogbl-biokg`` augmentation is not included;
+its DrugBank-derived source files are not distributed with this release.
+See the upstream script for that part of the Table-6 setup.
 """
 
 from __future__ import annotations
@@ -29,7 +26,7 @@ import pandas as pd
 log = logging.getLogger(__name__)
 
 
-# ─── kb DataFrame column resolution helpers ──────────────────────────
+# KB column resolution
 
 def _bkg_drug_col(df: pd.DataFrame) -> str | None:
     for c in ["drug_id", "drug_a_id", "DrugBank ID", "drugbank_id", "d1", "id"]:
@@ -51,7 +48,7 @@ def _bkg_entity_col(df: pd.DataFrame, rel_name: str) -> str | None:
     return None
 
 
-# ─── drug-entity edges from kb ────────────────────────────────────────
+# Drug-entity edges
 
 def build_drug_entity_edges_from_kb(
     kb_data: dict,
@@ -160,7 +157,7 @@ def build_drug_entity_edges_from_kb(
     return edges, entity_to_idx
 
 
-# ─── BKG assembly ─────────────────────────────────────────────────────
+# BKG assembly
 
 def build_bkg(
     *,
@@ -180,12 +177,10 @@ def build_bkg(
         be a BKG node (g1 + g2 combined).
     train_positive_pairs
         Iterable of ``(drug_a_id, drug_b_id)`` train-set DDI positives.
-        Edges touching a ``g2_drugs`` entry are dropped (cold-start
-        integrity — unseen drugs may not leak via training DDIs).
+        Drop edges touching ``g2_drugs`` to prevent cold-start DDI leakage.
     g2_drugs
-        Set of drug indices that are in the unseen / cold-start
-        partition.  Pass ``None`` to disable the cold-start filter
-        (every train positive is added).
+        Unseen drug indices. ``None`` disables the cold-start filter;
+        pairs with IDs outside ``drug_to_idx`` are still skipped.
 
     Returns
     -------
@@ -205,7 +200,7 @@ def build_bkg(
     network_edge_list: list[list[int]] = []
     network_rel_list: list[int] = []
 
-    # ── DDI edges (train positives only, exclude g2-touching) ──
+    # Training DDIs, excluding G2 drugs.
     ddi_skipped_g2 = 0
     for d1, d2 in train_positive_pairs:
         d1, d2 = str(d1), str(d2)
@@ -223,7 +218,7 @@ def build_bkg(
             ddi_skipped_g2,
         )
 
-    # ── drug-entity edges (bidirectional) ──
+    # Bidirectional drug-entity edges.
     for drug_idx, entity_idx, rel_idx in drug_entity_edges:
         u, v = drug_idx, entity_node_offset + entity_idx
         network_edge_list.append([u, v])
@@ -231,7 +226,7 @@ def build_bkg(
         network_edge_list.append([v, u])
         network_rel_list.append(rel_idx)
 
-    # ── self-loops on isolated drug nodes ──
+    # Self-loops keep isolated drugs reachable by random walks.
     nodes_in_edges: set[int] = set()
     for e in network_edge_list:
         nodes_in_edges.add(e[0])

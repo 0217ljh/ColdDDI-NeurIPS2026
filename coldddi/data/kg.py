@@ -1,24 +1,8 @@
-"""Default :class:`coldddi.data.protocols.KnowledgeGraphProtocol` implementation.
+"""Drug-to-entity graph implementing ``KnowledgeGraphProtocol``.
 
-Wraps the five entity tables produced by
-:mod:`coldddi.data.filter` (``drug_enzymes`` / ``drug_targets`` /
-``drug_transporters`` / ``drug_carriers`` / ``drug_pathways``) into a
-single typed object that exposes both:
-
-1. A *modern* DataFrame API: :meth:`neighbors`, :meth:`shared_entities`.
-2. A *legacy* dict-of-list view: :meth:`name_dict`.
-
-The legacy view is what the prompt-builder code inherited from the
-earlier research repository expects (``{drug_id: [entity_name, ...]}``);
-keeping it as a first-class method preserves bit-exact compatibility
-with prompts in the LLM stack.
-
-Persistence
------------
-:meth:`save` writes the five tables back as parquet files; the inverse
-:func:`KnowledgeGraph.from_filtered_dir` reads them. The on-disk format
-is identical to ``data/{public,private}/intermediate/filtered/`` so
-existing filter outputs can be loaded directly.
+Wrap the five filtered entity tables as DataFrame lookups and the
+``{drug_id: [entity_name, ...]}`` view used by legacy prompt builders.
+Save as Parquet; load Parquet or Stage-1b CSVs with ``from_filtered_dir``.
 """
 
 from __future__ import annotations
@@ -51,8 +35,7 @@ class KnowledgeGraph:
     pathways
         Columns: ``drugbank_id, pathway_id, pathway_name``.
 
-    All inputs may be empty (the schema is preserved); attempting to
-    construct from non-DataFrames raises immediately.
+    Inputs must be DataFrames with these columns; empty tables are supported.
     """
 
     enzymes: pd.DataFrame
@@ -61,22 +44,16 @@ class KnowledgeGraph:
     carriers: pd.DataFrame
     pathways: pd.DataFrame
 
-    # cached unified view (computed lazily by `_unified()`)
+    # Lazily cached unified view
     _unified_cache: pd.DataFrame | None = field(default=None, repr=False, init=False)
 
-    # -----------------------------------------------------------------
     # Factories
-    # -----------------------------------------------------------------
 
     @classmethod
     def from_filtered_dir(cls, dir_path: Path) -> "KnowledgeGraph":
         """Load the five entity tables from a filtered output directory.
 
-        Auto-detects the file extension: prefers ``.parquet`` (the format
-        :meth:`save` writes) and falls back to ``.csv`` (the format
-        Stage 1b's :func:`coldddi.data.filter.write_filter_report`
-        writes). This keeps :meth:`save` and :meth:`from_filtered_dir`
-        a true round-trip pair.
+        Prefer ``.parquet`` from :meth:`save`; fall back to Stage-1b ``.csv``.
         """
         kwargs = {}
         for entity, prefix in (
@@ -98,9 +75,7 @@ class KnowledgeGraph:
                 )
         return cls(**kwargs)
 
-    # -----------------------------------------------------------------
     # Internal helpers
-    # -----------------------------------------------------------------
 
     def _table_for(self, edge_type: str) -> pd.DataFrame:
         if edge_type == "enzyme":
@@ -148,9 +123,7 @@ class KnowledgeGraph:
         self._unified_cache = unified
         return unified
 
-    # -----------------------------------------------------------------
-    # KnowledgeGraphProtocol surface
-    # -----------------------------------------------------------------
+    # Graph lookups
 
     def neighbors(
         self,
@@ -176,11 +149,8 @@ class KnowledgeGraph:
     def shared_entities(self, drug_a: str, drug_b: str) -> pd.DataFrame:
         """Return ``(edge_type, entity_id, entity_name)`` rows present for both drugs.
 
-        Membership is decided by ``(edge_type, entity_id)``; the joined
-        ``entity_name`` is taken from drug A's row. We deliberately do
-        *not* require name equality because DrugBank occasionally records
-        cleaned-up name variants (e.g. trailing whitespace) on different
-        polypeptide entries that share an ID.
+        Match ``(edge_type, entity_id)`` and use drug A's entity name.
+        Names need not match: DrugBank can use name variants for the same ID.
         """
         unified = self._unified()
         a_keys = unified.loc[
@@ -199,11 +169,9 @@ class KnowledgeGraph:
     def name_dict(self, edge_type: str) -> dict[str, list[str]]:
         """Return ``{drug_id: [entity_name, ...]}`` for one edge type.
 
-        This mirrors the legacy ``dbid_2_enzymes`` / ``dbid_2_targets``
-        dicts the prompt builders expect. Drugs that have no edges of
-        the given type are absent from the result; callers should
-        default to ``["unknown"]`` themselves if they want the legacy
-        sentinel behavior.
+        Preserve per-drug row order for legacy prompt builders. Drugs with
+        no edges of this type are omitted; callers supply ``["unknown"]``
+        if they need the legacy sentinel.
         """
         tbl = self._table_for(edge_type)
         if tbl.empty:
@@ -223,9 +191,7 @@ class KnowledgeGraph:
         self.carriers.to_parquet(out_dir / "drug_carriers.parquet", index=False)
         self.pathways.to_parquet(out_dir / "drug_pathways.parquet", index=False)
 
-    # -----------------------------------------------------------------
     # Convenience
-    # -----------------------------------------------------------------
 
     @property
     def drug_ids(self) -> set[str]:

@@ -1,26 +1,9 @@
-"""Actually load each usable local LLM via AutoModelForCausalLM.
+"""Load cached LLMs sequentially and test a forward pass, without downloads.
 
-Verifying AutoConfig + shard-files-on-disk is necessary but not
-sufficient — a shard can exist on disk and still fail to load
-(corrupted blob, key-name mismatch, dtype mismatch, missing weight
-file referenced by ``model.safetensors.index.json``).  This script
-calls ``AutoModelForCausalLM.from_pretrained`` on each model
-sequentially, runs a 1-token forward pass to prove the weights are
-actually usable, then deletes the model and releases VRAM before
-loading the next.
-
-Models that have made it past the AutoConfig + shard-presence check
-in :mod:`scripts.verify_local_llms` and the user wants to actually
-run against:
-
-* meta-llama/Llama-3.2-1B
-* meta-llama/Llama-3.2-3B
-* Qwen/Qwen2.5-0.5B
-* Qwen/Qwen2.5-3B
-
-For each, we report: load time, peak VRAM, parameter count, the
-``p_yes / p_no`` next-token softmax on a single throwaway prompt
-(just to prove the forward pass works).
+Unlike config and shard-presence checks, this loads weights with
+AutoModelForCausalLM. Report load time, peak VRAM, parameter count,
+and next-token ``p_yes / p_no`` on a test prompt; release each model
+before loading the next. These scores do not measure task accuracy.
 """
 from __future__ import annotations
 
@@ -30,12 +13,8 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-# Cache locations — same as verify_local_llms.py.
-#
-# Resolution order:
-#   1. ``HF_HOME`` env var (standard HuggingFace convention)
-#   2. ``~/.cache/huggingface/hub`` (HF default)
-#   3. Any extra roots in ``COLDDDI_HF_EXTRA_CACHE`` (os.pathsep-split).
+# Cache order: HF_HOME/hub, ~/.cache/huggingface/hub, then
+# COLDDDI_HF_EXTRA_CACHE entries split by os.pathsep.
 def _build_cache_locations() -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
     hf_home = os.environ.get("HF_HOME")
@@ -77,8 +56,7 @@ class LoadResult:
 
 
 def _resolve_cache_with_weights(hf_id: str) -> tuple[str, str] | None:
-    """Return ``(cache_tag, cache_dir)`` for whichever cache has
-    real weight shards (not just metadata)."""
+    """Return ``(cache_tag, cache_dir)`` with the most resolved weight shards."""
     safe_id = hf_id.replace("/", "--")
     best: tuple[str, str, int] | None = None
     for tag, cache in CACHE_LOCATIONS:
@@ -147,9 +125,7 @@ def _load_one(paper_name: str, hf_id: str) -> LoadResult:
     load_seconds = time.time() - t0
     n_params = sum(p.numel() for p in model.parameters()) / 1e6
 
-    # Trivial forward pass — score " Yes" vs " No" on a 1-token throwaway
-    # prompt. We're not validating correctness, just proving the
-    # weights propagate through the graph without NaN/inf.
+    # Score " Yes" vs " No" to exercise the forward pass, not task accuracy.
     try:
         prompt = "Does drug A interact with drug B? Answer:"
         enc = tok(prompt, return_tensors="pt").to(device)
@@ -185,7 +161,6 @@ def _load_one(paper_name: str, hf_id: str) -> LoadResult:
 
     peak_vram = (torch.cuda.max_memory_allocated() / 1e9) if device == "cuda" else 0.0
 
-    # Release before next model.
     del model, tok
     gc.collect()
     if device == "cuda":

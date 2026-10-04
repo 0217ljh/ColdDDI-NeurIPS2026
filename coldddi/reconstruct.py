@@ -1,11 +1,6 @@
-"""Stage-spanning reconstruction driver - paper @A.6.3 entry point.
+"""Reconstruct ColdDDI from DrugBank XML (paper A.6.3).
 
-A single CLI that runs every published stage of the data pipeline,
-from a raw DrugBank XML all the way to the four release Parquet
-artifacts and the per-seed train/val/test splits with their negatives.
-
-Stages (each one is implemented in its own module - this driver only
-orchestrates):
+Run the data stages through release Parquets and per-seed splits/negatives:
 
 * ``stage1a`` - :mod:`coldddi.data.extract`              (XML -> 7 raw csvs)
 * ``stage1b`` - :mod:`coldddi.data.filter`               (7-step pipeline -> filtered csvs)
@@ -31,7 +26,7 @@ Output layout (relative to ``--output``):
 CLI
 ---
 ``python -m coldddi.reconstruct --drugbank PATH --output DIR --seeds 42 43 44``
-``python reconstruct.py ...``  (root-level wrapper at the repo root)
+``python reconstruct.py ...`` (root-level wrapper)
 """
 
 from __future__ import annotations
@@ -64,20 +59,17 @@ ALL_STAGES: tuple[str, ...] = (
     "stage4",
 )
 
-#: Repo-relative path to the toy XML. Resolved from the location of this
-#: source file, so ``--toy`` works from any cwd.
+#: Resolve the toy XML relative to this module, independent of cwd.
 DEFAULT_TOY_XML: Path = (
     Path(__file__).resolve().parent.parent / "data" / "public" / "drugbank_toy.xml"
 )
 
 
-# ---------------------------------------------------------------------
 # Logging helper
-# ---------------------------------------------------------------------
 
 
 class _Logger:
-    """Tiny prefix logger that times each stage."""
+    """Log stage messages and elapsed time."""
 
     def __init__(self, *, quiet: bool) -> None:
         self._quiet = quiet
@@ -96,9 +88,7 @@ class _Logger:
         self.info(f"   {name} done in {elapsed:.1f}s")
 
 
-# ---------------------------------------------------------------------
 # Per-stage helpers
-# ---------------------------------------------------------------------
 
 
 def _do_stage1a(xml_path: Path, raw_dir: Path, log: _Logger) -> None:
@@ -205,8 +195,7 @@ def _do_stage3(
         mode=release_mode,  # type: ignore[arg-type]
         full_pkpd_csv=full_pkpd_csv,
     )
-    # Don't re-read the parquets just to count rows — on a full run that's
-    # several GB of avoidable I/O.
+    # Report paths without rereading the Parquets.
     for name, path in written.items():
         log.info(f"   {name:<20} -> {path.name}")
     log.stage_end("Stage 3")
@@ -236,9 +225,8 @@ def _do_stage4(
         neg_dir.mkdir(parents=True, exist_ok=True)
         for name, df in build_static_negatives(splits, base_seed=seed).items():
             df.to_parquet(neg_dir / f"{name}.parquet", index=False)
-        # Pre-baked train negatives - stream-write for visible progress.
-        # Always wipe any stale `epoch_*.parquet` from a previous run so
-        # the on-disk count matches the requested n_epochs exactly.
+        # Remove old epoch files even when zero epochs are requested.
+        # Write each new epoch as it is sampled.
         train_neg_dir = seed_dir / "train_negatives"
         if train_neg_dir.is_dir():
             for stale in train_neg_dir.glob("epoch_*.parquet"):
@@ -254,9 +242,7 @@ def _do_stage4(
     log.stage_end("Stage 4")
 
 
-# ---------------------------------------------------------------------
 # Top-level driver
-# ---------------------------------------------------------------------
 
 
 #: Which stage writes which directory under <output>/intermediate/.
@@ -284,9 +270,7 @@ def _producer_of(rel_path: str) -> str:
     return "stage1a"
 
 
-#: Files each stage *needs upstream* (relative to the output root).
-#: Used to give a clear error when --skip-stages omits a producer
-#: but a later stage still runs.
+#: Required upstream files, relative to the output root, for skip-stage checks.
 _STAGE_REQUIRES: dict[str, tuple[str, ...]] = {
     "stage1b": ("intermediate/raw/drugs.csv",),
     "stage2a": ("intermediate/filtered/ddi_edges.csv",),
@@ -316,10 +300,8 @@ def run_reconstruction(
 ) -> None:
     """Run every pipeline stage in sequence.
 
-    Each stage is independently skippable via ``skip_stages`` (e.g. when
-    re-running only the splits step on the same Stage-1b output). When a
-    skipped stage's downstream artifacts are missing, this function
-    raises a clear error before any work begins.
+    ``skip_stages`` reuses existing outputs. Before running, check that
+    required files from skipped producers exist.
     """
     if n_train_negative_epochs < 0:
         raise ValueError(
@@ -334,14 +316,11 @@ def run_reconstruction(
         )
 
     output = Path(output)
-    # Preflight: every stage that will run must have its upstream
-    # artifacts present (either produced earlier this run, or already on
-    # disk from a previous run). Raise *before* doing any work.
+    # Check skipped producers' required outputs before starting any stage.
     for stage in ALL_STAGES:
         if stage in skip:
             continue
-        # An upstream is satisfied iff its producer stage is either also
-        # running this session OR its file already exists on disk.
+        # Running producers will supply their outputs during this run.
         for rel in _STAGE_REQUIRES.get(stage, ()):
             producer = _producer_of(rel)
             if producer in skip and not (output / rel).is_file():
@@ -393,9 +372,7 @@ def run_reconstruction(
     log.info("[OK] Reconstruction complete.")
 
 
-# ---------------------------------------------------------------------
 # CLI
-# ---------------------------------------------------------------------
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -492,8 +469,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"--drugbank file not found: {drugbank}", file=sys.stderr)
             return 1
 
-    # `--toy` defaults to sample mode (the toy is a 100-drug subset, the
-    # full release-mode parquets would be tiny and misleading).
+    # Use sample release names for the 100-drug toy unless overridden.
     release_mode = args.release_mode
     if release_mode is None:
         release_mode = "sample" if args.toy else "full"

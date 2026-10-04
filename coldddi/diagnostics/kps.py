@@ -1,14 +1,11 @@
-"""Paper-named shim: KPS (Knowledge Prediction Sensitivity) entry points.
+"""KPS (Knowledge Prediction Sensitivity) entry points.
 
-Paper Appendix A.6.2 line 503 lists ``coldddi/diagnostics/kps.py``
-as the home of the KPS family.  In the implementation those live
-in :mod:`coldddi.diagnostics.indicators` (per-equation math) and
-:mod:`coldddi.diagnostics.kps_swap` (swap-candidate generator);
-this module is a thin re-export so users browsing the package
-following the paper's file map land on something runnable.
+Re-exports :mod:`coldddi.diagnostics.indicators` and
+:mod:`coldddi.diagnostics.kps_swap` under the path listed in
+paper Appendix A.6.2, line 503.
 
-Exports
--------
+Exports:
+
 * :func:`compute_kps_f`         — paper Eq. (1)
 * :func:`compute_kps_channel`   — paper Eq. (2)
 * :func:`build_swap_candidates` — KPS-F's swap-anchor generator

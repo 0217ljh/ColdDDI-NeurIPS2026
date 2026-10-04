@@ -1,9 +1,6 @@
-"""Smoke tests for the new layer-2 modules (KG / Splits / Negatives)
-and the refactored :class:`PairDataset` composition.
+"""Test KG, splits, negatives, and PairDataset composition.
 
-Locked numbers refer to the toy fixture
-(``data/public/intermediate/filtered/`` after Stage 1b on the
-100-drug toy XML, plus a fixed seed=42).
+Expected counts use the filtered 100-drug toy XML fixture with seed 42.
 """
 
 from __future__ import annotations
@@ -26,9 +23,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-# -------------------------------------------------------------------
 # Fixtures
-# -------------------------------------------------------------------
 
 
 @pytest.fixture(scope="module")
@@ -50,14 +45,12 @@ def toy_splits(toy_edges):
     return build_splits(toy_edges, seed=42, drug_ratio=1.5, val_ratio=0.1)
 
 
-# -------------------------------------------------------------------
 # KnowledgeGraph
-# -------------------------------------------------------------------
 
 
 class TestKnowledgeGraph:
     def test_loaded_table_sizes_nonzero(self, toy_kg):
-        # Toy filtered KG: 322 / 289 / 162 / 38 / 29 (state7 numbers)
+        # Filtered toy KG counts: 322 / 289 / 162 / 38 / 29.
         assert len(toy_kg.enzymes) == 322
         assert len(toy_kg.targets) == 289
         assert len(toy_kg.transporters) == 162
@@ -65,9 +58,7 @@ class TestKnowledgeGraph:
         assert len(toy_kg.pathways) == 29
 
     def test_neighbors_returns_known_drug(self, toy_kg, toy_edges):
-        # Pick a drug that participates in DDI edges; it should have
-        # at least one entity-level neighbor (since the toy was sampled
-        # from the post-pipeline pool).
+        # The post-filter toy pool includes entity neighbors for this drug.
         a_first = str(toy_edges["drug_a_id"].iloc[0])
         result = toy_kg.neighbors(a_first)
         assert isinstance(result, pd.DataFrame)
@@ -104,15 +95,12 @@ class TestKnowledgeGraph:
 
         out = tmp_path / "kg_roundtrip"
         toy_kg.save(out)
-        # Reload the parquets back into DataFrames.
         en = pd.read_parquet(out / "drug_enzymes.parquet")
         assert len(en) == len(toy_kg.enzymes)
         assert set(en.columns) == set(toy_kg.enzymes.columns)
 
 
-# -------------------------------------------------------------------
 # Splits
-# -------------------------------------------------------------------
 
 
 class TestSplits:
@@ -140,8 +128,7 @@ class TestSplits:
         assert b.isin(g1).all()
 
     def test_single_train_disjoint_from_every_split(self, toy_splits):
-        """Critical-#1 regression: the single canonical `train` must not
-        leak into any val/test bucket of any setting (S0, S1, or S2)."""
+        """Canonical training pairs are disjoint from all S0/S1/S2 val/test splits."""
 
         def canonical_pairs(df: pd.DataFrame) -> set[tuple[str, str]]:
             out: set[tuple[str, str]] = set()
@@ -166,11 +153,7 @@ class TestSplits:
         assert b.isin(g2).all()
 
     def test_total_pair_count_does_not_exceed_input(self, toy_splits, toy_edges):
-        # The seven splits collectively cannot reference more *positive*
-        # pairs than the input edge set (some pairs may legitimately be
-        # excluded if they cross G1/G2 in unusual ways).
-        # Train edges (G1×G1) overlap with val_s0/test_s0 — so we count
-        # by union across distinct (a, b) tuples.
+        # Count distinct positive pairs across all splits against the input edge set.
         seen: set[tuple[str, str]] = set()
         for _, df in toy_splits.items():
             for a, b in zip(df["drug_a_id"].astype(str), df["drug_b_id"].astype(str)):
@@ -196,9 +179,7 @@ class TestSplits:
             assert len(getattr(loaded, name)) == len(df)
 
 
-# -------------------------------------------------------------------
 # Negatives
-# -------------------------------------------------------------------
 
 
 class TestNegatives:
@@ -248,9 +229,7 @@ class TestNegatives:
                 assert len(neg) == len(pos)
 
 
-# -------------------------------------------------------------------
 # PairDataset (legacy + modern paths)
-# -------------------------------------------------------------------
 
 
 class TestPairDatasetLegacy:
@@ -317,7 +296,6 @@ class TestPairDatasetModern:
         # Build a minimal release-style directory layout in tmp_path.
         root = tmp_path / "release_root"
         (root / "filtered").mkdir(parents=True)
-        # Copy the 7 toy filtered csvs into root/filtered/
         for fname in (
             "drugs.csv",
             "ddi_edges.csv",
@@ -329,10 +307,8 @@ class TestPairDatasetModern:
         ):
             (root / "filtered" / fname).write_bytes((TOY_FILTERED / fname).read_bytes())
 
-        # Save splits at root/splits/seed42/
         toy_splits.save(root / "splits" / "seed42")
 
-        # Load it back and check basic invariants.
         ds = PairDataset.from_release_dir(root, seed=42)
         # The release directory's edges are the full toy filtered ddi_edges.csv;
         # the canonical train must be ≤ that count.
@@ -399,9 +375,7 @@ class TestPairDatasetModern:
 PHASE_OFFSETS_KEYS = ("test_s0", "val_s0", "test_s1", "val_s1", "test_s2", "val_s2")
 
 
-# -------------------------------------------------------------------
-# Train negatives (Stage-2-bis: training-side negatives, not val/test)
-# -------------------------------------------------------------------
+# Train negatives, separate from val/test negatives.
 
 
 class TestTrainNegatives:
@@ -519,9 +493,7 @@ class TestTrainNegatives:
         )
 
 
-# -------------------------------------------------------------------
 # Legacy bundle KG: must build a real KnowledgeGraph from `my_X_list`
-# -------------------------------------------------------------------
 
 
 _LEGACY_PKL = (
@@ -536,9 +508,7 @@ _LEGACY_PKL = (
 )
 class TestLegacyKG:
     def test_legacy_kb_my_x_list_becomes_real_kg(self):
-        """Legacy bundles store entity tables as `my_X_list` DataFrames;
-        from_pkl must turn them into a real KnowledgeGraph (not the
-        empty _LegacyKGAdapter)."""
+        """Promote legacy my_X_list tables to a populated KnowledgeGraph."""
         from coldddi.data.dataset import PairDataset
         from coldddi.data.kg import KnowledgeGraph
 
@@ -569,13 +539,10 @@ class TestLegacyKG:
         assert isinstance(sample_value, list)
 
     def test_legacy_get_train_negatives_round_trip(self):
-        """Modern get_train_negatives must transparently fall back to
-        the legacy bundle's pre-baked train_neg_epochs.
+        """Reuse legacy train_neg_epochs without resampling.
 
-        Note: the modern API narrows to ``[drug_a_id, drug_b_id]`` for
-        schema consistency (codex M2), while ``get_legacy_train_negatives``
-        preserves the bundle's original columns. Both must agree on the
-        pair coordinates row-for-row.
+        The modern API keeps only pair columns; their rows must match the
+        legacy API, which preserves all original columns.
         """
         from coldddi.data.dataset import PairDataset
 
@@ -592,9 +559,7 @@ class TestLegacyKG:
         )
 
 
-# -------------------------------------------------------------------
 # Edge-case path: legacy KB with the older `dbid_2_X` schema
-# -------------------------------------------------------------------
 
 
 def test_legacy_kg_dbid_format_falls_back_to_adapter():
@@ -612,16 +577,14 @@ def test_legacy_kg_dbid_format_falls_back_to_adapter():
     assert kg.name_dict("enzyme") == legacy_kb["dbid_2_enzymes"]
 
 
-# -------------------------------------------------------------------
-# Codex-review-driven regression tests (M1, M2, M3, m4)
-# -------------------------------------------------------------------
+# PairDataset API regressions.
 
 
 class TestGetTrainNegativesContract:
     """Lock the public contract of :meth:`PairDataset.get_train_negatives`."""
 
     def test_modern_path_returns_two_columns(self, toy_splits, tmp_path):
-        """M2: the modern API always narrows to ``[drug_a_id, drug_b_id]``."""
+        """The modern API returns only drug_a_id and drug_b_id columns."""
         from coldddi.data.dataset import PairDataset
         from coldddi.data.negatives import build_train_negatives_epochs
 
@@ -650,9 +613,7 @@ class TestGetTrainNegativesContract:
         not _LEGACY_PKL.is_file(), reason="Legacy 800drug pkl not present"
     )
     def test_legacy_path_returns_two_columns(self):
-        """M2 (legacy half): even when served from the legacy bundle's
-        train_neg_epochs, the modern `get_train_negatives` must still
-        return only the canonical pair columns."""
+        """Legacy train negatives also return only canonical pair columns."""
         from coldddi.data.dataset import PairDataset
 
         ds = PairDataset.from_pkl(_LEGACY_PKL)
@@ -663,25 +624,20 @@ class TestGetTrainNegativesContract:
         not _LEGACY_PKL.is_file(), reason="Legacy 800drug pkl not present"
     )
     def test_legacy_epoch_out_of_range_falls_through(self):
-        """M1: when the legacy bundle has fewer epochs than requested,
-        `get_train_negatives` must fall through to fresh sampling
-        instead of raising IndexError."""
+        """Sample fresh negatives when the requested legacy epoch is absent."""
         from coldddi.data.dataset import PairDataset
 
         ds = PairDataset.from_pkl(_LEGACY_PKL)
         n_legacy = len(ds.legacy_bundle.extra.get("train_neg_epochs", []))
         # Request an epoch one past the legacy bundle's range.
         out = ds.get_train_negatives(epoch=n_legacy + 5)
-        # Either falls through cleanly (preferred) or fails fast — never raises IndexError silently.
         assert isinstance(out, pd.DataFrame)
         assert list(out.columns) == ["drug_a_id", "drug_b_id"]
         assert len(out) == len(ds.splits.train)
 
 
 class TestLegacyKBStrictSchema:
-    """M3: legacy KB → KnowledgeGraph promotion must require all five
-    tables with valid columns; partial KBs must not silently produce a
-    half-empty KnowledgeGraph."""
+    """Legacy KG promotion requires all five tables with valid columns."""
 
     def test_partial_my_x_list_falls_back_to_adapter(self):
         from coldddi.data.dataset import _build_kg_from_legacy_kb, _LegacyKGAdapter
@@ -718,7 +674,7 @@ class TestLegacyKBStrictSchema:
 
 
 class TestLegacyKGAdapterRepr:
-    """m4: adapter repr must stay short even for very large kb dicts."""
+    """Adapter repr stays short even for large KB dictionaries."""
 
     def test_repr_truncates_for_many_keys(self):
         from coldddi.data.dataset import _LegacyKGAdapter

@@ -1,29 +1,10 @@
-"""Project ``ddi_key_entities.csv`` into the two Type-A release tables.
+"""Project ``ddi_key_entities.csv`` into the Type-A tables in paper Table 16.
 
-Paper Table 16 lists two derived artifacts that the release ships as
-Parquet alongside ``ab.parquet``:
+``mediating_entities.parquet`` records the shared entity for each Type-A pair;
+``action_pairs.parquet`` records drug actions and the mechanism chain.
+Both select rows with ``has_key_entity=True``; Type-B pairs are excluded.
 
-* ``mediating_entities.parquet`` — for every Type-A pair, the shared
-  enzyme / transporter / target (the *bridge* of the interaction). PK-A
-  pairs map to enzyme or transporter; PD-A pairs map to a target.
-* ``action_pairs.parquet`` — for every Type-A pair, the role tuple
-  describing each drug's relationship to the bridge (substrate /
-  inhibitor / agonist / antagonist / ...) plus the textual mechanism
-  chain.
-
-Both tables are pure projections of ``ddi_key_entities.csv``: rows where
-``has_key_entity`` is True, with different column subsets. Type-B pairs
-are intentionally excluded because they have no recorded mediating
-entity.
-
-CLI
----
 ``python -m coldddi.annotations.derive_type_a_tables --key-entities PATH --out-dir PATH``
-
-Public surface
---------------
-- :func:`derive_type_a_tables`
-- :func:`main` — CLI entry point.
 """
 
 from __future__ import annotations
@@ -81,9 +62,7 @@ def derive_type_a_tables(
             "Input must contain a `has_key_entity` column "
             "(produced by `coldddi.annotations.ab_subdivision`)."
         )
-    # `astype(bool)` on the string "False" returns True (any non-empty string
-    # is truthy), which would silently leak Type-B rows into the Type-A
-    # projection. Normalize CSV round-tripped values explicitly.
+    # bool("False") is True; parse CSV booleans to keep Type-B rows out.
     raw = ddi_key_entities["has_key_entity"]
     if raw.dtype == bool:
         mask = raw

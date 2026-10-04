@@ -3,7 +3,6 @@ import time
 from gensim.models import Word2Vec
 from . import walker
 import numpy as np
-#np.random.seed(42)
 
 
 class Node2vec(object):
@@ -17,7 +16,7 @@ class Node2vec(object):
             q = 1.0
 
         self.graph = graph
-        if dw: ##deepwalk
+        if dw:  # DeepWalk uses uniform neighbor sampling.
             self.walker = walker.BasicWalker(graph, start_nodes, workers=kwargs["workers"])
         else:
             self.walker = walker.Walker(

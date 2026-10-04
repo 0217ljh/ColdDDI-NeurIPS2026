@@ -1,36 +1,15 @@
-"""TIGER core model — paper-spec dual-channel architecture.
+"""TIGER dual-channel model (Su et al., AAAI 2024).
 
-Byte-equivalent port of upstream
-``Code-Released/baseline/TIGER/model/tiger.py``.  Supports both
-channels described in the original TIGER paper (Su et al., AAAI 2024):
+Adapted from ``Code-Released/baseline/TIGER/model/tiger.py``. GraphTransformer
+encodes molecular atom graphs in ``type='graph'`` mode and per-drug BKG
+subgraphs in ``type='node'`` mode. ``fc1`` fuses the channels per drug;
+``fc2`` classifies the pair.
 
-* **Mol channel** — SMILES atom graph encoded by a
-  :class:`coldddi.baselines.tiger.graph_transformer.GraphTransformer`
-  in ``type='graph'`` mode.
-* **KG channel** — per-drug subgraph (random-walk samples from the
-  Biomedical Knowledge Graph) encoded by the same
-  ``GraphTransformer`` class in ``type='node'`` mode.
+``mol_only=False`` requires molecular and KG subgraphs. ``mol_only=True``
+omits KG and duplicates the molecular embedding to keep fc1's input shape.
 
-The two channel outputs are concatenated, passed through ``fc1`` for
-drug embedding and ``fc2`` for the binary classifier head.
-
-Constructor flags:
-
-* ``mol_only=False`` (default) — full dual-channel TIGER, mirroring
-  the upstream default.  Forward expects ``drug{1,2}_subgraph`` along
-  with ``drug{1,2}_mol``.
-* ``mol_only=True`` — drop the KG channel entirely (faster inductive
-  variant, but loses ``KPS-KG`` channel-ablation capability).  The
-  forward path then concatenates ``mol_graph_embedding`` with itself
-  before ``fc1``.
-
-The dual-channel path additionally supports a cold-start patch:
-when ``batch_idx{1,2}`` + ``unseen_ids`` are passed at val/test
-time, center-node rows for unseen drugs are replaced with
-``cold_start_proj(mol_embedding) + degree_embedding`` so the KG
-branch still receives a meaningful representation for drugs whose
-random-walk subgraph contains only neighbours but no in-distribution
-self-reference.
+With ``batch_idx{1,2}`` and ``unseen_ids``, unseen drugs' KG center features
+become ``cold_start_proj(mol_embedding) + degree_embedding`` at prediction.
 """
 
 from __future__ import annotations
@@ -112,9 +91,7 @@ class Discriminator(nn.Module):
 class TIGER(nn.Module):
     """TIGER dual-channel (or mol-only) classifier.
 
-    Returns ``(prob_class1, loss)`` matching the upstream forward
-    signature so the wrapper can keep using ``probs[:, 1]`` as the
-    binary score.
+    Return ``(prob_class1, loss)``, with probabilities of shape (batch,).
     """
 
     def __init__(
@@ -144,7 +121,7 @@ class TIGER(nn.Module):
         self.mi_coeff = mi_coeff
         self.dropout = dropout
 
-        # ── Mol channel (always present) ─────────────────────────────
+        # Molecular channel
         self.mol_atom_feature = NodeFeatures(
             degree=max_degree_graph,
             feature_num=num_features_drug,
@@ -160,7 +137,7 @@ class TIGER(nn.Module):
             type="graph",
         )
 
-        # ── KG channel (only when not mol-only) ──────────────────────
+        # Optional KG channel
         if not mol_only:
             self.drug_node_feature = NodeFeatures(
                 degree=max_degree_node,
@@ -178,7 +155,7 @@ class TIGER(nn.Module):
             )
             self.cold_start_proj = nn.Linear(output_dim, output_dim)
 
-        # ── Fusion + head (shared) ────────────────────────────────────
+        # Shared fusion and classification head
         self.fc1 = nn.Sequential(
             nn.Linear(output_dim * 2, 256),
             nn.ReLU(),
@@ -222,20 +199,15 @@ class TIGER(nn.Module):
             self.node_representation_learning.reset_parameters()
             self.cold_start_proj.reset_parameters()
 
-    # ------------------------------------------------------------------
     # Cold-start patch (KG channel only)
-    # ------------------------------------------------------------------
 
     def _patch_unseen_center_nodes(
         self, node_feature, subgraph, mol_embedding, batch_idx, unseen_ids,
     ):
-        """Replace center-node rows for samples whose drug id is in
-        ``unseen_ids`` with ``cold_start_proj(mol_embedding) + z_deg``.
+        """Replace unseen drugs' KG center rows in place.
 
-        This lets the KG branch still receive a meaningful representation
-        for cold-start drugs whose random-walk subgraph contains only
-        neighbours (the center-node id is fresh and has no in-distribution
-        embedding).
+        Use ``cold_start_proj(mol_embedding) + z_deg`` instead of their
+        ID embeddings. Skip samples without a center marker.
         """
         if unseen_ids is None or len(unseen_ids) == 0:
             return
@@ -260,9 +232,7 @@ class TIGER(nn.Module):
                 self.cold_start_proj(mol_embedding[i]) + z_deg.to(dev)
             )
 
-    # ------------------------------------------------------------------
     # Forward
-    # ------------------------------------------------------------------
 
     def forward(
         self,
@@ -275,23 +245,14 @@ class TIGER(nn.Module):
         unseen_ids=None,
         mask_channel: str | None = None,
     ):
-        # NOTE: argument order intentionally differs from the upstream
-        # ``(drug1_mol, drug1_subgraph, drug2_mol, drug2_subgraph)``
-        # to keep ``model(mol1, mol2)`` valid when ``mol_only=True`` —
-        # callers that need the KG branch pass ``drug1_subgraph=`` and
-        # ``drug2_subgraph=`` by keyword.
+        # Unlike upstream's interleaved argument order, mol inputs come first
+        # so model(mol1, mol2) works in mol-only mode. Pass KG inputs by keyword.
         #
-        # ``mask_channel`` mirrors upstream's
+        # Fusion-time masks follow upstream
         # ``exps/sec5-3/2_indicators/baseline_mask_predictors/_tiger_runner_mask.py``
-        # fusion-time ablation:
-        #   * ``"mol"`` zeros ``mol{1,2}_graph_emb`` before ``fc1`` →
-        #     KPS-mol indicator (molecular channel masked).
-        #   * ``"kg"``  zeros ``drug{1,2}_node_emb``  before ``fc1`` →
-        #     KPS-KG  indicator (KG channel masked).
-        #   * ``None`` (default) → unmasked base prediction.
-        # Only valid in the dual-channel path; ``mol_only=True`` has no
-        # KG branch to mask and would silently no-op for ``"mol"``, so
-        # we raise instead of producing meaningless predictions.
+        # "mol" zeros molecular outputs (KPS-mol); "kg" zeros KG outputs
+        # (KPS-KG), for both drugs before fc1. None leaves both unchanged.
+        # Channel masks require dual-channel mode.
         if mask_channel not in (None, "mol", "kg"):
             raise ValueError(
                 f"mask_channel must be one of {{None, 'mol', 'kg'}}; "
@@ -313,9 +274,7 @@ class TIGER(nn.Module):
         )
 
         if self.mol_only:
-            # Mol-only fallback: duplicate the mol embedding into the
-            # second fc1 slot so fc1's input shape (output_dim*2) is
-            # preserved.
+            # Duplicate the molecular embedding to preserve fc1's output_dim*2 input.
             drug1_emb = self.fc1(torch.cat([mol1_graph_emb, mol1_graph_emb], dim=-1))
             drug2_emb = self.fc1(torch.cat([mol2_graph_emb, mol2_graph_emb], dim=-1))
             score = self.fc2(torch.cat([drug1_emb, drug2_emb], dim=-1))
@@ -358,11 +317,7 @@ class TIGER(nn.Module):
             drug2_node_feature, drug2_subgraph,
         )
 
-        # ── Channel ablation (paper-spec KPS-mol / KPS-KG) ──────────
-        # Mirrors upstream _tiger_runner_mask.py:480-485 byte-exactly:
-        # zero out BOTH drugs' masked channel before fusion.  Symmetric
-        # with LLM-FT mask, where both drug names / both entity slots
-        # are blanked simultaneously.
+        # Mask both drugs before fusion, as in upstream _tiger_runner_mask.py:480-485.
         if mask_channel == "mol":
             mol1_graph_emb = torch.zeros_like(mol1_graph_emb)
             mol2_graph_emb = torch.zeros_like(mol2_graph_emb)
@@ -388,9 +343,7 @@ class TIGER(nn.Module):
         loss = loss_label + self.mol_coeff * loss_s_m + self.mi_coeff * loss_s_d
         return torch.exp(log_probs)[:, 1], loss
 
-    # ------------------------------------------------------------------
-    # Mutual-information helpers (used by the loss term)
-    # ------------------------------------------------------------------
+    # Mutual-information loss
 
     def MI(self, graph_embeddings, sub_embeddings):
         idx = torch.arange(graph_embeddings.shape[0] - 1, -1, -1)
@@ -417,9 +370,7 @@ class TIGER(nn.Module):
         ).float().to(logits.device)
         return self.b_xent(logits.view([1, -1]), lbl.view([1, -1]))
 
-    # ------------------------------------------------------------------
-    # Convenience save (kept for parity with upstream's API)
-    # ------------------------------------------------------------------
+    # Upstream save API
 
     def save(self, path):
         save_path = os.path.join(path, self.__class__.__name__ + ".pt")

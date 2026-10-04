@@ -1,20 +1,8 @@
-"""``PairDataset`` (+ optional retrieval artifacts) → list of per-pair
-sample dicts ready for
-:func:`coldddi.llm.prompts.binary_cls.build_binary_prompt`.
+"""Convert dataset pairs and retrieval results to prompt-builder samples.
 
-The output dict shape mirrors the one the legacy collator constructs::
-
-    {
-        "drug_a_id": str, "drug_b_id": str,
-        "drug_a_name": str, "drug_b_name": str,
-        "drugA_name": str, "drugB_name": str,     # legacy aliases
-        "label": int (0 or 1),
-        # Optional, present when subgraph_map is supplied:
-        "subgraph_1hop": {"neighbors": {entity_type: {"A": [...], "B": [...]}}},
-        # Optional, present when fewshot_map is supplied:
-        "fewshot_samples":  [(score, ref_a_id, ref_b_id, label_str), ...],
-        "fewshot_metadata": [{"shared_QA_CA": [...], ...}, ...],
-    }
+Samples contain drug IDs, names (including drugA_name/drugB_name aliases)
+and optional binary labels. Retrieval adds ``subgraph_1hop``,
+``fewshot_samples`` and ``fewshot_metadata`` when supplied.
 """
 
 from __future__ import annotations
@@ -50,31 +38,14 @@ def to_llm_samples(
     subgraph_map: "SubgraphMap | None" = None,
     fewshot_map: dict[tuple[str, str], dict] | None = None,
 ) -> list[dict]:
-    """Convert ``(pairs, labels)`` rows into LLM sample dicts.
+    """Convert pair rows to LLM samples using drug names from ``ds.drugs``.
 
-    Parameters
-    ----------
-    pairs
-        DataFrame with at least the columns ``drug_a_id`` and
-        ``drug_b_id``. Extra columns are ignored.
-    labels
-        Per-row 0/1 labels (positive=1, negative=0). May be ``None``
-        for pure inference. When ``None``, the ``label`` field is
-        omitted from the sample dict — :func:`build_binary_prompt`
-        then renders the assistant slot as a bare leading space
-        (``" "``) since ``sample.get("label", "")`` returns the empty
-        string. The model is therefore prompted to generate the
-        answer token, instead of being trained on a fixed one.
-    ds
-        The :class:`PairDataset` the pairs came from; used to look up
-        drug names from ``ds.drugs``.
-    subgraph_map
-        Optional :class:`SubgraphMap`. When supplied, each sample
-        carries a ``subgraph_1hop`` block for P3 / P4 / R* prompts.
-    fewshot_map
-        Optional ``{(drug_a_id, drug_b_id): {"fewshot_samples": [...],
-        "fewshot_metadata": [...]}}``. When supplied, the relevant keys
-        are copied into the sample dict for P2 / P5 prompts.
+    ``pairs`` must contain drug_a_id and drug_b_id; other columns are ignored.
+    ``labels`` contains aligned binary labels, or None to omit the label field.
+    Without a label, the prompt builder's default assistant content is one space.
+
+    ``subgraph_map`` adds one-hop context. ``fewshot_map`` supplies examples
+    and metadata keyed by (drug_a_id, drug_b_id).
     """
     id2name = _drug_id2name(ds)
     a_ids = pairs["drug_a_id"].astype(str).to_numpy()
@@ -98,8 +69,7 @@ def to_llm_samples(
             "drug_b_id": b_id,
             "drug_a_name": a_name,
             "drug_b_name": b_name,
-            # Legacy aliases used by the zero-shot branch in the prompt
-            # builder (``_format_pair`` reads drugA_name/drugB_name first).
+            # Name aliases used by the zero-shot prompt branch.
             "drugA_name": a_name,
             "drugB_name": b_name,
         }

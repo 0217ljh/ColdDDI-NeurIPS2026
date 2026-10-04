@@ -1,7 +1,6 @@
 """Stage 3 — bundle the four enriched tables as release Parquet artifacts.
 
-The paper's Appendix A.6 / Table 16 promises four Parquet files at the
-repository root under ``annotations/``:
+Appendix A.6 / Table 16 lists four Parquet files under ``annotations/``:
 
 * ``pkpd.parquet``                  — 215 ddi_type → {PK, PD, Mixed}
 * ``ab.parquet``                    — every positive pair → {A, B} + key entity
@@ -20,11 +19,6 @@ Two release modes exist:
   directory under DrugBank's CC-BY-NC 4.0 redistribution clause for
   reproducibility purposes. ``pkpd.parquet`` is always the full
   215-type table (no pair-level information, license-safe).
-
-Public surface
---------------
-- :func:`dump_release_parquets`
-- :func:`main` — CLI entry point.
 
 CLI
 ---
@@ -59,12 +53,7 @@ ReleaseMode = Literal["full", "sample"]
 
 
 def _coerce_has_key_entity_to_bool(ab: pd.DataFrame) -> pd.DataFrame:
-    """Normalize ``has_key_entity`` so the Parquet stores a real bool dtype.
-
-    A CSV round-trip leaves the column as ``"True"/"False"`` strings;
-    Parquet should preserve the original semantic type so downstream
-    consumers don't have to re-parse.
-    """
+    """Parse CSV ``has_key_entity`` values as booleans; reject unknown values."""
     if "has_key_entity" not in ab.columns:
         return ab
     series = ab["has_key_entity"]
@@ -96,13 +85,12 @@ def dump_release_parquets(
     ----------
     enriched_dir
         Directory containing the Stage-2 outputs:
-        ``ddi_pk_pd_labels.csv`` and ``ddi_key_entities.csv`` (the
-        Type-A projection tables are re-derived in memory so they
-        stay in sync with the actual A/B subdivision result).
+        ``ddi_pk_pd_labels.csv`` and ``ddi_key_entities.csv``. Derive
+        Type-A tables from the latter after boolean normalization.
     out_dir
         Where the Parquet files are written. Created if missing.
     mode
-        ``"full"`` keeps the bare paper-promised filenames; ``"sample"``
+        ``"full"`` keeps bare filenames; ``"sample"``
         appends ``_sample`` to ``ab``, ``mediating_entities`` and
         ``action_pairs`` (``pkpd.parquet`` is always full).
     full_pkpd_csv
@@ -112,8 +100,7 @@ def dump_release_parquets(
         215-type table; pass the licensed full pipeline's
         ``ddi_pk_pd_labels.csv`` here.
     also_csv
-        If True, write ``.csv`` copies alongside each Parquet. Helpful
-        for human inspection.
+        Write ``.csv`` copies alongside each Parquet if True.
 
     Returns
     -------
@@ -126,22 +113,19 @@ def dump_release_parquets(
     out_dir.mkdir(parents=True, exist_ok=True)
     suffix = "" if mode == "full" else "_sample"
 
-    # 1. pkpd.parquet — never gets the suffix; sample mode optionally
-    # pulls from the licensed full pipeline.
+    # pkpd has no suffix; sample mode can use the licensed full pipeline's table.
     pkpd_csv = full_pkpd_csv if (mode == "sample" and full_pkpd_csv) else enriched_dir / "ddi_pk_pd_labels.csv"
     pkpd_df = pd.read_csv(pkpd_csv)
     pkpd_path = out_dir / "pkpd.parquet"
     pkpd_df.to_parquet(pkpd_path, index=False)
 
-    # 2. ab(_sample).parquet — every positive pair, with bool-typed has_key_entity.
+    # All positive pairs, with boolean has_key_entity.
     ab_csv = enriched_dir / "ddi_key_entities.csv"
     ab_df = _coerce_has_key_entity_to_bool(pd.read_csv(ab_csv))
     ab_path = out_dir / f"ab{suffix}.parquet"
     ab_df.to_parquet(ab_path, index=False)
 
-    # 3. mediating_entities(_sample).parquet + 4. action_pairs(_sample).parquet
-    # Re-derive in memory so we are guaranteed to be consistent with the
-    # bool-coerced ab table.
+    # Derive both Type-A tables from the normalized A/B table.
     mediating_df, action_df = derive_type_a_tables(ab_df)
     mediating_path = out_dir / f"mediating_entities{suffix}.parquet"
     action_path = out_dir / f"action_pairs{suffix}.parquet"

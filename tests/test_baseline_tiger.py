@@ -48,10 +48,7 @@ class TestTIGERFit:
         assert model._mol_graphs is not None and len(model._mol_graphs) > 0
 
     def test_default_is_dual_channel(self, trained_tiger):
-        """Paper-spec contract: TIGER ships with both mol + KG channels
-        active by default (``mol_only=False``).  Regression guard
-        against the previous mol-only port that silently dropped the
-        KG branch and broke ``KPS-KG`` channel-ablation indicators."""
+        """The paper configuration enables both mol and KG channels by default."""
         model, _ = trained_tiger
         assert model.mol_only is False
         assert model._model.mol_only is False
@@ -66,9 +63,7 @@ class TestTIGERFit:
         assert len(model._g2_idx) > 0
 
     def test_mol_only_opt_in(self):
-        """``mol_only=True`` must still produce a fitted, prediction-
-        capable baseline (fast inductive variant).  Guards against the
-        dual-channel rewrite silently regressing the fallback path."""
+        """The inductive mol_only variant still fits and predicts."""
         pytest.importorskip("rdkit")
         pytest.importorskip("torch_geometric")
         from coldddi.baselines.tiger import TIGERBaseline
@@ -116,12 +111,9 @@ class TestTIGERFit:
         assert scores[0] == pytest.approx(0.5)
 
     def test_channel_mask_outputs_differ_from_base(self, trained_tiger):
-        """Paper-spec KPS-mol / KPS-KG ablation: zero a channel and
-        verify the prediction changes.  Equal scores would mean the
-        mask either doesn't take effect or the model never learned to
-        use that channel — both red flags for the indicator.
+        """Zeroing either channel must change predictions.
 
-        Mirrors upstream
+        Matches upstream
         ``Code-Released/exps/sec5-3/2_indicators/baseline_mask_predictors/_tiger_runner_mask.py``
         which zeros ``mol{1,2}_emb`` (mol mask) or
         ``drug{1,2}_node_emb`` (kg mask) before the ``fc1`` fusion.
@@ -157,9 +149,7 @@ class TestTIGERFit:
             model.predict_proba(pos, mask_channel="kgmol")
 
     def test_mask_channel_disallowed_in_mol_only(self):
-        """``mol_only=True`` has no KG branch to mask; ``mask_channel``
-        must raise rather than silently no-op (which would produce
-        misleading "channel works fine" KPS-mol / KPS-KG numbers)."""
+        """Reject channel masks in mol_only mode, which has no KG branch."""
         pytest.importorskip("rdkit")
         pytest.importorskip("torch_geometric")
         from coldddi.baselines.tiger import TIGERBaseline
@@ -183,9 +173,7 @@ class TestTIGERSaveLoad:
     def test_save_writes_required_files(self, trained_tiger, tmp_path):
         model, _ = trained_tiger
         model.save(tmp_path / "ckpt")
-        # ``artefacts.pkl`` carries the mol_graphs + drug_to_idx +
-        # subgraphs cache (renamed from ``graphs.pkl`` when the
-        # dual-channel pipeline added BKG/subgraph caching).
+        # artefacts.pkl stores molecular graphs, drug indices, and KG subgraphs.
         for fname in ("model.pt", "artefacts.pkl", "manifest.json"):
             assert (tmp_path / "ckpt" / fname).is_file(), f"missing {fname}"
 
@@ -215,10 +203,7 @@ class TestTIGERSaveLoad:
     def test_load_round_trip_preserves_mask_channel_predictions(
         self, trained_tiger, tmp_path,
     ):
-        """Indicator jobs run on a SAVED baseline, then call
-        ``predict_proba(..., mask_channel="mol"|"kg")`` to get the
-        KPS-mol / KPS-KG inputs.  Regression guard that the load
-        round-trip preserves channel-mask predictions, not just base."""
+        """Save/load preserves channel-mask predictions used by indicator jobs."""
         from coldddi.baselines import load_baseline
 
         model, ds = trained_tiger

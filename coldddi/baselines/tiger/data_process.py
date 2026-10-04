@@ -1,13 +1,6 @@
-"""TIGER data-processing module — byte-equivalent port of upstream
-``Code-Released/baseline/TIGER/data_process.py``.
+"""TIGER molecular features and per-drug KG subgraph extraction.
 
-Only the import block is adapted for the ``coldddi.baselines.tiger``
-package layout (``from utils import *`` was an unused wildcard import
-in the upstream and is dropped here; ``from randomWalk import
-Node2vec`` is rewritten to use this package's ``random_walk``
-subpackage).  Every function body is preserved verbatim so the BKG
-construction + per-drug random-walk subgraph generation pipeline
-matches the paper exactly.
+Adapted from ``Code-Released/baseline/TIGER/data_process.py``.
 """
 import pandas as pd
 import numpy as np
@@ -25,7 +18,7 @@ from torch_geometric.utils import subgraph, degree, get_laplacian
 from torch import Tensor
 import numpy as np
 
-# 关闭 RDKit 的控制台日志（包括 DEPRECATION WARNING: please use GetValence(getExplicit=False)）
+# Suppress RDKit logs, including deprecation warnings.
 RDLogger.DisableLog('rdApp.*')
 
 
@@ -66,12 +59,10 @@ e_map = {
 }
 
 
-# nomarlize
+# Min-max normalization
 def dic_normalize(dic):
-    # print(dic)
     max_value = dic[max(dic, key=dic.get)]
     min_value = dic[min(dic, key=dic.get)]
-    # print(max_value)
     interval = float(max_value) - float(min_value)
     for key in dic.keys():
         dic[key] = (dic[key] - min_value) / interval
@@ -79,9 +70,9 @@ def dic_normalize(dic):
     return dic
 
 
-# mol atom feature for mol graph
+# Molecular atom features
 def atom_features(atom):
-    # 44 +11 +11 +11 +1
+    # 44 element types + 11 H counts + 11 valences + 1 aromatic flag = 67.
     return np.array(one_of_k_encoding_unk(atom.GetSymbol(),
                                           ['C', 'N', 'O', 'S', 'F', 'Si', 'P', 'Cl', 'Br', 'Mg', 'Na', 'Ca', 'Fe', 'As',
                                            'Al', 'I', 'B', 'V', 'K', 'Tl', 'Yb', 'Sb', 'Sn', 'Ag', 'Pd', 'Co', 'Se',
@@ -92,10 +83,9 @@ def atom_features(atom):
                     [atom.GetIsAromatic()]), atom.GetDegree()
 
 
-# one ont encoding
+# One-hot encoding
 def one_of_k_encoding(x, allowable_set):
     if x not in allowable_set:
-        # print(x)
         raise Exception('input {0} not in allowable set{1}:'.format(x, allowable_set))
     return list(map(lambda s: x == s, allowable_set))
 
@@ -127,9 +117,9 @@ def smile_to_graph(datapath, ligands):
     smiles_max_node_degree = []
     num_rel_mol_update = 0
     for d in ligands.keys():
-        lg = Chem.MolToSmiles(Chem.MolFromSmiles(ligands[d]))  ##还是smiles序列
+        lg = Chem.MolToSmiles(Chem.MolFromSmiles(ligands[d]))  # Canonical SMILES.
         c_size, features, edge_index, rel_index, s_edge_index, s_value, s_rel, deg = single_smile_to_graph(lg)
-        if c_size == 0: ##证明这个药物只由一个atom组成，这种的不考虑
+        if c_size == 0:  # Skip molecules without bonds.
             continue
         if max(s_value) > num_rel_mol_update:
             num_rel_mol_update = max(s_value)
@@ -142,7 +132,7 @@ def smile_to_graph(datapath, ligands):
     return smile_graph, num_rel_mol_update, max(smiles_max_node_degree)
 
 
-# mol smile to mol graph edge index
+# SMILES to molecular graph
 def single_smile_to_graph(smile):
 
     mol = Chem.MolFromSmiles(smile)
@@ -155,7 +145,7 @@ def single_smile_to_graph(smile):
         features.append((feature / sum(feature)).tolist())
         degrees.append(degree)
 
-    mol_index = []  ##begin, end, rel
+    mol_index = []  # (source atom, destination atom, relation)
     for bond in mol.GetBonds():
         mol_index.append([bond.GetBeginAtomIdx(), bond.GetEndAtomIdx(), e_map['bond_type'].index(str(bond.GetBondType()))])
         mol_index.append([bond.GetEndAtomIdx(), bond.GetBeginAtomIdx(), e_map['bond_type'].index(str(bond.GetBondType()))])
@@ -167,20 +157,18 @@ def single_smile_to_graph(smile):
     mol_edge_index = mol_index[:,:2]
     mol_rel_index = mol_index[:,2]
 
-    ##在这个位置应该计算的是最短路径
+    # All reachable shortest paths, including self-pairs.
     s_edge_index_value = calculate_shortest_path(mol_edge_index)
     s_edge_index = s_edge_index_value[:, :2]
     s_value = s_edge_index_value[:, 2]
     s_rel = s_value
-    s_rel[np.where(s_value == 1)] = mol_rel_index  ##将直接相连的关
+    s_rel[np.where(s_value == 1)] = mol_rel_index  # Direct edges use bond relation IDs.
     s_rel[np.where(s_value != 1)] += 23
 
     assert len(s_edge_index) == len(s_value)
     assert len(s_edge_index) == len(s_rel)
 
-    ##c_size:原子的个数
-    ##features:每个原子的特征 c_size * 67
-    ##edge_index:边 n_edges * 2
+    # c_size: atom count; features: (c_size, 67); edge_index: (n_edges, 2).
     return c_size, features, mol_edge_index.tolist(), mol_rel_index.tolist(), s_edge_index.tolist(), s_value.tolist(), s_rel.tolist(), max(degrees)
 
 def calculate_shortest_path(edge_index):
@@ -268,7 +256,7 @@ def read_smiles(path):
             else:
                 id, sequence = line.strip().split("\t")
                 if id not in out:
-                    out[id] = sequence  ##这里面的id是str类型
+                    out[id] = sequence  # IDs remain strings.
         f.close()
 
     return out
@@ -276,7 +264,7 @@ def read_smiles(path):
 def generate_node_subgraphs(dataset, drug_id, network_edge_index, network_rel_index, num_rel, args):
 
     method = args.extractor
-    edge_index = torch.from_numpy(np.array(network_edge_index).T) ##[2, num_edges]
+    edge_index = torch.from_numpy(np.array(network_edge_index).T)  # (2, num_edges)
     rel_index = torch.from_numpy(np.array(network_rel_index))
 
     row, col = edge_index
@@ -322,11 +310,11 @@ def subtreeExtractor(drug_id, edge_index, rel_index, shortest_paths, num_rel, fi
     undirected_rel_index = torch.cat((rel_index, rel_index), 0)
 
     for d in drug_id:
-        subset, sub_edge_index, sub_rel_index, mapping_list = k_hop_subgraph(int(d), khop, edge_index, undirected_rel_index, fixed_num, relabel_nodes=True)  ##subset是所有集合的节点，mapping指示的是center node是哪个
+        subset, sub_edge_index, sub_rel_index, mapping_list = k_hop_subgraph(int(d), khop, edge_index, undirected_rel_index, fixed_num, relabel_nodes=True)  # mapping_list marks the center in subset.
         row, col = sub_edge_index
         all_degree.append(torch.max(degree(col)).item())
 
-        ##因为这里面会涉及到multi-relation，所以在添加子图的时候，要把多条边都添加进去
+        # Keep parallel edges so every relation is represented.
         new_s_edge_index = sub_edge_index.transpose(1,0).numpy().tolist()
         new_s_value = [1 for _ in range(len(new_s_edge_index))]
         new_s_rel = sub_rel_index.numpy().tolist()
@@ -341,7 +329,7 @@ def subtreeExtractor(drug_id, edge_index, rel_index, shortest_paths, num_rel, fi
         sp_value = edge_index_value[:, 2]
 
         for i in range(len(sp_edge_index)):
-            if sp_value[i] == 1:  ##也是保证多关系的边全部在数据里
+            if sp_value[i] == 1:  # Direct edges, including parallel relations, are already present.
                 continue
             else:
                 s_edge_index.append(sp_edge_index[i].tolist())
@@ -358,9 +346,6 @@ def subtreeExtractor(drug_id, edge_index, rel_index, shortest_paths, num_rel, fi
     with open(json_path, 'w') as f:
         json.dump(subgraphs, f, default=convert)
 
-    ## subset: LongTensor
-    ## edge_index: LongTensor
-    ## subgraph_rel: Tensor
     return subgraphs, max(all_degree), max(num_rel_update)
 
 def probExtractor(drug_id, edge_index, rel_index, shortest_paths, num_rel, fixed_num, pagerank_path):
@@ -418,7 +403,7 @@ def probExtractor(drug_id, edge_index, rel_index, shortest_paths, num_rel, fixed
 
         sub_edge_index, sub_rel_index =  subgraph(subsets, edge_index, undirected_rel_index, relabel_nodes=True)
         row_sub, col_sub = sub_edge_index
-        ##因为这里面会涉及到multi-relation，所以在添加子图的时候，要把多条边都添加进去
+        # Keep parallel edges so every relation is represented.
         new_s_edge_index = sub_edge_index.transpose(1, 0).numpy().tolist()
         new_s_value = [1 for _ in range(len(new_s_edge_index))]
         new_s_rel = sub_rel_index.numpy().tolist()
@@ -433,7 +418,7 @@ def probExtractor(drug_id, edge_index, rel_index, shortest_paths, num_rel, fixed
         sp_value = edge_index_value[:, 2]
 
         for i in range(len(sp_edge_index)):
-            if sp_value[i] == 1:  ##也是保证多关系的边全部在数据里
+            if sp_value[i] == 1:  # Direct edges, including parallel relations, are already present.
                 continue
             else:
                 s_edge_index.append(sp_edge_index[i].tolist())
@@ -474,14 +459,14 @@ def rwExtractor(drug_id, edge_index, rel_index, shortest_paths, num_rel, sub_num
     max_degree = []
     subgraphs = {}
     for d in drug_id:
-        subsets = Node2vec(start_nodes=[int(d)], graph=my_graph, path_length=length, num_paths=sub_num, workers=6, dw=True).get_walks() ##返回一个list
+        subsets = Node2vec(start_nodes=[int(d)], graph=my_graph, path_length=length, num_paths=sub_num, workers=6, dw=True).get_walks()  # Unique visited node IDs.
         mapping_id = subsets.index(int(d))
         mapping_list = [False for _ in range(len((subsets)))]
         mapping_list[mapping_id] = True
 
         sub_edge_index, sub_rel_index = subgraph(subsets, edge_index, undirected_rel_index, relabel_nodes=True)
         row_sub, col_sub = sub_edge_index
-        ##因为这里面会涉及到multi-relation，所以在添加子图的时候，要把多条边都添加进去
+        # Keep parallel edges so every relation is represented.
         new_s_edge_index = sub_edge_index.transpose(1, 0).numpy().tolist()
         new_s_value = [1 for _ in range(len(new_s_edge_index))]
         new_s_rel = sub_rel_index.numpy().tolist()
@@ -495,7 +480,7 @@ def rwExtractor(drug_id, edge_index, rel_index, shortest_paths, num_rel, sub_num
         sp_value = edge_index_value[:, 2]
 
         for i in range(len(sp_edge_index)):
-            if sp_value[i] == 1:  ##也是保证多关系的边全部在数据里
+            if sp_value[i] == 1:  # Direct edges, including parallel relations, are already present.
                 continue
             else:
                 s_edge_index.append(sp_edge_index[i].tolist())
@@ -542,7 +527,6 @@ def k_hop_subgraph(node_idx, num_hops, edge_index, rel_index, fixed_num, relabel
         node_mask.fill_(False)
         node_mask[subsets[-1]] = True
         torch.index_select(node_mask, 0, row, out=edge_mask)
-        #print(col[edge_mask].shape)
         if fixed_num == None:
             subsets.append(col[edge_mask])
         elif col[edge_mask].size(0) > fixed_num:
@@ -564,7 +548,6 @@ def k_hop_subgraph(node_idx, num_hops, edge_index, rel_index, fixed_num, relabel
         node_idx = row.new_full((num_nodes, ), -1)
         node_idx[subset] = torch.arange(subset.size(0), device=row.device)
         edge_index = node_idx[edge_index]
-    #print(subset)
 
     rel_index = rel_index[edge_mask] if rel_index is not None else None
 
@@ -626,12 +609,12 @@ def google_matrix(
     if dangling is None:
         dangling_weights = p
     else:
-        # Convert the dangling dictionary into an array in nodelist order
+        # Align weights with nodelist order.
         dangling_weights = np.array([dangling.get(n, 0) for n in nodelist], dtype='float32')
         dangling_weights /= dangling_weights.sum()
     dangling_nodes = np.where(M.sum(axis=1) == 0)[0]
 
-    # Assign dangling_weights to any dangling nodes (nodes with no out links)
+    # Redistribute probability from nodes with no outgoing edges.
     for node in dangling_nodes:
         M[node] = dangling_weights
 

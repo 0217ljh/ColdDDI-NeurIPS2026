@@ -1,29 +1,9 @@
-"""TIGER thin adapter — implementation of :class:`BaselineModel`.
+"""TIGER adapter with molecular and KG channels; ``mol_only=True`` disables KG.
 
-Wraps :class:`coldddi.baselines.tiger.model.TIGER` in **dual-channel
-mode** (mol + KG branches) by default, mirroring the upstream paper
-configuration.  Mol-only mode is reachable via ``mol_only=True``
-constructor flag for fast inductive comparisons.
-
-Pipeline
---------
-1. ``fit`` builds:
-   * a SMILES → :class:`torch_geometric.data.Data` map via
-     :func:`coldddi.baselines.tiger.mol_features.build_drug_graphs`
-     (mol channel input);
-   * a Biomedical Knowledge Graph (BKG) edge / relation list via
-     :func:`coldddi.baselines.tiger.kg_build.build_bkg` (drug-DDI +
-     drug-entity from ``bundle.extra['kb']`` + self-loops);
-   * per-drug random-walk subgraphs via
-     :func:`coldddi.baselines.tiger.data_process.generate_node_subgraphs`
-     (KG channel input).
-2. ``predict_proba`` reuses the cached SMILES graphs + subgraphs.
-   Cold-start drugs (g2 partition) are flagged via ``unseen_ids`` so
-   the model's ``_patch_unseen_center_nodes`` replaces the center
-   node's KG embedding with a projection of the mol embedding.
-
-Pairs are scored by a 2-class softmax head, returning the class-1
-probability.
+``fit`` caches SMILES graphs and per-drug BKG subgraphs from training DDIs,
+the legacy bundle KB, and isolated-drug self-loops. Prediction reuses these
+graphs and flags G2 drugs for molecular projection of their KG center nodes.
+The two-class softmax head returns the class-1 probability.
 """
 
 from __future__ import annotations
@@ -61,12 +41,10 @@ if TYPE_CHECKING:
     from coldddi.data.protocols import KnowledgeGraphProtocol
 
 
-# ── Helpers to convert upstream subgraph dict entries → PyG Data ─────
+# Subgraph conversion
 
 def _subgraph_dict_to_data(subg_entry, label_val: int) -> Data:
-    """Convert one entry from ``data_process.generate_node_subgraphs``
-    output (8-tuple) into a PyG :class:`Data` matching what the dual-
-    channel TIGER expects on its KG-branch input.
+    """Convert a subgraph 8-tuple to PyG :class:`Data` for TIGER's KG channel.
 
     Upstream tuple layout (`data_process.rwExtractor` /
     `subtreeExtractor`):
@@ -98,32 +76,27 @@ def _drug_smiles_dict(train: "PairDataset") -> dict[str, str]:
 
 
 def _drug_to_idx(train: "PairDataset") -> dict[str, int]:
-    """Stable drugbank_id → int index covering every drug in
-    ``ds.drugs`` (sorted for determinism)."""
+    """Map every ID in ``train.drugs`` to a sorted, deterministic integer index."""
     ids = sorted({str(d) for d in train.drugs["drugbank_id"].astype(str)})
     return {d: i for i, d in enumerate(ids)}
 
 
 def _g2_indices(train: "PairDataset", drug_to_idx: dict[str, int]) -> set[int]:
-    """Indices of cold-start (g2) drugs.  Returns empty set if the
-    dataset doesn't expose a g2_drugs attribute (e.g. legacy bundle
-    without drug_groups)."""
+    """Return G2 drug indices, or an empty set if ``g2_drugs`` is absent or empty."""
     g2 = getattr(train.splits, "g2_drugs", None) or []
     return {drug_to_idx[d] for d in (str(x) for x in g2) if d in drug_to_idx}
 
 
-# ── Adapter ──────────────────────────────────────────────────────────
+# Adapter
 
 #: Paper-spec hyperparameters from Appendix C.1 Table 8 (TIGER row).
-#: Paper: layer=2, d_dim=64, walk=randomWalk, fixed-num=32, dropout=0.2,
-#: LR=1e-3, WD=1e-4, batch=128, epochs=50.
 PAPER_HYPERPARAMS: dict[str, object] = {
-    "mol_only":           False,         # paper-spec dual-channel
-    "max_layer":          2,             # paper "layer=2"
-    "output_dim":         64,            # paper "d_dim=64"
+    "mol_only":           False,
+    "max_layer":          2,
+    "output_dim":         64,
     "dropout":            0.2,
     "extractor":          "randomWalk",
-    "fixed_num":          32,            # paper "fixed-num=32"
+    "fixed_num":          32,
     "learning_rate":      1e-3,
     "weight_decay":       1e-4,
     "batch_size":         128,
@@ -136,31 +109,21 @@ class TIGERBaseline(BaselineModel):
     """TIGER (dual-channel default): SMILES atom GraphTransformer +
     BKG random-walk subgraph GraphTransformer + 2-class head.
 
-    Paper-grade hyperparameters live in :data:`PAPER_HYPERPARAMS`
-    (App C.1 Table 8) and are auto-applied by
-    ``evaluate.py --preset paper`` (default).  Class ``__init__``
-    defaults below are smoke-test values for fast CI.
+    ``evaluate.py --preset paper`` applies :data:`PAPER_HYPERPARAMS`
+    (Appendix C.1 Table 8); constructor defaults are for smoke tests.
 
-    Modality: ``"mol+kg"`` (dual-channel mode, the default and the
-    only mode that supports the L6 channel-mask indicators). Channel
-    mask exposed via ``predict_proba(pairs, mask_channel="mol"|"kg")``.
-    L6 dispatch produces KPS-F + KPS-mol + KPS-KG, all three populated.
-
-    Note: ``mol_only=True`` mode disables the KG branch entirely and
-    is intentionally NOT a separate modality label — calling
-    ``predict_proba(..., mask_channel=...)`` in mol-only mode raises
-    ``ValueError`` (no KG branch to mask). The class-level ``modality``
-    attribute reflects the dual-channel default, which is the paper-
-    spec configuration.
+    Default modality ``"mol+kg"`` supports ``mask_channel="mol"|"kg"``
+    and L6's KPS-F, KPS-mol, and KPS-KG indicators. ``mol_only=True`` sets
+    the instance modality to ``"mol"`` and rejects channel masks with ValueError.
     """
 
-    VERSION = "2.0"  # 2.0 = dual-channel restoration; 1.0 was mol-only
+    VERSION = "2.0"
     modality = "mol+kg"
 
     def __init__(
         self,
         *,
-        # ── Architecture ───────────────────────────────────────────
+        # Architecture
         mol_only: bool = False,
         max_layer: int = 4,
         output_dim: int = 64,
@@ -172,12 +135,12 @@ class TIGERBaseline(BaselineModel):
         sub_coeff: float = 0.2,
         mi_coeff: float = 0.5,
         dropout: float = 0.2,
-        # ── Subgraph generation (KG branch) ────────────────────────
+        # KG subgraph generation
         extractor: str = "randomWalk",
         graph_fixed_num: int = 8,
         fixed_num: int = 10,
         khop: int = 2,
-        # ── Training ──────────────────────────────────────────────
+        # Training
         learning_rate: float = 1e-3,
         weight_decay: float = 5e-4,
         batch_size: int = 64,
@@ -185,12 +148,7 @@ class TIGERBaseline(BaselineModel):
         device: str = "auto",
     ) -> None:
         self.mol_only = mol_only
-        # Instance-level modality override: mol_only=True drops the KG
-        # branch entirely, so the L6 dispatch must NOT request mol/kg
-        # mask passes (predict_proba would raise).  Class-level
-        # ``modality`` stays "mol+kg" because that's the paper-spec
-        # default; the instance attribute shadows it when the user
-        # opts into the mol-only fallback.
+        # Disable L6 channel-mask dispatch when there is no KG branch.
         if mol_only:
             self.modality = "mol"
         self.max_layer = max_layer
@@ -231,9 +189,7 @@ class TIGERBaseline(BaselineModel):
             return "cuda" if torch.cuda.is_available() else "cpu"
         return d
 
-    # ------------------------------------------------------------------
     # Internal helpers
-    # ------------------------------------------------------------------
 
     def _build_mol_graphs(self, train: "PairDataset") -> int:
         smiles = _drug_smiles_dict(train)
@@ -274,25 +230,15 @@ class TIGERBaseline(BaselineModel):
         )
         self._g2_idx = g2_set
 
-        # Upstream's ``generate_node_subgraphs`` writes a JSON cache
-        # to ``data/<dataset>/<extractor>/rw_num_<S>_length_<L>sp.json``
-        # next to the script and reuses it across runs.  The cache
-        # key only varies by extractor + S + L — NOT by BKG content —
-        # so naïve reuse can silently load subgraphs from a previous
-        # fit on a different dataset / split / kb.  We sidestep this
-        # by deriving the dataset directory name from a content hash
-        # of the BKG edge list + relation list + extractor knobs, so
-        # different BKGs land in different cache directories.
+        # Upstream cache filenames omit BKG content. Hash edges, relations, and
+        # extractor settings into the directory name to prevent cross-fit reuse.
         _h = hashlib.sha256()
         for u, v in edge_list:
             _h.update(int(u).to_bytes(8, "little", signed=False))
             _h.update(int(v).to_bytes(8, "little", signed=False))
         for r in rel_list:
             _h.update(int(r).to_bytes(4, "little", signed=False))
-        # All extractor knobs that affect the saved JSON contents.
-        # ``khop`` is only consumed by the ``khop-subtree`` extractor,
-        # but include it unconditionally so the hash is robust against
-        # silent reuse if the caller switches extractors.
+        # Include khop even when the current extractor does not use it.
         _h.update(
             f"|{self.extractor}|{self.graph_fixed_num}|{self.fixed_num}|{self.khop}".encode()
         )
@@ -317,10 +263,8 @@ class TIGERBaseline(BaselineModel):
             num_rel,
             tiger_args,
         )
-        # ``num_rel_update`` is the max relation id observed in
-        # sp_edge_rel after shortest-path expansion (can exceed
-        # ``num_rel`` because hop distances 2..khop are appended as
-        # extra rel ids).
+        # Shortest-path expansion adds relation IDs beyond the base KG types.
+        # num_rel_update is the maximum observed ID, not a count.
         effective_num_rel_kg = max(num_rel, num_rel_update + 1)
         return subgraphs, effective_num_rel_kg, max_degree
 
@@ -331,9 +275,9 @@ class TIGERBaseline(BaselineModel):
     ):
         """Return ``(h_mol, t_mol, h_sub, t_sub, idx_h, idx_t, mask)``.
 
-        Rows with any missing artefact (parsed mol graph or subgraph)
-        are silently filtered, and ``mask`` is a boolean array over the
-        original ``pairs`` index indicating which rows survived.
+        Skip rows missing a drug ID, molecular graph, or required KG subgraph.
+        ``mask`` marks retained positions in ``pairs``. If none remain, return
+        six ``None`` values and an all-false mask.
         """
         assert self._drug_to_idx is not None
         keep_idx: list[int] = []
@@ -364,10 +308,7 @@ class TIGERBaseline(BaselineModel):
                 sub_a = self._subgraphs.get(str(idx_a)) if self._subgraphs else None
                 sub_b = self._subgraphs.get(str(idx_b)) if self._subgraphs else None
                 if sub_a is None or sub_b is None:
-                    # The upstream pipeline guarantees a subgraph per
-                    # drug index (self-loop fallback), so this branch
-                    # should rarely fire — but skip the row defensively
-                    # so a missing entry doesn't crash the whole batch.
+                    # Remove the molecular entries too when a KG subgraph is missing.
                     h_mol_list.pop()
                     t_mol_list.pop()
                     continue
@@ -396,9 +337,7 @@ class TIGERBaseline(BaselineModel):
         mask[np.asarray(keep_idx)] = True
         return h_mol_b, t_mol_b, h_sub_b, t_sub_b, idx_h, idx_t, mask
 
-    # ------------------------------------------------------------------
     # ABC surface
-    # ------------------------------------------------------------------
 
     def fit(
         self,
@@ -407,7 +346,7 @@ class TIGERBaseline(BaselineModel):
         *,
         kg: "KnowledgeGraphProtocol | None" = None,
     ) -> None:
-        # Step 1 — mol graphs.
+        # Molecular graphs and relation counts.
         required_mol = self._build_mol_graphs(train)
         if self.num_relations_mol is None:
             effective_mol = max(required_mol + 4, 32)
@@ -420,7 +359,7 @@ class TIGERBaseline(BaselineModel):
                 )
         self._effective_num_rel_mol = effective_mol
 
-        # Step 2 — drug-to-idx + BKG + subgraphs (skipped in mol_only).
+        # Drug indices and optional KG subgraphs.
         self._drug_to_idx = _drug_to_idx(train)
         n_drugs_total = len(self._drug_to_idx)
         if not self.mol_only:
@@ -433,8 +372,7 @@ class TIGERBaseline(BaselineModel):
                 if self.num_relations_graph is not None
                 else max(observed_num_rel_kg + 4, 16)
             )
-            # KG node count: drugs (n_drugs) + entities (variable). The
-            # BKG's largest node id determines required Embedding size.
+            # Size the KG embedding for both drug and entity node IDs.
             max_node_id = -1
             for entry in subgraphs.values():
                 subset = entry[0]  # x = subset
@@ -445,12 +383,8 @@ class TIGERBaseline(BaselineModel):
                 if self.num_nodes_kg is not None
                 else max(max_node_id + 16, n_drugs_total + 16)
             )
-            # ``max_degree_node`` caps the degree-Embedding lookup
-            # inside ``NodeFeatures``. If the BKG's actual max degree
-            # exceeds the constructor default (100), bump it so degree
-            # encoding doesn't index out of range. Also save the
-            # effective value so ``load()`` reconstructs the model
-            # with a wide-enough embedding.
+            # Expand the degree embedding to cover observed IDs. Save this
+            # effective size so load() can reconstruct the same embedding.
             required_deg = int(observed_max_deg) + 1
             if required_deg > self.max_degree_node:
                 print(
@@ -461,7 +395,6 @@ class TIGERBaseline(BaselineModel):
                 )
                 self.max_degree_node = required_deg
 
-        # Step 3 — instantiate the model.
         self._model = TIGER(
             max_layer=self.max_layer,
             num_features_drug=ATOM_FEATURE_DIM,
@@ -484,7 +417,6 @@ class TIGERBaseline(BaselineModel):
             weight_decay=self.weight_decay,
         )
 
-        # Step 4 — training loop.
         pos = train.splits.train.copy()
         best_val_auc = -1.0
         best_state: dict | None = None
@@ -518,14 +450,8 @@ class TIGERBaseline(BaselineModel):
                 if self.mol_only:
                     _probs, loss = self._model(h_mol, t_mol)
                 else:
-                    # NOTE: ``unseen_ids=None`` at training time.  By the
-                    # ColdDDI invariant, train pairs are G1-G1 only — no
-                    # G2 drug appears in a training batch — so this is a
-                    # no-op as long as the invariant holds.  If anything
-                    # ever leaks a G2 drug into training, we'd rather see
-                    # it via a clean KG-branch forward than silently
-                    # activate the cold-start projection during optim.
-                    # Cold-start patching is reserved for val/test.
+                    # Training pairs must be G1-G1; reserve cold-start projection
+                    # for validation and testing.
                     _probs, loss = self._model(
                         h_mol, t_mol,
                         drug1_subgraph=h_sub, drug2_subgraph=t_sub,
@@ -569,17 +495,9 @@ class TIGERBaseline(BaselineModel):
         Parameters
         ----------
         mask_channel
-            Paper-spec channel ablation knob, forwarded to
-            :meth:`TIGER.forward`.  ``"mol"`` zeros the molecular
-            GraphTransformer output for BOTH drugs in each pair at
-            fusion time (KPS-mol indicator); ``"kg"`` zeros the
-            KG GraphTransformer output (KPS-KG); ``None`` (default)
-            produces the unmasked base prediction.
-
-            Only valid in dual-channel mode.  Raises ``ValueError``
-            if the model was built with ``mol_only=True`` — there is
-            no KG branch to mask in mol-only mode, and ``"mol"`` would
-            silently no-op (the mol embedding is the only signal).
+            ``"mol"`` or ``"kg"`` zeros that channel for both drugs at fusion
+            (KPS-mol or KPS-KG). ``None`` leaves both channels unchanged.
+            Any non-None mask raises ValueError in mol-only mode.
         """
         if self._model is None or self._mol_graphs is None:
             raise RuntimeError(
@@ -620,9 +538,7 @@ class TIGERBaseline(BaselineModel):
             out[start : start + len(batch)] = out_slice
         return out
 
-    # ------------------------------------------------------------------
     # Persistence
-    # ------------------------------------------------------------------
 
     def save(self, path: "Path | str") -> None:
         if self._model is None or self._mol_graphs is None:
@@ -686,8 +602,7 @@ class TIGERBaseline(BaselineModel):
         p = Path(path)
         manifest = json.loads((p / "manifest.json").read_text())
         hparams = manifest.get("hyperparameters", {})
-        # Pull out effective sizes (must match what the saved model
-        # was built with, NOT the constructor defaults).
+        # Restore saved embedding sizes, which may differ from constructor defaults.
         eff_num_rel_mol = hparams.pop("num_relations_mol", None)
         eff_num_rel_kg = hparams.pop("num_relations_graph", None)
         eff_num_nodes_kg = hparams.pop("num_nodes_kg", None)

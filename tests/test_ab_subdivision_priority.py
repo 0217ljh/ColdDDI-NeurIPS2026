@@ -1,45 +1,9 @@
-"""Regression tests for the A3-audit fix on PK-A / PD-A best-entity
-selection.
+"""Test deterministic, DrugBank-ranked PK-A and PD-A entity selection.
 
-Pre-fix bug
------------
-``coldddi.annotations.ab_subdivision._enzyme_priority`` matched the
-literal ``"cyp3a4"`` etc. against the lowercased enzyme name, but
-real DrugBank enzyme names are ``"Cytochrome P450 3A4"`` —
-lowercased ``"cytochrome p450 3a4"`` does NOT contain the substring
-``"cyp3a4"``.  All enzymes therefore returned priority 9 (catch-all)
-and the "best entity" picked for each pair was determined by
-Python set iteration order (process-hash-seeded).  Both upstream
-and release shared this bug, producing non-reproducible top-entity
-stats across runs.
-
-Post-fix (final design, post-user-pushback)
--------------------------------------------
-The hand-rolled ``CYP_PRIORITY`` table was the wrong abstraction —
-it overrode DrugBank's own curator-assigned per-drug ranking with a
-hard-coded enzyme-name preference, and the LLM mask experiment
-(R2/R3/R6/R7 in :mod:`coldddi.llm.prompts.binary_cls`) needs the
-"most-important entity for THIS pair" rather than the "most-popular
-enzyme in DrugBank globally".
-
-Final design:
-
-* Drop ``CYP_PRIORITY`` / ``_enzyme_priority`` entirely.
-* Introduce ``_first_occurrence_ranks`` which assigns
-  ``rank = list position`` per (drug, entity).  DrugBank's XML
-  extraction (:mod:`coldddi.data.extract`) preserves document
-  order, so rank 0 is the curator-prioritised polypeptide for that
-  drug.
-* ``_find_key_entity_pk`` sorts candidates by
-  ``(rank_a[eid] + rank_b[eid], name, id)`` so the joint DrugBank
-  importance picks the mask target.
-* ``_find_key_entity_pd`` keeps its semantic keys (confidence,
-  ddi-type relevance) but inserts ``drugbank_rank`` as a tiebreaker
-  before ``(name, id)``.
-
-Both paths use ``(name, id)`` as a final tiebreaker so the pick is
-reproducible across processes (Python ``set`` iteration is hash-
-seeded otherwise).
+Ranks use first occurrence in DrugBank XML, not hard-coded enzyme preferences.
+PK sorts by (rank_a + rank_b, name, id) within the first eligible bucket.
+PD sorts by confidence, DDI-type relevance, DrugBank rank, then (name, id).
+The final tie-breakers prevent hash-seeded set order from changing the result.
 """
 
 from __future__ import annotations
@@ -57,12 +21,11 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-# ─── Unit: _first_occurrence_ranks ─────────────────────────────────
+# First-occurrence ranks.
 
 
 class TestFirstOccurrenceRanks:
-    """The fix's correctness anchor: ranks must reflect DrugBank XML
-    document order; duplicate ids keep their first-seen rank."""
+    """Ranks follow DrugBank XML order; duplicate IDs retain their first rank."""
 
     def test_distinct_entities_ranked_in_order(self):
         from coldddi.annotations.ab_subdivision import _first_occurrence_ranks
@@ -75,10 +38,7 @@ class TestFirstOccurrenceRanks:
         assert _first_occurrence_ranks(entries) == {"E_A": 0, "E_B": 1, "E_C": 2}
 
     def test_duplicate_id_keeps_first_occurrence(self):
-        """A drug can list the same polypeptide multiple times with
-        different actions (e.g. enzyme listed as both substrate and
-        inhibitor for separate mechanisms).  The DrugBank rank we
-        care about is the first-seen position."""
+        """Repeated polypeptides with different actions keep their first rank."""
         from coldddi.annotations.ab_subdivision import _first_occurrence_ranks
 
         entries = [
@@ -94,10 +54,7 @@ class TestFirstOccurrenceRanks:
         assert _first_occurrence_ranks([]) == {}
 
     def test_cyp_priority_constant_removed(self):
-        """Audit guard: the hand-rolled ``CYP_PRIORITY`` /
-        ``_enzyme_priority`` symbols must NOT come back.  If a future
-        edit reintroduces them, the rank-based design is being silently
-        bypassed."""
+        """Hard-coded enzyme priorities must not override DrugBank ranks."""
         from coldddi.annotations import ab_subdivision
 
         assert not hasattr(ab_subdivision, "CYP_PRIORITY"), (
@@ -110,12 +67,11 @@ class TestFirstOccurrenceRanks:
         )
 
 
-# ─── Behavioural: PK candidate selection follows DrugBank rank ────
+# PK candidate selection.
 
 
 class TestSyntheticPkRankSelection:
-    """Build a small enzyme index where rank order should decide the
-    winner, and assert the pick matches the DrugBank-rank rule."""
+    """PK candidates follow DrugBank rank order."""
 
     def _pk_best(self, enzyme_idx: dict, *, ddi_type: str = "metabolism") -> dict:
         from coldddi.annotations.ab_subdivision import _find_key_entity_pk
@@ -173,10 +129,7 @@ class TestSyntheticPkRankSelection:
         assert best["key_entity_id"] == "E_B"
 
     def test_curator_rank_overrides_alphabetical(self):
-        """Without the rank rule a (name, id) tiebreaker would pick
-        the alphabetically-first enzyme.  With the rank rule, the
-        curator-prioritised enzyme wins even if its name sorts
-        later."""
+        """DrugBank rank takes precedence over alphabetical order."""
         enzyme_idx = {
             "DB_X": [
                 # Z-enzyme is curator rank 0 for X.
@@ -194,14 +147,11 @@ class TestSyntheticPkRankSelection:
         }
         best = self._pk_best(enzyme_idx)
         assert best is not None
-        # Z-prime is rank 0 for both → joint rank 0 < Alpha's joint
-        # rank 2.  Name tiebreak only fires when joint ranks tie.
+        # Z-prime's joint rank 0 beats Alpha's 2 despite alphabetical order.
         assert best["key_entity_id"] == "E_Z"
 
     def test_equal_rank_falls_back_to_name(self):
-        """If both candidates share the same joint rank (e.g. the
-        index is intentionally symmetric), the deterministic
-        (name, id) tiebreaker kicks in."""
+        """Equal joint ranks use the deterministic (name, id) tie-breaker."""
         enzyme_idx = {
             "DB_X": [
                 {"id": "E_A", "name": "Beta enzyme", "type": "enzyme",
@@ -217,19 +167,11 @@ class TestSyntheticPkRankSelection:
         assert best["key_entity_id"] == "E_A"
 
     def test_subtype_short_circuit_pinned(self):
-        """Policy pin (codex review): :func:`_pk_subtype` walks the
-        bucket list (``["enzyme", "transporter"]`` for most DDI
-        types) in order and STOPS at the first bucket that produces
-        any candidate.  Joint-rank selection is therefore *within
-        bucket*, not across buckets — a rank-0/0 transporter cannot
-        win over even a poorly-ranked enzyme if the DDI type's
-        priority puts enzymes first.
+        """Rank candidates only within the first eligible PK bucket.
 
-        This mirrors the legacy script and is intentional: when a
-        DDI type is mechanistically "metabolism"-flavoured, only
-        enzymes are considered as candidate mediators.  Pin the
-        policy so a future refactor that flattens the bucket list
-        doesn't silently change PK-A stats."""
+        As in the legacy script, metabolism considers enzymes only; a
+        better-ranked transporter must not displace an eligible enzyme.
+        """
         from coldddi.annotations.ab_subdivision import _find_key_entity_pk
 
         enzyme_idx = {
@@ -271,12 +213,7 @@ class TestSyntheticPkRankSelection:
         assert best["key_entity_id"] == "E_LOW"
 
     def test_duplicate_id_multiple_actions_picks_compatible_pair(self):
-        """A drug may list the same enzyme multiple times with
-        different actions (e.g. CYP3A4 as both substrate and
-        inhibitor for separate mechanisms).  The PK path must
-        evaluate all action-pair combinations and pick a compatible
-        one — and the entity's rank is the FIRST-occurrence rank
-        (locked by :func:`_first_occurrence_ranks`)."""
+        """Try all repeated-enzyme action pairs while retaining first-occurrence rank."""
         from coldddi.annotations.ab_subdivision import _find_key_entity_pk
 
         enzyme_idx = {
@@ -305,10 +242,7 @@ class TestSyntheticPkRankSelection:
         assert best["action_drug_b"] == "substrate"
 
     def test_candidates_field_keeps_full_list(self):
-        """The non-best candidates should still surface in
-        ``key_entity_candidates`` JSON for downstream inspection,
-        sorted by the same rank rule (best first after the picked
-        one)."""
+        """Keep alternative candidates in rank order in key_entity_candidates."""
         import json as _json
 
         enzyme_idx = {
@@ -331,21 +265,16 @@ class TestSyntheticPkRankSelection:
         assert isinstance(rest, list)
         assert len(rest) == 1
         assert rest[0]["key_entity_id"] == "E_B"
-        # The strip-helper should have removed the private
-        # ``_drugbank_rank`` field so it doesn't leak into CSV.
+        # Private ranking fields must not leak into CSV.
         assert "_drugbank_rank" not in rest[0]
         assert "_drugbank_rank" not in best
 
 
-# ─── Determinism across processes (the bug-revealing test) ────────
+# Cross-process determinism.
 
 
 class TestPkPickAcrossHashSeeds:
-    """Pre-fix, ``set(map_a) & set(map_b)`` iteration order depended
-    on PYTHONHASHSEED so two release runs could pick different
-    best-entities for the same pair.  Spawn subprocesses with explicit
-    PYTHONHASHSEED values and assert the picked entity is identical
-    across all of them."""
+    """Entity selection must be invariant to subprocess PYTHONHASHSEED values."""
 
     def test_pick_is_reproducible_across_hash_seeds(self):
         import json
@@ -353,10 +282,7 @@ class TestPkPickAcrossHashSeeds:
         import subprocess
         import sys as _sys
 
-        # Construct an enzyme index where multiple shared entities
-        # have IDENTICAL joint ranks, so the deterministic (name, id)
-        # tiebreaker is the only thing keeping the pick stable across
-        # hash seeds.
+        # Equal joint ranks isolate the (name, id) tie-breaker across hash seeds.
         snippet = """
 import sys, json
 sys.path.insert(0, %r)
@@ -403,13 +329,11 @@ print(json.dumps({'name': best['key_entity_name'], 'id': best['key_entity_id']})
             )
 
 
-# ─── Behavioural: PD picks honour confidence > relevance > rank ──
+# PD selection: confidence, relevance, then rank.
 
 
 class TestSyntheticPdRankTiebreak:
-    """PD path keeps its semantic keys (confidence, ddi-type
-    relevance) but adds the DrugBank rank as a tiebreaker so the
-    mask target lines up with curator priority."""
+    """PD uses DrugBank rank after confidence and DDI-type relevance."""
 
     def _pd_best(self, target_idx: dict, *, ddi_type: str = "bleeding") -> dict:
         from coldddi.annotations.ab_subdivision import _find_key_entity_pd
@@ -495,11 +419,7 @@ class TestSyntheticPdRankTiebreak:
         assert best["key_entity_id"] == "T_COAG"
 
     def test_pd_pick_reproducible_across_hash_seeds(self):
-        """PD analogue of the PK cross-process test.  Confidence and
-        relevance bucketise candidates; within a bucket the DrugBank
-        rank then (name, id) keys decide the pick.  Spawn
-        subprocesses with explicit PYTHONHASHSEEDs and assert the
-        pick is invariant."""
+        """PD selection is invariant to subprocess PYTHONHASHSEED values."""
         import json
         import os
         import subprocess
@@ -583,7 +503,7 @@ print(json.dumps({'name': best['key_entity_name'], 'id': best['key_entity_id']})
         assert "_relevance" not in b1
 
 
-# ─── End-to-end determinism on real data ──────────────────────────
+# End-to-end determinism on real data.
 
 
 @pytest.mark.skipif(
@@ -591,9 +511,7 @@ print(json.dumps({'name': best['key_entity_name'], 'id': best['key_entity_id']})
     reason="Full DrugBank filtered data missing — run reconstruct.py first.",
 )
 class TestAbSubdivisionIsDeterministic:
-    """Run ``run_ab_subdivision`` over the full filtered data twice in
-    the same process; the top entities and their counts must be byte-
-    identical."""
+    """Two runs on full filtered data produce identical top entities and counts."""
 
     def _run_once(self):
         from coldddi.annotations.ab_subdivision import run_ab_subdivision
@@ -622,7 +540,7 @@ class TestAbSubdivisionIsDeterministic:
         pd.testing.assert_series_equal(c1, c2)
 
 
-# ─── Paper App A.3 qualitative claim survives the rank-based fix ──
+# Paper Appendix A.3 qualitative claims.
 
 
 @pytest.mark.skipif(
@@ -630,12 +548,7 @@ class TestAbSubdivisionIsDeterministic:
     reason="Full DrugBank filtered data missing — run reconstruct.py first.",
 )
 class TestPkAQualitativeDominance:
-    """Paper App A.3 reports CYP3A4 as the dominant PK-A mediator.
-    Both the old CYP_PRIORITY design and the new DrugBank-rank
-    design preserve this qualitative claim because CYP3A4 is the
-    most commonly listed rank-0 enzyme in DrugBank.  Pin the
-    qualitative property (not exact percentages — those depend on
-    the DrugBank version)."""
+    """Preserve Appendix A.3's CYP3A4 dominance without fixing version-specific percentages."""
 
     @pytest.fixture(scope="class")
     def pka_counts(self):
@@ -664,10 +577,7 @@ class TestPkAQualitativeDominance:
         assert pka_counts.index[0] == "Cytochrome P450 3A4"
 
     def test_cyp3a4_dominant_share(self, pka_counts):
-        """Paper claims ~48% in the buggy upstream run; rank-based
-        fix should give >= 30% (CYP3A4 is rank 0 for many of the
-        most-studied drugs).  We assert a loose lower bound so the
-        test survives DrugBank version bumps."""
+        """Use a loose 30% CYP3A4 lower bound to allow DrugBank version changes."""
         total = int(pka_counts.sum())
         cyp3a4 = int(pka_counts.get("Cytochrome P450 3A4", 0))
         share = cyp3a4 / total
@@ -677,9 +587,7 @@ class TestPkAQualitativeDominance:
         )
 
     def test_top5_qualitative_membership(self, pka_counts):
-        """The post-rank-fix top-5 should still be cytochromes /
-        transporter family entities (CYPs + ABCB1-class), not
-        accidental low-rank generic proteins."""
+        """Top-five mediators remain CYP, transporter, or UGT family members."""
         top5 = list(pka_counts.head(5).index)
         # Every top-5 entity must be either a CYP or a recognised
         # transporter / UGT family member.

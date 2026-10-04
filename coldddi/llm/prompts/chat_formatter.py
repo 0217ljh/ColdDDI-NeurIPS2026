@@ -1,26 +1,9 @@
-"""Chat-template formatters for the LLM stack.
+"""Format role/content messages as model-specific chat strings.
 
-Byte-exact port of ``Version_1_1/utils/chat_formatter.py``. Each
-formatter takes a list of ``{"role": str, "content": str}`` messages and
-returns the assembled chat string for the matching family of models.
-
-For Llama-3 / Qwen / Gemma / Mistral / DeepSeek the assistant message is
-**not** closed with a trailing token — that is intentional, because
-training / inference want to continue from the assistant header with the
-answer token (` Yes` / ` No`).  The data collator detects the assistant
-header to compute the mask boundary.
-
-.. warning::
-   The ChatGLM and Baichuan branches append additional trailing tokens
-   after the assistant content (``\\n\\n`` and ``<reserved_108>``
-   respectively) — a deliberate byte-exact port of the original
-   research code.  Because of this, the **answer token is not the last
-   substring** in the rendered prompt for these two families, so the
-   FT collator's "label = first non-template token" contract does not
-   hold.  ColdDDI's Table 8 covers only Llama / Qwen / Gemma, so this
-   limitation is not on the evaluation path; if you ever fine-tune
-   ChatGLM or Baichuan, strip the trailing tokens before passing the
-   prompt to the collator.
+Llama, Qwen, Gemma, Mistral and DeepSeek leave the assistant turn open
+for answer-token training and inference. ChatGLM appends ``\\n\\n`` and
+Baichuan appends ``<reserved_108>`` after the answer; callers must account
+for these suffixes when locating the answer boundary.
 """
 
 from __future__ import annotations
@@ -32,12 +15,7 @@ def format_messages_for_model(
     messages: Iterable[Mapping[str, str]],
     model_name: str,
 ) -> str:
-    """Return the chat-formatted prompt string for ``model_name``.
-
-    ``messages`` is the standard
-    ``[{"role": "system|user|assistant", "content": "..."}]`` list.
-    The lookup is *case-insensitive substring* on the model identifier.
-    """
+    """Format role/content messages using a case-insensitive model-name match."""
     m = model_name.lower()
     if any(k in m for k in ("llama", "meta-llama")):
         return _format_llama3_messages(messages)
@@ -94,7 +72,7 @@ def _format_qwen_messages(messages):
 
 
 def _format_mistral_messages(messages):
-    """Mistral [INST] template (verbatim from the original)."""
+    """Mistral [INST] template."""
     text = ""
     for msg in messages:
         role = msg["role"]
@@ -109,20 +87,12 @@ def _format_mistral_messages(messages):
 
 
 def _format_deepseek_messages(messages):
-    """DeepSeek shares the Llama-3 layout in the original code."""
+    """Format DeepSeek messages with the Llama-3 layout."""
     return _format_llama3_messages(messages)
 
 
 def _format_chatglm_messages(messages):
-    """ChatGLM round-style template.
-
-    The CJK characters embedded below ("question:" / "answer:" in
-    Chinese) are NOT comments — they are part of ChatGLM's tokenizer
-    protocol and are matched verbatim by the model's chat template.
-    Replacing them with English would break alignment with the
-    pretrained tokenizer; the upstream ChatGLM3 chat template uses
-    exactly these literals.
-    """
+    """ChatGLM round-style template; preserve the Chinese role markers."""
     text = ""
     for msg in messages:
         role = msg["role"]
@@ -172,7 +142,7 @@ def _format_gemma_messages(messages):
             text += f"<start_of_turn>user\n{content}<end_of_turn>\n\n"
 
         elif role == "assistant":
-            # Note: leave end_of_turn open — generator will fill it in.
+            # Leave the assistant turn open for generation.
             text += f"<start_of_turn>model{content}"
 
     if not first_user_seen and system_block:

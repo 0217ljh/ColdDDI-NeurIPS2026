@@ -1,11 +1,6 @@
-"""Verify ``evaluate.py`` writes per-pair predictions CSVs.
+"""Test prediction CSV schemas and split layout from Appendix A.6.2, lines 549-557.
 
-The paper's release contract (Appendix A.6.2, walkthrough box at
-line 549-557) promises that ``evaluate.py --out DIR`` writes
-"CSV of per-pair predictions + metrics".  These tests pin the
-schema and per-split file layout so future refactors don't silently
-drop the per-pair artefact (which is the canonical handoff to
-:mod:`coldddi.diagnostics` for L6 indicator computation).
+These files supply per-pair probabilities to the L6 diagnostics.
 """
 
 from __future__ import annotations
@@ -29,7 +24,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-# ─── PREDICTION_COLUMNS contract ────────────────────────────────────────
+# PREDICTION_COLUMNS contract
 
 class TestPredictionColumnsSchema:
     def test_canonical_column_order(self):
@@ -44,7 +39,7 @@ class TestPredictionColumnsSchema:
         )
 
 
-# ─── _predictions_to_df helper math ─────────────────────────────────────
+# _predictions_to_df helper math
 
 class _ConstantBaseline:
     """Tiny stand-in: every pair gets a fixed predicted_prob."""
@@ -92,9 +87,7 @@ class TestPredictionsToDf:
         assert int(df_lo["predicted_label"].iloc[0]) == 0
 
     def test_empty_split_returns_empty_frame_with_schema(self):
-        """No positives AND no negatives → empty DataFrame, columns
-        still match the canonical schema so downstream consumers can
-        rely on ``df[PREDICTION_COLUMNS]`` regardless."""
+        """Empty splits retain the canonical prediction columns."""
         from coldddi.evaluate import PREDICTION_COLUMNS, _predictions_to_df
 
         empty = pd.DataFrame(columns=["drug_a_id", "drug_b_id"])
@@ -103,14 +96,11 @@ class TestPredictionsToDf:
         assert list(df.columns) == list(PREDICTION_COLUMNS)
 
 
-# ─── _evaluate_split_with_predictions: metrics-vs-CSV consistency ───────
+# _evaluate_split_with_predictions: metrics-vs-CSV consistency
 
 class TestEvaluateSplitWithPredictions:
     def test_aggregate_metrics_match_df_means(self):
-        """``mean_pos_score`` from the metrics dict must equal the
-        ``predicted_prob`` mean over positive rows in the predictions
-        DataFrame.  Guards against the JSON and CSV silently drifting
-        if they're ever computed by separate ``predict_proba`` calls."""
+        """Metrics means match CSV rows, avoiding drift from separate prediction calls."""
         from coldddi.evaluate import _evaluate_split_with_predictions
 
         pos = pd.DataFrame({"drug_a_id": ["A", "X"], "drug_b_id": ["B", "Y"]})
@@ -129,9 +119,7 @@ class TestEvaluateSplitWithPredictions:
         )
 
     def test_legacy_evaluate_split_returns_only_metrics(self):
-        """Backward-compat shim ``_evaluate_split`` must still return
-        a plain dict — external callers from before Step 1 land would
-        break if it suddenly grew a second return."""
+        """The backward-compatible _evaluate_split returns a plain dict."""
         from coldddi.evaluate import _evaluate_split
 
         pos = pd.DataFrame({"drug_a_id": ["A"], "drug_b_id": ["B"]})
@@ -142,13 +130,7 @@ class TestEvaluateSplitWithPredictions:
         assert out["n_neg"] == 0
 
     def test_zero_positives_still_reports_neg_mean(self):
-        """Codex MINOR: pin the metrics-key contract for pos-empty
-        splits.  Old ``_evaluate_split`` had an early return that
-        dropped ``mean_neg_score`` whenever pos=0 — strict bug, since
-        a fully-negative split still has a meaningful neg mean.  Step 1
-        emits ``mean_neg_score`` whenever neg>0 regardless of pos
-        count.  This test pins the new (informative) behaviour so it
-        cannot silently regress to the old buggy shape."""
+        """Negative-only splits retain mean_neg_score despite having no positives."""
         from coldddi.evaluate import _evaluate_split_with_predictions
 
         empty_pos = pd.DataFrame(columns=["drug_a_id", "drug_b_id"])
@@ -181,13 +163,10 @@ class TestEvaluateSplitWithPredictions:
         assert list(df.columns) == list(PREDICTION_COLUMNS)
 
 
-# ─── NaN-output baseline behaviour (codex MINOR) ──────────────────────
+# NaN-output behavior.
 
 class _NaNBaseline:
-    """Pathological baseline that returns NaN for every prediction.
-    Tests that the pipeline doesn't crash, even though the resulting
-    CSV/JSON values won't be useful — that's the caller's bug to fix
-    in the model, not the pipeline's to silently mask."""
+    """Return NaN predictions to verify the pipeline preserves them without crashing."""
 
     def predict_proba(self, pairs: pd.DataFrame) -> np.ndarray:
         return np.full(len(pairs), np.nan, dtype=np.float32)
@@ -210,15 +189,14 @@ class TestNanPredictionsSurviveHelpers:
         pos = pd.DataFrame({"drug_a_id": ["A"], "drug_b_id": ["B"]})
         neg = pd.DataFrame({"drug_a_id": ["A"], "drug_b_id": ["C"]})
         metrics, df = _evaluate_split_with_predictions(_NaNBaseline(), pos, neg)
-        # NaN means propagate — informative for downstream debugging.
-        # The pipeline doesn't silently coerce or drop the NaN.
+        # Preserve NaN means for downstream debugging.
         import math
 
         assert math.isnan(metrics["mean_pos_score"])
         assert math.isnan(metrics["mean_neg_score"])
 
 
-# ─── Multi-setting end-to-end: --setting all writes 6 CSVs ─────────────
+# Multi-setting end-to-end: --setting all writes 6 CSVs
 
 class TestRunEvaluationMultiSettingWritesAllCsvs:
     """Pin paper A.6.2 promise that ``--setting all`` writes a CSV per
@@ -251,10 +229,7 @@ class TestRunEvaluationMultiSettingWritesAllCsvs:
             "predictions_test_s2_seed42.csv",
         }
         actual_csvs = {p.name for p in multi_out.glob("predictions_*.csv")}
-        # Every expected file must be present.  Empty splits may skip
-        # (the toy fixture happens to have non-empty splits, so all 6
-        # should land); if a future toy ever loses a split, this
-        # assertion catches the regression early.
+        # All six toy splits are non-empty and must produce files.
         missing = expected - actual_csvs
         assert not missing, f"missing per-split CSV: {sorted(missing)}"
 
@@ -272,7 +247,7 @@ class TestRunEvaluationMultiSettingWritesAllCsvs:
             assert k in metrics, f"missing metrics key {k}"
 
 
-# ─── run_evaluation end-to-end: CSV files exist with right schema ──────
+# run_evaluation end-to-end: CSV files exist with right schema
 
 class TestRunEvaluationWritesPredictionCsv:
     """End-to-end through DeepDDI (smallest baseline) on the toy fixture.

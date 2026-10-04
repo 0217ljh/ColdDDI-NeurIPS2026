@@ -1,38 +1,22 @@
-"""
-Build the human-annotation dataset for ColdDDI Appendix A.taxonomy-validation.
+"""Build the annotation sample for ColdDDI Appendix A.taxonomy-validation.
 
-Design (locked with user, 2026-04-30):
-  • 50 DDI types: 25 PK (16 overlap-eligible + 9 supplementary from PK pool
-    without ≥10 overlap pairs) + 25 PD (random sample from 117 ≥10-overlap PD
-    types). Per-type pair pool: 10 pairs (or all if fewer available).
-  • Single merged annotation file (per-pair). Each row asks the annotator for
-    BOTH a PK/PD/Mixed label AND an A/B/? label on the same drug pair, since
-    the two judgments inform each other (A/B's valid action-pair table depends
-    on the mechanism class). 500 rows total.
-  • Each pair shows DrugBank description AND DDInter v2.0 mecddi free-text
-    mechanism description side-by-side. The 9 supplementary PK types have NO
-    DDInter text (sampled from DrugBank only, no overlap requirement).
-  • Two annotators receive blinded CSVs (no auto_pk_pd / auto_AorB columns).
-    Rows shuffled (consecutive rows do not share the same DDI type).
-    Sampling seed = 42 (matches training seeds).
+The reference sample has 50 types and 500 pairs: 16 PK types with >=10
+DrugBank/DDInter overlap pairs, 9 supplementary PK types with >=10 DrugBank
+pairs, and 25 PD types drawn from 117 types with >=10 overlap pairs.
+Sample up to 10 pairs per type with seed 42, using overlap pairs except for
+supplementary PK types. Rows are shuffled, not strictly interleaved by type.
 
-Note on paper appendix: Appendix A.taxonomy-validation describes a two-task
-protocol (50 types for PK/PD + 500 pairs for A/B). In practice we merge into
-a single per-pair CSV; aggregating the per-pair PK/PD labels back to type
-level (majority vote per type) reproduces the metric the paper reports.
+Each row asks for PK/PD/Mixed and A/B/? labels; valid A/B action pairs depend
+on the mechanism class. Show DrugBank descriptions and available DDInter 2.0
+mecddi text. Majority-vote PK/PD labels per type give the appendix's type-level
+metric. Both annotators receive the same blinded CSV without auto labels.
 
-Inputs (paths supplied via env vars — see the COLDDDI_* block near the
-bottom of this file):
-  - DDInter v2.0 mecddi (free-text mechanism per pair, 152K rows)
-  - DrugBank with mechanisms (565K pairs, our DDI source)
-  - DrugBank drug enrichment (id ↔ name + targets/enzymes/etc.)
-  - Auto PK/PD labels per type (keyword-derived)
-  - Auto key-entity table (per pair: entity, role, chain)
-
-Outputs (default ``./annotation_sample_out``, overridable):
-  • annotation_blank.csv         — 500 pairs, blinded (give to each annotator)
-  • annotation_with_auto.csv     — admin-only: same rows + auto_pk_pd + auto_AorB
-  • annotation_sampling_log.txt  — what was sampled, by which rule
+COLDDDI_* paths below supply DDInter mecddi, DrugBank mechanisms and drug
+names, type-level PK/PD labels, and per-pair key entities/actions/chains.
+Outputs under COLDDDI_ANNOTATION_OUT_DIR (default ./annotation_sample_out):
+  - annotation_blank.csv: blinded pairs for annotators.
+  - annotation_with_auto.csv: admin copy with auto labels.
+  - annotation_sampling_log.txt: sampled types, counts, and rules.
 """
 from __future__ import annotations
 
@@ -49,7 +33,7 @@ N_PK_SUPP = 9      # supplementary PK types (no overlap requirement)
 PAIRS_PER_TYPE = 10
 EXAMPLES_PER_T1 = 5  # T1 shows the first 5 of the 10 T2 pairs
 
-# Paths --- tolerate both Win and WSL invocation (auto-detect drive prefix)
+# Convert Windows drive paths when running under WSL.
 def _resolve(p: str) -> Path:
     p = p.replace("\\", "/")
     import sys
@@ -58,8 +42,7 @@ def _resolve(p: str) -> Path:
     return Path(p)
 
 
-# Required inputs (env-var driven; raw paths intentionally not hard-coded).
-# Set each var to a real CSV before running this sampler:
+# Input CSV paths and output directory overrides:
 #   COLDDDI_DDINTER_MECDDI            DDInter 2.0 mec-DDI table
 #   COLDDDI_DRUGBANK_WITH_MECHANISMS  drugbank_with_mechanisms.csv
 #   COLDDDI_DRUGS_ENRICHED            drugs_enriched.csv
@@ -87,7 +70,7 @@ def main() -> None:
     np.random.seed(SEED)
     log: list[str] = [f"=== ColdDDI annotation sampling log (seed={SEED}) ==="]
 
-    # ── Load ───────────────────────────────────────────────────────────────
+    # Load inputs.
     print(f"[load] DDInter v2.0 mecddi  {P_MEC}")
     mec = pd.read_csv(P_MEC)
     print(f"  rows={len(mec):,}")
@@ -104,13 +87,13 @@ def main() -> None:
     ke = pd.read_csv(P_KE)
     print(f"  rows={len(ke):,}")
 
-    # ── Maps ────────────────────────────────────────────────────────────────
+    # Name and type lookups
     name_to_id = {n.lower(): did for did, n in zip(drugs.drugbank_id, drugs.name)
                   if isinstance(n, str)}
     id_to_name = dict(zip(drugs.drugbank_id, drugs.name))
     type_to_label = dict(zip(pkpd.ddi_type, pkpd.pk_pd_label))
 
-    # ── Map DDInter pairs to DrugBank IDs by drug name ─────────────────────
+    # Match DDInter pairs to DrugBank IDs by name.
     mec["a"] = mec.drug1_name.str.lower().map(name_to_id)
     mec["b"] = mec.drug2_name.str.lower().map(name_to_id)
     mec_match = mec.dropna(subset=["a", "b"])
@@ -121,7 +104,7 @@ def main() -> None:
     for a, b, t in zip(mec_match.a, mec_match.b, mec_match.interaction):
         mec_text[canon(a, b)] = t
 
-    # Annotate DB with overlap flag + DDInter text
+    # Add overlap flags and DDInter text.
     db = db.copy()
     db["pair"] = [canon(a, b) for a, b in zip(db.drug_a_id, db.drug_b_id)]
     db["ddinter_mecddi"] = db.pair.map(mec_text)
@@ -130,7 +113,7 @@ def main() -> None:
     log.append(f"DB pairs in overlap: {db.in_overlap.sum():,}/{len(db):,} "
                f"({db.in_overlap.mean()*100:.1f}%)")
 
-    # ── Build per-type counts ──────────────────────────────────────────────
+    # Per-type counts
     type_overlap = (db[db.in_overlap]
                     .groupby(["ddi_type", "pk_pd_label"]).size()
                     .reset_index(name="n_overlap"))
@@ -162,13 +145,12 @@ def main() -> None:
     pd_picked = rng.sample(pd_ge10, N_PD_TYPES)
     log.append(f"PD types randomly picked from ≥10-overlap pool: {len(pd_picked)}")
 
-    # ── Compose final type list (preserve order: PK overlap, PK supp, PD) ──
+    # Preserve type order: PK overlap, supplementary PK, then PD.
     sampled_types = pk_ge10 + pk_supp_picked + pd_picked
     log.append(f"Total types sampled: {len(sampled_types)} "
                f"(PK={len(pk_ge10)+len(pk_supp_picked)}, PD={len(pd_picked)})")
 
-    # ── For each sampled type, sample 10 pairs ─────────────────────────────
-    # PK overlap and PD: from overlap subset; PK supp: from full DB pool.
+    # Sample up to 10 pairs per type: overlap for PK/PD, full DB for PK supp.
     def sample_pairs(t: str, want_overlap: bool) -> pd.DataFrame:
         pool = db[db.ddi_type == t]
         if want_overlap:
@@ -187,20 +169,16 @@ def main() -> None:
         pair_dfs.append(sampled)
     pair_df = pd.concat(pair_dfs, ignore_index=True)
 
-    # ── Shuffle pair order so consecutive rows do NOT share the same DDI type.
-    # Without this, an annotator seeing 10 rows of identical type_template will
-    # quickly learn the "obvious" answer and copy-paste, which would inflate the
-    # auto-vs-consensus agreement and depress Cohen's kappa power. Shuffle is
-    # done with the same SEED so it is reproducible. pair_id is assigned AFTER
-    # shuffling, so P0001 corresponds to the first row in the delivered file.
+    # Seeded shuffle reduces type grouping and repeated-answer bias; adjacent
+    # rows may still share a type. Assign pair_id afterward so P0001 is row 1.
     pair_df = pair_df.sample(frac=1.0, random_state=SEED).reset_index(drop=True)
     pair_df["pair_id"] = [f"P{i:04d}" for i in range(1, len(pair_df)+1)]
     log.append(f"Total pairs sampled: {len(pair_df)}  (rows shuffled, seed={SEED})")
 
-    # ── Join key-entity columns (canonical-pair lookup) ─────────────────────
+    # Join key entities by canonical pair.
     ke = ke.copy()
     ke["pair"] = [canon(a, b) for a, b in zip(ke.drug_a_id, ke.drug_b_id)]
-    # Track original drug_a_id ordering so we know whether to swap action labels.
+    # Keep source orientation to align drug-specific actions.
     ke_lookup: dict[Tuple[str, str], dict] = {}
     for _, r in ke.iterrows():
         ke_lookup[canon(r.drug_a_id, r.drug_b_id)] = {
@@ -221,7 +199,7 @@ def main() -> None:
             return pd.Series({"auto_key_entity_name": None, "auto_key_entity_type": None,
                               "auto_action_drug_a": None, "auto_action_drug_b": None,
                               "auto_chain": None, "auto_has_key_entity": False})
-        # If pair order in ke is reversed relative to current row, swap action_*
+        # Swap actions when the source pair is reversed.
         if info["ke_orig_a"] == row.drug_a_id:
             aa, bb = info["action_drug_a"], info["action_drug_b"]
         else:
@@ -243,16 +221,15 @@ def main() -> None:
     # Drug names
     pair_df["drug_a_name"] = pair_df.drug_a_id.map(id_to_name)
     pair_df["drug_b_name"] = pair_df.drug_b_id.map(id_to_name)
-    # Fill ddinter_mecddi NaN as "" so CSV reads cleanly
+    # Write missing DDInter text as empty CSV fields.
     pair_df["ddinter_mecddi"] = pair_df["ddinter_mecddi"].fillna("")
 
-    # ── Build T2 outputs ───────────────────────────────────────────────────
-    # The "automated A/B" label is derived from has_key_entity (the very
-    # quantity the annotator is asked to validate). Keep in admin copy.
+    # Derive auto labels for the admin copy only: has_key_entity is the A/B
+    # prediction being validated.
     pair_df["auto_AorB"] = pair_df["auto_has_key_entity"].map({True: "A", False: "B"})
     pair_df["auto_pk_pd"] = pair_df["ddi_type"].map(type_to_label)
 
-    # ── Build the merged per-pair admin CSV (with auto labels) ──────────────
+    # Admin CSV with auto labels
     admin_cols = [
         "pair_id", "type_id", "sampling_rule",
         "drug_a_id", "drug_a_name", "drug_b_id", "drug_b_name",
@@ -266,25 +243,17 @@ def main() -> None:
     admin.to_csv(OUT_DIR / "annotation_with_auto.csv", index=False)
     log.append(f"Wrote {OUT_DIR / 'annotation_with_auto.csv'}")
 
-    # ── Build the blinded per-pair CSV given to annotators ──────────────────
-    # Drop auto_pk_pd and auto_AorB (the two answers we're verifying); also
-    # drop auto_has_key_entity since it is the *exact* boolean form of
-    # auto_AorB (True ↔ A, False ↔ B) and would let an annotator one-shot
-    # copy auto's A/B prediction. Keep the auto entity *content* columns
-    # (name / type / actions / chain) since those are inputs to the A/B
-    # decision: the annotator must see WHICH entity auto flagged in order
-    # to verify it. Note: there is still a structural information leak —
-    # for auto-B rows these content columns are all empty — but that leak
-    # is inherent to the task design (we are asking "does the auto-flagged
-    # entity mediate the interaction?", which requires showing the entity
-    # when one is flagged and showing nothing when none is flagged).
+    # Blind auto_pk_pd, auto_AorB, and auto_has_key_entity (True=A, False=B).
+    # Keep entity name/type/actions/chain so annotators can assess mediation.
+    # Leakage remains: these fields are empty for auto-B rows, revealing the
+    # prediction even without explicit labels.
     blank_cols = [
         "pair_id",
         "drug_a_id", "drug_a_name", "drug_b_id", "drug_b_name",
         "ddi_type", "drugbank_description", "ddinter_mecddi",
         "auto_key_entity_name", "auto_key_entity_type",
         "auto_action_drug_a", "auto_action_drug_b", "auto_chain",
-        # ↓ annotator fills these
+        # Annotator fields
         "your_label_PK_PD_or_Mixed",
         "your_label_AorB",
         "your_confidence_1to5",
@@ -299,7 +268,7 @@ def main() -> None:
     blank.to_csv(OUT_DIR / "annotation_blank.csv", index=False)
     log.append(f"Wrote {OUT_DIR / 'annotation_blank.csv'} (auto_has_key_entity dropped)")
 
-    # ── Sampling log ───────────────────────────────────────────────────────
+    # Sampling log
     log.append("")
     log.append("Sampled types (in order):")
     for i, t in enumerate(sampled_types, start=1):

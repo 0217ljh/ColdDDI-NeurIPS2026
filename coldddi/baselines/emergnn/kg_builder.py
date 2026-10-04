@@ -1,5 +1,4 @@
-"""
-KG builder for EmerGNN — assembles the DrugBank 5-entity KG from a FoldBundle.
+"""Build EmerGNN's five-relation DrugBank KG from knowledge-base tables.
 
 Relations (5 base types; reverse edges + self-loop added at graph-load time):
     0: drug--target
@@ -75,7 +74,7 @@ def build_kg_from_kb(
     drug_ids = [str(d) for d in drug_ids]
     drug_set = set(drug_ids)
 
-    # Step 1: unified entity vocab. Drugs first.
+    # Reserve the first indices for the supplied drugs.
     entity2id: Dict[str, int] = {d: i for i, d in enumerate(drug_ids)}
     entity_types: List[int] = [ENT_TYPE_DRUG] * len(drug_ids)
 
@@ -98,7 +97,7 @@ def build_kg_from_kb(
                 dropped += 1
                 continue
             if drug_id not in entity2id:
-                # Shouldn't happen if drug_ids covers all, but be safe
+                # Allow additional drugs when keep_only_known_drugs is False.
                 entity2id[drug_id] = len(entity_types)
                 entity_types.append(ENT_TYPE_DRUG)
             if ent_id not in entity2id:
@@ -114,7 +113,6 @@ def build_kg_from_kb(
     # Dedup triplets (a drug may appear multiple times for same target w/ different 'action')
     if triplets:
         arr = np.array(triplets, dtype=np.int64)
-        # unique rows
         arr = np.unique(arr, axis=0)
     else:
         arr = np.zeros((0, 3), dtype=np.int64)
@@ -143,12 +141,12 @@ def build_sparse_adj(
     """Build a (n_ent, n_ent, 2*n_rel+1) sparse COO tensor used by EmerGNN.
 
     The tensor encodes:
-        * forward edges  (h, t, r)           for every triplet
-        * reverse edges  (t, h, r + n_rel)   (i.e., reversed relation shifted by n_rel)
+        * forward edges  (h, t, r + n_rel)  for every triplet
+        * reverse edges  (t, h, r)          with the original relation ID
         * self-loops     (e, e, 2*n_rel)     one per entity
 
-    Values are all 1.0. Caller typically lives on GPU; `device=None` keeps on CPU.
-    Returns a torch.sparse_coo_tensor.
+    Each input edge contributes 1.0; coalescing sums duplicates.
+    ``device=None`` keeps the tensor on CPU.
     """
     import torch
 
@@ -157,18 +155,14 @@ def build_sparse_adj(
     tails = triplets[:, 1]
     rels = triplets[:, 2]
 
-    # Forward edges (tail,head,rel) — EmerGNN convention: index[0]=dst, index[1]=src? check paper
-    # Per original load_data.py double_triple:
-    #     new_triples.append([t, h, r])         # reverse with same rel
-    #     new_triples.append([h, t, r + n_rel]) # forward with shifted rel
-    # So the stored 3-tuples already use (src_index, dst_index, rel_id) where the
-    # generalized_rspmm interprets them. We replicate:
+    # Match upstream load_data.py double_triple: (src, dst, rel), with
+    # forward relation IDs shifted by n_rel and reverse IDs unchanged.
     fwd_h = heads
     fwd_t = tails
     fwd_r = rels + n_rel
     rev_h = tails
     rev_t = heads
-    rev_r = rels  # "reverse" uses original rel id per original code
+    rev_r = rels
 
     idd_h = np.arange(n_ent, dtype=np.int64)
     idd_t = idd_h
@@ -188,9 +182,9 @@ def build_sparse_adj(
 
 
 def edges_as_dense_lists(adj):
-    """For pure-PyTorch message passing — return (head_idx, tail_idx, rel_idx) LongTensors.
+    """Return (source, destination, relation) LongTensors on the adjacency's device.
 
-    Operates on a coalesced sparse adjacency. Keeps on the same device.
+    Coalesce the sparse adjacency before reading its indices.
     """
     import torch
 

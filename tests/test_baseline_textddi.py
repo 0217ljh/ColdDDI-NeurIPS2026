@@ -1,10 +1,6 @@
-"""End-to-end smoke test: TextDDI on the toy fixture.
+"""Test TextDDI on toy data with the tiny random SMOKE_BACKBONE.
 
-Uses :data:`coldddi.baselines.textddi.baseline.SMOKE_BACKBONE`
-(``hf-internal-testing/tiny-random-DistilBertModel``, randomly
-initialised, ~5 MB) so the test stays fast and offline-friendly.
-The paper-faithful default (``roberta-base``, ~500 MB) is
-correctness-checked separately by :class:`TestDefaultBackboneIsPaperSpec`.
+Check the paper preset's ``roberta-base`` configuration separately.
 """
 
 from __future__ import annotations
@@ -37,16 +33,13 @@ def trained_textddi():
 
     ds = PairDataset.from_release_dir(TOY_RELEASE, seed=42)
     model = TextDDIBaseline(
-        backbone=SMOKE_BACKBONE,   # explicit smoke stub; paper default
-                                    # is roberta-base (verified separately)
+        backbone=SMOKE_BACKBONE,   # avoid downloading the paper backbone
         max_length=64,
         n_epochs=1,
         batch_size=8,
         device="cpu",
     )
-    # Limit the skip to actual HuggingFace download/cache failures so a
-    # genuine implementation bug in fit() doesn't disguise itself as a
-    # network problem.
+    # Skip download/cache failures only; implementation errors must still fail.
     try:
         model._ensure_backbone()
     except (OSError, ConnectionError) as exc:
@@ -60,10 +53,8 @@ class TestTextDDIFit:
         model, _ = trained_textddi
         assert model._model is not None
         assert model._tokenizer is not None
-        # ``_desc_cache`` carries (name, description) per drug — renamed
-        # from the v1 ``_drug_texts`` when the paper-prompt port landed.
+        # The cache stores (name, description) per drug.
         assert model._desc_cache is not None and len(model._desc_cache) > 0
-        # Each entry is a (name, desc) tuple.
         sample_value = next(iter(model._desc_cache.values()))
         assert isinstance(sample_value, tuple) and len(sample_value) == 2
 
@@ -95,14 +86,8 @@ class TestTextDDIFit:
         assert scores[0] == pytest.approx(0.5)
 
     def test_prompt_uses_paper_query_template(self, trained_textddi):
-        """Regression guard: the rebuilt prompt format must include
-        the upstream ``In the above context...`` query string from
-        ``train_custom_bundle.py:417-419``.  The v1 release built
-        ``"{did} {name} SMILES: ..."`` strings which silently dropped
-        the paper-spec query template — this test will fail loudly if
-        we ever regress to that."""
+        """Preserve the upstream query template from train_custom_bundle.py:417-419."""
         model, ds = trained_textddi
-        # Pick two real drugs in the dataset.
         pair = ds.splits.test_s2.iloc[0]
         a, b = str(pair["drug_a_id"]), str(pair["drug_b_id"])
         prompt = model._build_prompt(a, b)
@@ -111,11 +96,7 @@ class TestTextDDIFit:
         assert "is that:" in prompt
 
     def test_modern_kb_fallback_uses_kg_name_dict(self, trained_textddi):
-        """Regression guard: for modern release-dir datasets (no legacy
-        bundle), the kb fallback must populate descriptions from
-        ``train.kg.name_dict(singular)`` — NOT silently fall through to
-        name-only.  Caught a real bug where the singular/plural
-        mismatch made every kb-tier load no-op."""
+        """Release-dir descriptions use kg.name_dict's singular keys, not names alone."""
         model, ds = trained_textddi
         # Toy fixture has a populated KG. At least some drugs in the
         # cache should have non-empty descriptions (from kg.name_dict).
@@ -134,9 +115,7 @@ class TestTextDDISaveLoad:
         model, _ = trained_textddi
         model.save(tmp_path / "ckpt")
         assert (tmp_path / "ckpt" / "manifest.json").is_file()
-        # ``desc_cache.json`` carries the (name, description) cache —
-        # renamed from the v1 ``drug_texts.json`` when the paper-prompt
-        # port landed.
+        # Persist the (name, description) cache.
         assert (tmp_path / "ckpt" / "desc_cache.json").is_file()
         assert (tmp_path / "ckpt" / "model").is_dir()
         assert (tmp_path / "ckpt" / "tokenizer").is_dir()
@@ -179,13 +158,7 @@ class TestTextDDIRegistry:
 
 
 class TestDefaultBackboneIsPaperSpec:
-    """Regression guard against C1 audit finding: the default
-    backbone must be the paper-spec RoBERTa-base, not the smoke
-    stub.  A plain ``TextDDIBaseline()`` (no kwargs) constructed by
-    a user running ``python evaluate.py --method textddi`` must
-    produce paper-grade predictions, not random noise from a
-    tiny-random-DistilBert stub.
-    """
+    """Distinguish the paper CLI backbone from lightweight constructor defaults."""
 
     def test_default_backbone_constant_is_roberta_base(self):
         from coldddi.baselines.textddi.baseline import DEFAULT_BACKBONE
@@ -197,8 +170,7 @@ class TestDefaultBackboneIsPaperSpec:
         )
 
     def test_smoke_backbone_constant_exposed(self):
-        """The smoke stub is exposed so test fixtures can opt into
-        it explicitly without re-hardcoding the HF model id."""
+        """Expose the smoke backbone without duplicating its model ID."""
         from coldddi.baselines.textddi.baseline import SMOKE_BACKBONE
 
         assert SMOKE_BACKBONE == (
@@ -211,13 +183,7 @@ class TestDefaultBackboneIsPaperSpec:
         )
 
     def test_instance_default_backbone_is_smoke_stub(self):
-        """Bare ``TextDDIBaseline()`` (direct Python construction)
-        carries the smoke stub.  Paper-grade runs go through
-        ``evaluate.py --preset paper`` (default) which forwards
-        ``PAPER_HYPERPARAMS['backbone'] = 'roberta-base'`` onto the
-        constructor.  This asymmetry matches the other 7 baselines
-        (smoke __init__ defaults + paper preset materialisation) and
-        is required so unit tests stay fast/offline by default."""
+        """Direct construction uses the smoke stub; the paper CLI preset overrides it."""
         from coldddi.baselines.textddi import TextDDIBaseline
         from coldddi.baselines.textddi.baseline import SMOKE_BACKBONE
 
@@ -225,17 +191,13 @@ class TestDefaultBackboneIsPaperSpec:
         assert m.backbone == SMOKE_BACKBONE
 
     def test_paper_hyperparams_backbone_is_roberta_base(self):
-        """The paper-preset path forwards backbone="roberta-base".
-        This is the regression guard for the CLI surface — paper
-        App C.1 line 105 promise."""
+        """The paper preset forwards roberta-base, as specified in Appendix C.1."""
         from coldddi.baselines.textddi import PAPER_HYPERPARAMS
 
         assert PAPER_HYPERPARAMS["backbone"] == "roberta-base"
 
     def test_constants_are_re_exported_from_package_root(self):
-        """Convenience: tests / downstream code shouldn't have to
-        import from the submodule.  Both names must be reachable from
-        ``coldddi.baselines.textddi`` directly."""
+        """Both backbone constants are exported from coldddi.baselines.textddi."""
         from coldddi.baselines.textddi import DEFAULT_BACKBONE, SMOKE_BACKBONE
 
         assert DEFAULT_BACKBONE == "roberta-base"

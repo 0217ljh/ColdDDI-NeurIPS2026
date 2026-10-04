@@ -1,14 +1,9 @@
-"""Build release-ready annotation files.
+"""Write annotation files under COLDDDI_ANNOTATION_RAW/release.
 
-Outputs to ../release/:
-  - annotation_annotator1.csv  (A1 with 116 '?' filled by agent and 10
-                                Mixed PK/PD collapsed to PK; raw '?' and
-                                'Mixed' values are dropped)
-  - annotation_annotator2.csv  (A2 copied as-is)
-  - final_consensus.csv         (all 500 pairs with judge-resolved
-                                consensus PK/PD and A/B labels)
-
-Pipeline matches compute_judged_metrics.py (seed=42 for the 60/40 judge).
+annotation_annotator1.csv replaces 116 '?' labels with agent labels and
+collapses 10 Mixed labels to PK. annotation_annotator2.csv copies A2 unchanged.
+final_consensus.csv contains all 500 pairs, using the coupled 60/40 judge
+from compute_judged_metrics.py with seed 42.
 """
 
 from __future__ import annotations
@@ -20,9 +15,9 @@ import shutil
 
 import pandas as pd
 
-# Raw annotator inputs are intentionally NOT shipped (see annotation/_README.md).
-# Point ``COLDDDI_ANNOTATION_RAW`` at a directory containing
-# ``annotator1_raw.xlsx`` + ``annotator2_raw.csv`` + ``computed/`` to re-run.
+# Raw inputs are not shipped; see annotation/_README.md. Set
+# COLDDDI_ANNOTATION_RAW to a directory containing annotator1_raw.xlsx,
+# annotator2_raw.csv, and computed/a1_filled_ab.csv.
 ROOT = Path(os.environ.get("COLDDDI_ANNOTATION_RAW", "./annotation_raw"))
 A1_XLSX = ROOT / "annotator1_raw.xlsx"
 A2_CSV = ROOT / "annotator2_raw.csv"
@@ -73,7 +68,7 @@ def main() -> None:
     assert len(a1) == 500 and len(a2) == 500
     assert (a1["pair_id"] == a2["pair_id"]).all()
 
-    # --- A1 release version ---
+    # A1 release
     a1_release = a1.copy()
     # Replace 116 '?' A/B labels with agent fill-in
     n_qmarks = (a1_release["your_label_AorB"] == "?").sum()
@@ -91,7 +86,7 @@ def main() -> None:
     )
     print(f"A1: collapsed {n_mixed} 'Mixed' to 'PK'")
 
-    # Drop the Annotator-1-only 'guide_judgment' column for cleanliness if present
+    # Omit A1's guide_judgment column from the release.
     if "guide_judgment" in a1_release.columns:
         a1_release = a1_release.drop(columns=["guide_judgment"])
 
@@ -99,12 +94,12 @@ def main() -> None:
     a1_release.to_csv(a1_out, index=False)
     print(f"Wrote {a1_out}")
 
-    # --- A2 release version (raw copy) ---
+    # A2 release: unchanged raw copy.
     a2_out = RELEASE_DIR / "annotation_annotator2.csv"
     shutil.copyfile(A2_CSV, a2_out)
     print(f"Copied A2 raw to {a2_out}")
 
-    # --- Final consensus ---
+    # Final consensus
     a1_pkpd = a1_release["your_label_PK_PD_or_Mixed"].values
     a1_ab = a1_release["your_label_AorB"].values
     a2_pkpd = a2["your_label_PK_PD_or_Mixed"].values
@@ -160,7 +155,7 @@ def main() -> None:
     consensus_df.to_csv(cons_out, index=False)
     print(f"Wrote {cons_out}")
 
-    # Quick sanity print
+    # Disagreement and judge counts
     print(f"\nDisagreement totals:")
     print(f"  PK/PD disagreements: {pkpd_dis.sum()}")
     print(f"  A/B   disagreements: {ab_dis.sum()}")

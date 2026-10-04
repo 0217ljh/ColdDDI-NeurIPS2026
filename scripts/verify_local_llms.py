@@ -1,34 +1,8 @@
-"""Verify the 11 paper LLMs are locally cached and HF-loadable.
+"""Check local configs, tokenizers, and weight shards for the 11 paper LLMs.
 
-For each of the 11 models in paper Table B.x we try, in order:
-
-1. ``AutoConfig.from_pretrained(hf_id, cache_dir=cache, local_files_only=True)``
-2. ``AutoTokenizer.from_pretrained(hf_id, cache_dir=cache, local_files_only=True)``
-
-``local_files_only=True`` is critical — without it, transformers will
-silently hit the network on a partial download and we'd never detect a
-half-broken local copy.
-
-Cache locations are resolved from environment variables (see
-:func:`_build_cache_locations` below) in this order:
-
-1. ``HF_HOME`` env var (standard HuggingFace convention).
-2. ``~/.cache/huggingface/hub`` (HF default).
-3. Extra roots from ``COLDDDI_HF_EXTRA_CACHE`` (os.pathsep-split,
-   useful when models live on a separate drive than ``$HOME``).
-
-For each model we report:
-
-  status               : OK / config-only (tokenizer missing) / MISSING / ERROR
-  resolved cache_dir   : whichever location had the snapshot
-  model_type           : llama / qwen2 / gemma3_text / ...
-  hidden_size, vocab   : config sanity
-  tokenizer class      : LlamaTokenizer / GemmaTokenizer / ...
-
-No model weights are loaded — that would require ~50 GB+ RAM/VRAM
-just for Qwen2.5-14B.  Config + tokenizer load is enough to prove
-the snapshot is intact and transformers can dispatch the right
-classes when the real load happens at FT / inference time.
+AutoConfig and AutoTokenizer use ``local_files_only=True`` so downloads
+cannot hide incomplete caches. Report status, cache, shard count/size,
+tokenizer class, and errors without loading model weights.
 """
 from __future__ import annotations
 
@@ -36,8 +10,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-# Order matches paper Table; HF id is the canonical repo we'd pass to
-# AutoModelForCausalLM.from_pretrained.
+# Paper Table B.x order and canonical Hugging Face model IDs.
 MODELS: list[tuple[str, str]] = [
     ("Llama-3.2-1B",  "meta-llama/Llama-3.2-1B"),
     ("Llama-3.2-3B",  "meta-llama/Llama-3.2-3B"),
@@ -52,16 +25,9 @@ MODELS: list[tuple[str, str]] = [
     ("Gemma-3-12B",   "google/gemma-3-12b-pt"),
 ]
 
-# cache_dir for from_pretrained is the HF *hub* directory
-# (where the ``models--<org>--<model>`` dirs live), NOT the HF_HOME
-# root.  Pass the trailing /hub or transformers will look for a fresh
-# download and (offline) raise "couldn't connect to huggingface.co".
-#
-# Resolution order:
-#   1. ``HF_HOME`` env var (standard HuggingFace convention)
-#   2. ``~/.cache/huggingface/hub`` (HF default)
-#   3. Any extra roots in ``COLDDDI_HF_EXTRA_CACHE`` (os.pathsep-split,
-#      useful when models live on a different drive than $HOME)
+# cache_dir must be the hub directory containing models--<org>--<model>.
+# Cache order: HF_HOME/hub, ~/.cache/huggingface/hub, then
+# COLDDDI_HF_EXTRA_CACHE entries split by os.pathsep.
 def _build_cache_locations() -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
     hf_home = os.environ.get("HF_HOME")
@@ -96,11 +62,9 @@ class CheckResult:
 
 
 def _resolve_snapshot_dir(cache_root: str, hf_id: str) -> Path | None:
-    """Return the snapshot directory for ``<cache>/models--<org>--<model>``.
+    """Return the model's refs/main snapshot, or the first available snapshot.
 
-    Picks the snapshot referenced by ``refs/main`` when present, else
-    the first snapshot dir found.  Returns ``None`` when nothing is on
-    disk.
+    Return None if no snapshot directory exists.
     """
     safe_id = hf_id.replace("/", "--")
     model_root = Path(cache_root) / f"models--{safe_id}"
@@ -118,7 +82,6 @@ def _resolve_snapshot_dir(cache_root: str, hf_id: str) -> Path | None:
                 return candidate
         except Exception:
             pass
-    # Fall back to whichever snapshot dir exists.
     snaps = [p for p in snap_root.iterdir() if p.is_dir()]
     return snaps[0] if snaps else None
 
@@ -126,9 +89,8 @@ def _resolve_snapshot_dir(cache_root: str, hf_id: str) -> Path | None:
 def _check_weight_files(snapshot: Path) -> tuple[int, float, str]:
     """Return ``(n_resolved_shards, total_gb, detail)``.
 
-    Looks for ``*.safetensors`` or ``pytorch_model*.bin`` (real or
-    symlink that resolves to a non-empty file).  Any ``.incomplete``
-    blob is reported as a failure cause.
+    Count resolved *.safetensors, pytorch_model*.bin, and model*.bin shards;
+    include missing targets and .incomplete blobs in detail.
     """
     detail_bits: list[str] = []
     patterns = ("*.safetensors", "pytorch_model*.bin", "model*.bin")
@@ -148,8 +110,7 @@ def _check_weight_files(snapshot: Path) -> tuple[int, float, str]:
         except Exception as e:
             detail_bits.append(f"{shard.name}: {e}")
 
-    # Surface .incomplete artefacts as a hard failure signal even
-    # when the snapshot itself has no resolved shards.
+    # Report interrupted downloads even when no snapshot shards resolve.
     blobs_dir = snapshot.parent.parent / "blobs"
     if blobs_dir.is_dir():
         incomplete = list(blobs_dir.glob("*.incomplete"))
@@ -168,10 +129,7 @@ def _try_one(paper_name: str, hf_id: str) -> CheckResult:
 
     last_err = ""
 
-    # Probe EVERY cache location and pick the one with the most
-    # complete state (weights present beats config-only stub). A
-    # single HF_HOME default can be metadata-only while a secondary
-    # cache (drive-e) carries the real weight shards.
+    # Probe all caches so metadata-only snapshots do not hide weight shards.
     per_cache: list[tuple[str, str, object, int, float, str]] = []
     for tag, cache in CACHE_LOCATIONS:
         try:
@@ -204,9 +162,7 @@ def _try_one(paper_name: str, hf_id: str) -> CheckResult:
     per_cache.sort(key=lambda r: (r[3], r[4]), reverse=True)
     cache_tag_hit, cache_dir_hit, config, n_shards, size_gb, weight_detail = per_cache[0]
 
-    # Tokenizer (slow or fast — we don't care which). Loaded against
-    # the same cache that won the weight check; tokenizer may live in
-    # either cache but we want the one paired with the real shards.
+    # Prefer the tokenizer from the cache selected for weights.
     tok_cls = "-"
     tok_status = "OK"
     try:
@@ -218,8 +174,7 @@ def _try_one(paper_name: str, hf_id: str) -> CheckResult:
         )
         tok_cls = type(tok).__name__
     except Exception as e:
-        # Tokenizer may not be in this specific cache — retry the
-        # other location before giving up.
+        # Retry other caches if the selected cache lacks a usable tokenizer.
         tok = None
         for tag, alt_cache in CACHE_LOCATIONS:
             if alt_cache == cache_dir_hit:
@@ -245,7 +200,7 @@ def _try_one(paper_name: str, hf_id: str) -> CheckResult:
             f"weights: {weight_detail or 'no shards under snapshot'}"
         )
     elif weight_detail:
-        # Shards exist but blobs/ also has .incomplete files — flag it.
+        # Retain shard warnings even when some weights are present.
         last_err = (last_err + " | " if last_err else "") + (
             f"weights: {weight_detail}"
         )
@@ -265,7 +220,7 @@ def _try_one(paper_name: str, hf_id: str) -> CheckResult:
 
 
 def main() -> int:
-    # Force transformers to NOT touch the network at all.
+    # Default to offline mode; each load also uses local_files_only=True.
     os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
 
@@ -296,7 +251,6 @@ def main() -> int:
             n_ok += 1
     print(f"\n  → {n_ok}/{len(results)} models OK\n")
 
-    # Surface every error in detail so partial-cache problems aren't hidden.
     failures = [r for r in results if r.status != "OK"]
     if failures:
         print(f"  Errors / partial states ({len(failures)}):")

@@ -12,7 +12,7 @@ from coldddi.benchmark_data import file_sha256, pair_keys
 
 
 def sample_drug_ids(drug_ids: list[str], *, seed: int, size: int = 800) -> list[str]:
-    """Sample without replacement, preserving the upstream candidate ordering."""
+    """Sample without replacement from the given pool order; return sorted IDs."""
     pool = list(drug_ids)
     if len(set(pool)) != len(pool) or any(not isinstance(x, str) or not x.strip() for x in pool):
         raise ValueError("Drug IDs must be unique, nonempty strings")
@@ -30,12 +30,11 @@ def build_subset(
     n_train_negative_epochs: int = 4,
     quiet: bool = False,
 ) -> Path:
-    """Keep induced DDI edges and matching annotations; reuse existing split code.
+    """Build a release subset with induced DDI edges and matching annotations.
 
-    Candidate order comes from Step 6 degrees with explicit pandas 2.x
-    quicksort tie ordering, as in the original experimental sampler.
-    The source is an intermediate/ directory from reconstruction. Output must
-    be empty so a previous experiment cannot be overwritten inadvertently.
+    Use Step-6 degrees with pandas 2.x quicksort tie ordering, as in the
+    original sampler. Source is a reconstructed intermediate/ directory;
+    output must be empty and separate from source.
     """
     from coldddi.reconstruct import _Logger, _do_stage2c, _do_stage3, _do_stage4
     from coldddi.sanity_check import write_checksums

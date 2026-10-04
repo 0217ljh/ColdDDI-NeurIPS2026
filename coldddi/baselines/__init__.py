@@ -1,9 +1,7 @@
 """Baseline implementations for ColdDDI.
 
-Each concrete baseline lives in its own submodule (e.g.
-``coldddi.baselines.deepddi``) and registers itself on import via
-:func:`register`. The :func:`load_baseline` dispatcher reads the
-checkpoint's ``manifest.json`` to route to the correct subclass.
+Submodules register their models on import. :func:`load_baseline` reads
+the checkpoint's ``manifest.json`` to select the loader.
 """
 
 from __future__ import annotations

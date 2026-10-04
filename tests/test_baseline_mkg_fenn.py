@@ -75,10 +75,7 @@ class TestMKGFENNFit:
         assert scores[0] == pytest.approx(0.5)
 
     def test_channel_mask_outputs_differ_from_base(self, trained_mkg_fenn):
-        """Paper-spec KPS-mol / KPS-KG ablation: zero a channel and
-        verify the prediction changes.  Equal scores would mean the
-        mask either doesn't take effect or the model never learned to
-        use that channel — both red flags for the indicator."""
+        """KPS-mol and KPS-KG masks must each change predictions."""
         model, ds = trained_mkg_fenn
         # Use enough pairs that random equality is implausible.
         pairs = pd.concat(
@@ -91,11 +88,9 @@ class TestMKGFENNFit:
         base = model.predict_proba(pairs)
         mask_kg = model.predict_proba(pairs, mask_channel="kg")
         mask_mol = model.predict_proba(pairs, mask_channel="mol")
-        # All three are valid probabilities.
         for arr in (base, mask_kg, mask_mol):
             assert arr.shape == base.shape
             assert (arr >= 0).all() and (arr <= 1).all()
-        # The masks must actually change predictions (≥ 1 pair differs).
         assert not np.allclose(base, mask_kg), (
             "mask_channel='kg' produced identical scores to base — "
             "GNN1+GNN3 channels not contributing or mask not wired."
@@ -104,8 +99,7 @@ class TestMKGFENNFit:
             "mask_channel='mol' produced identical scores to base — "
             "GNN2+GNN4 channels not contributing or mask not wired."
         )
-        # The two masks should produce DIFFERENT outputs (otherwise
-        # we'd be ablating the same thing twice).
+        # Distinct channels must yield distinct ablations.
         assert not np.allclose(mask_kg, mask_mol)
 
     def test_invalid_mask_channel_raises(self, trained_mkg_fenn):
@@ -115,8 +109,7 @@ class TestMKGFENNFit:
             model.predict_proba(pos, mask_channel="kgmol")
 
     def test_fusion_mask_byte_exact_with_manual_zero(self):
-        """Deterministic guard against the per-pair mask implementation
-        diverging from "manually zero the rows then concatenate"."""
+        """Per-pair masks match manually zeroing rows before concatenation."""
         pytest.importorskip("torch")
         import torch
 
@@ -187,10 +180,7 @@ class TestMKGFENNSaveLoad:
         model, ds = trained_mkg_fenn
         model.save(tmp_path / "ckpt")
         loaded = load_baseline(tmp_path / "ckpt")
-        # MKG-FENN samples neighbours stochastically per `precompute_adj`;
-        # to make the round-trip deterministic, sync the loaded model's
-        # adjacency buffers with the source model's. After that, predictions
-        # should be bit-exact (the rest of the model is pure forward pass).
+        # Sync stochastically sampled adjacency buffers for deterministic parity.
         loaded._model.gnn1.adj_tail.copy_(model._model.gnn1.adj_tail)
         loaded._model.gnn1.adj_relation.copy_(model._model.gnn1.adj_relation)
         loaded._model.gnn2.adj_tail.copy_(model._model.gnn2.adj_tail)

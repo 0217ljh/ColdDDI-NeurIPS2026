@@ -1,27 +1,10 @@
 """Common ABC and registry for the eight ColdDDI baselines.
 
-Design summary (locked in state log)
------------------------------------
-* :meth:`BaselineModel.fit` consumes a :class:`PairDataset` directly.
-  Implementations are responsible for their own iteration / batching;
-  the ABC does not impose a DataLoader. ``kg`` is passed as a keyword
-  so KG-free baselines (e.g. DeepDDI) can ignore it.
-
-* :meth:`BaselineModel.predict_proba` takes a plain
-  ``DataFrame[drug_a_id, drug_b_id]`` and returns a 1-D
-  ``np.ndarray`` of P(positive). This is the single contract baselines
-  plug into the evaluator.
-
-* :meth:`BaselineModel.save` is **free-form** — each baseline picks the
-  serialization that suits it (a `.pt` state dict, a HuggingFace
-  directory, a pickle, …). The only convention is that ``save(path)``
-  must also drop a small ``manifest.json`` in the same directory listing
-  ``{"baseline_name": cls.name, ...}`` so the top-level
-  :func:`load_baseline` dispatcher can route to the right subclass's
-  :meth:`load` classmethod.
-
-* Subclasses register with :func:`register` (decorator) so the
-  evaluator and ``load_baseline`` can find them by name.
+Models manage their own :class:`PairDataset` batching and may ignore ``kg``.
+:meth:`BaselineModel.predict_proba` returns a 1-D array of P(positive) for
+``DataFrame[drug_a_id, drug_b_id]``. Checkpoints may use any layout but must
+include ``manifest.json`` for :func:`load_baseline`. Subclasses register
+by name with :func:`register`.
 """
 
 from __future__ import annotations
@@ -39,18 +22,13 @@ if TYPE_CHECKING:
     from coldddi.data.protocols import KnowledgeGraphProtocol
 
 
-#: Filename written by every baseline's :meth:`save` next to its
-#: checkpoint files. Read by :func:`load_baseline` to pick the subclass.
+#: Checkpoint manifest used by :func:`load_baseline` to select the subclass.
 BASELINE_MANIFEST_FILENAME: str = "manifest.json"
 
-#: Module-level registry mapping baseline name → subclass.
+#: Baseline name → subclass.
 _REGISTRY: dict[str, type["BaselineModel"]] = {}
 
-#: Declared baseline name → submodule import path. Used by
-#: :func:`ensure_imported` so :func:`load_baseline` and the evaluator
-#: can route to baselines that haven't been imported yet (a fresh
-#: ``from coldddi.baselines import load_baseline`` does not pull every
-#: baseline's dependencies).
+#: Name → import path for lazy registration without loading all dependencies.
 NAME_TO_MODULE: dict[str, str] = {
     "deepddi": "coldddi.baselines.deepddi",
     "emergnn": "coldddi.baselines.emergnn",
@@ -69,7 +47,7 @@ def ensure_imported(name: str) -> None:
         return
     module_name = NAME_TO_MODULE.get(name)
     if module_name is None:
-        return  # unknown name — caller will surface a clear error
+        return  # The caller handles unknown names.
     try:
         __import__(module_name)
     except ImportError as exc:
@@ -80,7 +58,7 @@ def ensure_imported(name: str) -> None:
 
 
 def register(name: str):
-    """Class decorator: register a :class:`BaselineModel` subclass under ``name``.
+    """Register a :class:`BaselineModel` subclass and set its ``name`` attribute.
 
     Usage::
 
@@ -88,17 +66,13 @@ def register(name: str):
         class DeepDDI(BaselineModel):
             ...
 
-    The decorated class also gets its ``name`` class attribute set to
-    the registered string.
     """
     def decorator(cls: type["BaselineModel"]) -> type["BaselineModel"]:
         if name in _REGISTRY and _REGISTRY[name] is not cls:
             raise ValueError(
                 f"Baseline name {name!r} is already registered to {_REGISTRY[name]!r}"
             )
-        # Validate the modality eagerly so a subclass that declares an
-        # unknown label fails at import time (the moment ``register`` is
-        # applied), not silently later when the L6 dispatch looks it up.
+        # Reject unsupported modalities at registration, before L6 dispatch.
         declared = getattr(cls, "modality", "mol")
         if declared not in MODALITIES:
             raise ValueError(
@@ -112,9 +86,7 @@ def register(name: str):
     return decorator
 
 
-#: Allowed values for :attr:`BaselineModel.modality`.  Drives both
-#: documentation (what data the baseline consumes) AND the L6
-#: indicator dispatch in :mod:`coldddi.evaluate`:
+#: Modalities and L6 indicator dispatch in :mod:`coldddi.evaluate`:
 #:
 #: * ``"mol"``           — molecular graph only (SMILES atom graph).
 #:                         L6 dispatch: KPS-F only; channel masks NaN.
@@ -127,12 +99,8 @@ def register(name: str):
 #:                         ``predict_proba(..., mask_channel="mol"|"kg")``.
 #:                         L6 dispatch: KPS-F + KPS-mol + KPS-KG.
 #:
-#: The LLM stack (``scripts/run_llm.py``) is **not** registered here —
-#: it has its own R0--R3 mask path and goes through
-#: :func:`coldddi.diagnostics.compute_indicators`, not this baseline
-#: dispatch.  We document the LLM's equivalent label as ``"llm-r0r3"``
-#: in the paper-spec README coverage matrix for cross-reference, but
-#: no ``BaselineModel`` subclass carries it.
+#: The unregistered LLM stack uses R0--R3 masks through
+#: :func:`coldddi.diagnostics.compute_indicators` instead.
 MODALITIES: tuple[str, ...] = (
     "mol",
     "text",
@@ -147,17 +115,9 @@ class BaselineModel(ABC):
     #: Registered name (set by :func:`register`).
     name: ClassVar[str] = "abstract"
 
-    #: Modality label — see :data:`MODALITIES` for the value table and
-    #: dispatch semantics.  Default ``"mol"`` keeps any caller-defined
-    #: subclass that pre-dates this field working as a single-modality
-    #: baseline (KPS-F only, channel indicators NaN).
-    #:
-    #: Intentionally **not** marked ``ClassVar``: subclasses may override
-    #: at the instance level (e.g. TIGER with ``mol_only=True`` sets
-    #: ``self.modality = "mol"`` in ``__init__`` to downgrade itself
-    #: when the KG branch is disabled).  The L6 dispatch in
-    #: :mod:`coldddi.evaluate` reads ``getattr(model, "modality", ...)``
-    #: so instance attributes shadow the class default cleanly.
+    #: See :data:`MODALITIES` for dispatch semantics. The default gives KPS-F
+    #: only, with NaN channel indicators. Instances may override it, as TIGER
+    #: does when ``mol_only=True``; this is not a ``ClassVar``.
     modality: str = "mol"
 
     @abstractmethod
@@ -183,14 +143,11 @@ class BaselineModel(ABC):
     def save(self, path: "Path | str") -> None:
         """Serialize the trained model to ``path``.
 
-        Implementations are free to pick any on-disk layout, but
-        **must** drop a ``manifest.json`` (see
-        :data:`BASELINE_MANIFEST_FILENAME`) in the same directory with
-        at least the keys::
+        Any layout is allowed, but ``manifest.json`` must include::
 
             {"baseline_name": cls.name, "version": "<your-version>"}
 
-        so :func:`load_baseline` can dispatch back to this subclass.
+        :func:`load_baseline` uses it to select this subclass's loader.
         """
 
     @classmethod
@@ -205,12 +162,7 @@ def write_manifest(
     baseline_name: str,
     extra: dict | None = None,
 ) -> Path:
-    """Helper for :meth:`BaselineModel.save` implementations.
-
-    Writes a ``manifest.json`` under ``out_dir`` recording the baseline
-    name and any subclass-specific extras (hyperparameters, train seed,
-    etc.) so :func:`load_baseline` can route correctly later.
-    """
+    """Write the baseline name and optional metadata to ``out_dir/manifest.json``."""
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     payload = {"baseline_name": baseline_name}
@@ -222,11 +174,7 @@ def write_manifest(
 
 
 def load_baseline(path: Path | str) -> BaselineModel:
-    """Auto-detect a baseline checkpoint's type and dispatch to its loader.
-
-    Reads ``<path>/manifest.json`` to pick the registered subclass, then
-    calls that subclass's :meth:`BaselineModel.load`.
-    """
+    """Load a checkpoint using the subclass named in ``<path>/manifest.json``."""
     p = Path(path)
     manifest_path = p / BASELINE_MANIFEST_FILENAME
     if not manifest_path.is_file():
@@ -257,14 +205,9 @@ def list_baselines() -> list[str]:
 def get_paper_hyperparams(name: str) -> dict[str, object]:
     """Return the paper-spec hyperparameter dict for ``name``.
 
-    Reads the ``PAPER_HYPERPARAMS`` constant exported from
-    ``coldddi.baselines.<name>``.  Used by ``evaluate.py --preset
-    paper`` (the default CLI surface) to construct each baseline
-    with the values listed in paper Appendix C.1 Table 8.
-
-    Returns an empty dict if the baseline doesn't ship one (which
-    is itself a regression caught by
-    ``tests/test_baseline_paper_hyperparams.py``).
+    Read the module's ``PAPER_HYPERPARAMS`` for ``evaluate.py --preset paper``
+    (Appendix C.1 Table 8). Return an empty dict if none is defined or the
+    name has no module mapping.
     """
     if name not in _REGISTRY:
         ensure_imported(name)

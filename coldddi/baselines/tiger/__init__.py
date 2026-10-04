@@ -1,6 +1,6 @@
-"""TIGER baseline — paper Su et al. (AAAI 2024), binary adaptation
-in **mol-only** mode (no KG subgraph branch), for cold-start
-compatibility across S0/S1/S2.
+"""TIGER baseline — Su et al. (AAAI 2024), binary cold-start adaptation.
+
+Uses molecular and KG channels by default, with an optional mol-only mode.
 
 Importing this submodule registers :class:`TIGERBaseline` under
 ``"tiger"``.

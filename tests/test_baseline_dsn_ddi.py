@@ -29,9 +29,8 @@ def trained_dsn_ddi():
     from coldddi.data.dataset import PairDataset
 
     ds = PairDataset.from_release_dir(TOY_RELEASE, seed=42)
-    # DSN-DDI's IntraGraphAttention / InterGraphAttention hardcode
-    # their output to 32*2=64 dims, so the per-block concat is always
-    # 128. SAGPooling therefore needs `n_heads * head_out_feats == 128`.
+    # Intra/InterGraphAttention each output 64 dims; their concat requires
+    # SAGPooling's n_heads * head_out_feats == 128.
     model = DSNDDIBaseline(
         hidd_dim=64,
         kge_dim=128,

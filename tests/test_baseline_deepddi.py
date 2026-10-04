@@ -1,8 +1,4 @@
-"""Layer-2 end-to-end test: DeepDDI on the toy fixture.
-
-Verifies the BaselineModel ABC contract is realisable by a real model:
-fit on the toy 86-drug subset (1 epoch, tiny network), predict on
-test_s2 positives + negatives, save + load round-trip preserves output.
+"""Test DeepDDI fitting, S2 predictions, and save/load parity on the toy fixture.
 """
 
 from __future__ import annotations
@@ -40,14 +36,13 @@ def toy_release_root():
 
 @pytest.fixture(scope="module")
 def trained_deepddi(toy_release_root):
-    """Fit DeepDDI on the toy subset with a *tiny* network (fast)."""
+    """Fit a tiny DeepDDI network on the toy subset."""
     pytest.importorskip("rdkit")
     pytest.importorskip("sklearn")
     from coldddi.baselines.deepddi import DeepDDIBaseline
     from coldddi.data.dataset import PairDataset
 
     ds = PairDataset.from_release_dir(toy_release_root, seed=42)
-    # Tiny config so the test runs in seconds, not minutes.
     model = DeepDDIBaseline(
         ssp_dim=8,
         hidden_dim=32,
@@ -71,7 +66,6 @@ class TestDeepDDIFit:
 
     def test_predict_proba_returns_1d_in_unit_interval(self, trained_deepddi):
         model, ds = trained_deepddi
-        # Score positives + negatives on test_s2
         pos = ds.splits.test_s2[["drug_a_id", "drug_b_id"]].head(40)
         neg = ds.get_negatives("test_s2").head(40)
         all_pairs = pd.concat([pos, neg], ignore_index=True)
@@ -90,8 +84,7 @@ class TestDeepDDIFit:
             )
 
     def test_fit_with_empty_g1_raises(self, toy_release_root):
-        """Codex M3: empty G1 must raise rather than silently fall back
-        to all_drugs (which would leak G2 into the SSP basis)."""
+        """Reject empty G1 to prevent leaking G2 into the SSP basis."""
         from coldddi.baselines.deepddi import DeepDDIBaseline
         from coldddi.data.dataset import PairDataset
 
@@ -183,9 +176,7 @@ class TestDeepDDIRegistry:
 
 
 class TestCleanProcessAutoLoad:
-    """Codex M6 / C1 / C2: a fresh Python process that only does
-    ``from coldddi.baselines import load_baseline`` must still be able
-    to load a DeepDDI checkpoint (lazy import via NAME_TO_MODULE)."""
+    """Load DeepDDI in a fresh process via NAME_TO_MODULE's lazy import."""
 
     def test_load_baseline_in_fresh_subprocess(self, trained_deepddi, tmp_path):
         import subprocess
@@ -212,13 +203,10 @@ class TestCleanProcessAutoLoad:
         assert "DeepDDIBaseline" in result.stdout
 
     def test_run_evaluation_in_fresh_subprocess(self, tmp_path):
-        """Codex C1: `run_evaluation(method='deepddi', ...)` must work
-        from a clean process — the lazy import via NAME_TO_MODULE is the
-        only path that registers the baseline.
+        """Evaluate through lazy registration in a fresh process.
 
-        The Tiny override is applied **after** ``ensure_imported``, so
-        the subprocess code never imports ``coldddi.baselines.deepddi``
-        directly. That guarantees the test exercises C1's actual path.
+        Apply Tiny after ``ensure_imported`` to avoid registering DeepDDI
+        through a direct import.
         """
         import subprocess
 

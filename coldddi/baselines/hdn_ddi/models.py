@@ -1,4 +1,4 @@
-"""HDN-DDI hierarchical drug graph + super-node readout (verbatim).
+"""HDN-DDI hierarchical drug graph and super-node readout.
 
 Source: ``Code-Released/baseline/HDN-DDI-NEW/drugbank_test/models.py``.
 """

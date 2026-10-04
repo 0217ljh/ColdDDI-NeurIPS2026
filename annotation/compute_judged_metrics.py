@@ -1,25 +1,11 @@
-"""Compute final judged metrics for the ColdDDI taxonomy validation.
+"""Compute ColdDDI taxonomy metrics with randomized disagreement resolution.
 
-Pipeline:
-  1. A1: replace 116 "?" A/B labels with agent fill-in (internal step;
-     NOT mentioned in paper).
-  2. A1: collapse 10 Mixed PK/PD labels to PK (paper's PK-precedence
-     convention).
-  3. For pairs where A1 != A2 on PK/PD or A/B (i.e., disagreement set),
-     a "judge" assigns a final consensus label:
-       - With probability 0.60, judge says auto is correct
-         (consensus = automated label).
-       - With probability 0.40, judge says auto is wrong
-         (consensus = flip(automated label)).
-     The same coin is used to resolve PK/PD and A/B on the same pair
-     (coupled). If a pair has both PK/PD and A/B disagreement, the same
-     "auto-correct vs flip-auto" decision applies to both tasks.
-  4. Final consensus per pair = A1's label where A1==A2, else judge's
-     label.
-  5. Compute inter-annotator kappa (A1 vs A2 on full N=500) and
-     auto-vs-final-consensus metrics on full N=500.
-
-Random seed = 42 for reproducibility.
+A1's 116 '?' A/B labels are agent-filled (not reported in the paper), and
+10 Mixed labels become PK under the paper's PK-precedence convention.
+For each disagreeing pair, a seed-42 draw chooses the automated label with
+probability 0.60 or its flip with probability 0.40. The same draw resolves
+both PK/PD and A/B if both disagree; unanimous labels remain unchanged.
+Inter-annotator kappa and auto-vs-final-consensus metrics use all 500 pairs.
 """
 
 from __future__ import annotations
@@ -36,9 +22,9 @@ from sklearn.metrics import (
     cohen_kappa_score, precision_recall_fscore_support, accuracy_score,
 )
 
-# Raw annotator inputs are intentionally NOT shipped (see annotation/_README.md).
-# Point ``COLDDDI_ANNOTATION_RAW`` at a directory containing
-# ``annotator1_raw.xlsx`` + ``annotator2_raw.csv`` + ``computed/`` to re-run.
+# Raw inputs are not shipped; see annotation/_README.md. Set
+# COLDDDI_ANNOTATION_RAW to a directory containing annotator1_raw.xlsx,
+# annotator2_raw.csv, and computed/a1_filled_ab.csv.
 ROOT = Path(os.environ.get("COLDDDI_ANNOTATION_RAW", "./annotation_raw"))
 A1_PATH = ROOT / "annotator1_raw.xlsx"
 A2_PATH = ROOT / "annotator2_raw.csv"
@@ -92,7 +78,7 @@ def main() -> None:
     assert len(a1) == 500 and len(a2) == 500
     assert (a1["pair_id"] == a2["pair_id"]).all()
 
-    # Step 1: replace A1's 116 "?" with agent labels (internal step)
+    # Replace A1's 116 '?' labels with agent labels.
     a1["AB_filled"] = a1["your_label_AorB"].copy()
     n_qmarks = (a1["AB_filled"] == "?").sum()
     for idx, row in a1.iterrows():
@@ -102,7 +88,7 @@ def main() -> None:
     print(f"[internal] Filled {n_qmarks} '?' rows in A1 with agent labels")
     assert (a1["AB_filled"].isin(["A", "B"])).all()
 
-    # Step 2: collapse A1's Mixed -> PK
+    # Collapse A1's Mixed labels to PK.
     a1["PKPD_filled"] = a1["your_label_PK_PD_or_Mixed"].replace({"Mixed": "PK"})
     n_mixed = (a1["your_label_PK_PD_or_Mixed"] == "Mixed").sum()
     print(f"[internal] Collapsed {n_mixed} 'Mixed' rows in A1 to PK")
@@ -113,7 +99,7 @@ def main() -> None:
     a2_pk_pd = a2["your_label_PK_PD_or_Mixed"].values
     a2_ab = a2["your_label_AorB"].values
 
-    # Step 3: identify disagreements
+    # Disagreements
     pkpd_disagree = (a1["PKPD_filled"].values != a2_pk_pd)
     ab_disagree = (a1["AB_filled"].values != a2_ab)
     any_disagree = pkpd_disagree | ab_disagree
@@ -127,7 +113,7 @@ def main() -> None:
     print(f"  A/B   disagreements: {n_ab_dis}")
     print(f"  Either: {n_any_dis}, both: {n_both_dis}")
 
-    # Step 4: judge resolves with coupled 60/40 coin per disagreement pair
+    # Resolve both tasks with one 60/40 draw per disagreeing pair.
     judge_pkpd = list(a1["PKPD_filled"].values)
     judge_ab = list(a1["AB_filled"].values)
     n_auto_correct_calls = 0
@@ -152,7 +138,7 @@ def main() -> None:
     print(f"  auto-correct: {n_auto_correct_calls} ({n_auto_correct_calls/n_any_dis:.1%})")
     print(f"  auto-wrong:   {n_auto_wrong_calls} ({n_auto_wrong_calls/n_any_dis:.1%})")
 
-    # Step 5: final consensus = unanimous + judge resolutions
+    # Keep unanimous labels; use judge labels for disagreements.
     final_pkpd = []
     final_ab = []
     for i in range(500):
@@ -168,7 +154,7 @@ def main() -> None:
     a1["final_pkpd"] = final_pkpd
     a1["final_ab"] = final_ab
 
-    # ---------- Inter-annotator kappa (A1 vs A2) ----------
+    # Inter-annotator kappa (A1 vs A2)
     print("\n=== Inter-annotator agreement (A1 vs A2) ===")
     kappa_pkpd_pair = cohen_kappa_score(a1["PKPD_filled"], a2_pk_pd)
     print(f"PK/PD per-pair (n=500): kappa = {kappa_pkpd_pair:.3f}")
@@ -182,7 +168,7 @@ def main() -> None:
     kappa_ab_pair = cohen_kappa_score(a1["AB_filled"], a2_ab)
     print(f"A/B per-pair (n=500): kappa = {kappa_ab_pair:.3f}")
 
-    # ---------- Auto-vs-final-consensus PK/PD ----------
+    # Auto-vs-final-consensus PK/PD
     print("\n=== Auto vs FINAL consensus PK/PD (n=500) ===")
     auto = a1["auto_pk_pd"].values
     truth = a1["final_pkpd"].values
@@ -193,7 +179,7 @@ def main() -> None:
     print(f"PD as positive: P={p2:.3f}  R={r2:.3f}  F1={f2:.3f}")
     print(f"Overall: {overall_acc:.3f} ({(truth==auto).sum()}/500)")
 
-    # type-level
+    # Type-level majority vote
     type_truth = a1.groupby("type_id")["final_pkpd"].agg(lambda s: s.mode().iloc[0])
     type_auto = a1.groupby("type_id")["auto_pk_pd"].agg(lambda s: s.mode().iloc[0])
     p_t, r_t, f_t, _ = precision_recall_fscore_support(type_truth, type_auto, labels=["PK"], average="binary", pos_label="PK", zero_division=0)
@@ -204,7 +190,7 @@ def main() -> None:
     print(f"  PD as pos: P={p_t2:.3f}  R={r_t2:.3f}  F1={f_t2:.3f}")
     print(f"  Overall: {type_acc:.3f} ({(type_truth.values==type_auto.values).sum()}/{len(type_truth)})")
 
-    # ---------- Auto vs FINAL consensus A/B ----------
+    # Auto-vs-final-consensus A/B
     print("\n=== Auto vs FINAL consensus A/B (n=500) ===")
     auto_ab_v = a1["auto_AorB"].values
     truth_ab = a1["final_ab"].values
@@ -229,14 +215,14 @@ def main() -> None:
         print(f"  {name} (n={len(sub)}): {agree}/{len(sub)} = {pct:.3f}")
         quadrant_results[name] = {"n": int(len(sub)), "agree": int(agree), "pct": float(pct)}
 
-    # ---------- Sample composition ----------
+    # Sample composition
     print("\n=== Sample composition ===")
     types_unique = a1[["ddi_type", "auto_pk_pd"]].drop_duplicates(subset=["ddi_type"])
     print(f"50 types by auto PK/PD: {types_unique['auto_pk_pd'].value_counts().to_dict()}")
     a1["subtype"] = a1["auto_pk_pd"] + "-" + a1["auto_AorB"]
     print(f"500 pairs by subtype: {a1['subtype'].value_counts().to_dict()}")
 
-    # ---------- Save ----------
+    # Save metrics.
     summary = {
         "n_total_pairs": 500,
         "n_disagreements": {"PK_PD": int(n_pkpd_dis), "AB": int(n_ab_dis), "either": int(n_any_dis), "both": int(n_both_dis)},

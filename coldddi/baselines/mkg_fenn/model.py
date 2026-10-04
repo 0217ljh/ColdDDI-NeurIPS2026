@@ -1,14 +1,8 @@
 """MKG-FENN four-channel KG-GNN + fusion head.
 
-Verbatim from
-``Code-Released/baseline/MKG-FENN-NEW/Code and Datasets/code/modeltask1.py``
-(the GPU-efficient NEW version), with:
-
-* ``args`` accessed via attribute lookup (so a plain :class:`SimpleNamespace`
-  works in our adapter)
-* docstrings preserved
-* no other behavioural changes — neighbor sampling is still done offline
-  via ``precompute_adj()`` and lives in registered buffers.
+Adapted from
+``Code-Released/baseline/MKG-FENN-NEW/Code and Datasets/code/modeltask1.py``.
+``precompute_adj()`` samples neighbors into registered buffers before forward.
 """
 
 from __future__ import annotations
@@ -223,8 +217,7 @@ class FusionLayer(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, arguments, mask_channel: str | None = None):
-        """Concatenate the 4 GNN channels' per-drug embeddings and run
-        the fusion head.
+        """Fuse four GNN channels for each drug pair.
 
         Parameters
         ----------
@@ -232,20 +225,15 @@ class FusionLayer(nn.Module):
             5-tuple from upstream GNN4 forward:
             ``(gnn4_emb, gnn3_emb, gnn2_emb, gnn1_emb, idx)``.
         mask_channel
-            Optional channel-ablation knob, mirroring upstream
+            Channel ablation from upstream
             ``exps/sec5-3/2_indicators/baseline_mask_predictors/mkgfenn_mask.py``:
 
-            * ``"kg"``  — zero the contribution of GNN1 (drug-entity)
-              + GNN3 (drug-DDI) for BOTH drugs in each pair before
-              fusion. Used by the paper's KPS-KG channel indicator.
-            * ``"mol"`` — zero the contribution of GNN2 (drug-Morgan-FP)
-              + GNN4 (drug-property) similarly. Used by KPS-mol.
-            * ``None`` (default) — base prediction, no masking.
+            * ``"kg"``: zero GNN1 (drug-entity) and GNN3 (drug-DDI) for KPS-KG.
+            * ``"mol"``: zero GNN2 (Morgan FP) and GNN4 (property) for KPS-mol.
+            * ``None``: no masking.
 
-            The mask is **per-pair**: only the rows for the currently
-            evaluated ``(drugA_idx, drugB_idx)`` get zeroed; the rest
-            of each channel's embedding table is untouched, so the
-            inference is purely a fusion-time ablation (no retraining).
+            Both drugs' selected rows are masked at fusion time. Full embedding
+            tables remain unchanged; no retraining is needed.
         """
         gnn4_embedding, gnn3_embedding, gnn2_embedding, gnn1_embedding, idx = arguments
         if not isinstance(idx, torch.Tensor):
@@ -285,8 +273,7 @@ class FusionLayer(nn.Module):
 
 
 class MKGFENN(nn.Module):
-    """4-channel KG-GNN + fusion head wrapper. Wraps the GNN1..4 modules
-    so :meth:`forward` takes a single ``idx`` tensor and returns logits."""
+    """Four-channel KG-GNN returning logits for a tensor of drug-index pairs."""
 
     def __init__(
         self,
@@ -345,10 +332,10 @@ class MKGFENN(nn.Module):
         idx_pairs: torch.Tensor,
         mask_channel: str | None = None,
     ) -> torch.Tensor:
-        """Forward pass; pass ``mask_channel="kg"`` or ``"mol"`` to
-        run the paper's KPS-KG / KPS-mol channel ablations
-        (zero-out at fusion time, no retraining required).  See
-        :class:`FusionLayer.forward` for the semantics."""
+        """Return logits with optional ``"kg"`` or ``"mol"`` fusion-time masking.
+
+        See :meth:`FusionLayer.forward` for KPS-KG / KPS-mol mask semantics.
+        """
         out = self.gnn1(idx_pairs)
         out = self.gnn2(out)
         out = self.gnn3(out)

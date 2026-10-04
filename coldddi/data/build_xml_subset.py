@@ -1,10 +1,7 @@
 """Extract a subset of DrugBank XML.
 
-Given the path to a `full database.xml` and a list of DrugBank IDs to keep,
-write a smaller XML that preserves the original schema and namespace but
-contains only the chosen drug records. `<drug-interactions>` lists are
-also pruned: only interactions whose partner is in the keep-set survive,
-so the resulting XML is a self-consistent closed graph.
+Keep selected DrugBank records with the source schema and namespace.
+Prune ``<drug-interactions>`` to partners in the same selection.
 
 Two intended use cases:
 
@@ -19,11 +16,7 @@ Two intended use cases:
    real subset rather than a synthetic stand-in (CC-BY-NC 4.0 allows
    small-scale non-commercial redistribution with attribution).
 
-Public surface
---------------
-- :func:`extract_subset`
-- :func:`main` — CLI:
-  ``python -m coldddi.data.build_xml_subset --xml PATH --drugs-list PATH --out PATH``
+``python -m coldddi.data.build_xml_subset --xml PATH --drugs-list PATH --out PATH``
 """
 
 from __future__ import annotations
@@ -89,8 +82,7 @@ def extract_subset(
     n_kept = 0
     n_di_kept = 0
 
-    # Use ("start", "end") so the first event reaches the *root* element
-    # (events=("end",) alone returns the deepest first-finished leaf).
+    # Start events expose the root before any leaf finishes.
     context = ET.iterparse(str(xml_path), events=("start", "end"))
     _, src_root = next(context)
     out_root = ET.Element(src_root.tag, attrib=dict(src_root.attrib))
@@ -104,10 +96,7 @@ def extract_subset(
             elem.clear()
             continue
 
-        # Prune drug-interactions in-place: keep only those whose partner
-        # is also in `keep_drugs`. Drugs with all partners outside the set
-        # end up with an empty <drug-interactions/> element, which is
-        # legal under the schema.
+        # Keep only selected partners; an empty drug-interactions element is valid.
         dis_root = elem.find(f"{NS_PREFIX}drug-interactions")
         if dis_root is not None:
             survivors: list[ET.Element] = []
@@ -124,9 +113,7 @@ def extract_subset(
         out_root.append(copy.deepcopy(elem))
         n_kept += 1
 
-        # Clear the source element and root so iterparse can release memory
-        # of the ~17,000 unrelated drugs. We've already deep-copied what we
-        # need, so clearing is safe.
+        # Release source elements after copying the retained record.
         elem.clear()
         src_root.clear()
 

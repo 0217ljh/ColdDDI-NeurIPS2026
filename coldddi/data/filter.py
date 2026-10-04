@@ -1,7 +1,6 @@
 """Stage 1b — seven-step DrugBank filtering pipeline (Appendix A.1).
 
-Consumes the raw CSV tables produced by :mod:`coldddi.data.extract` and
-applies the cleaning pipeline described in the paper's Appendix A.1.
+Filter the raw CSV tables from :mod:`coldddi.data.extract`.
 
 Pipeline steps
 --------------
@@ -28,11 +27,6 @@ CLI
 ---
 ``python -m coldddi.data.filter --raw-dir PATH --out DIR``
 
-Public surface
---------------
-- :class:`FilterReport`
-- :func:`run_filter_pipeline`
-- :func:`main` — module CLI.
 """
 
 from __future__ import annotations
@@ -54,12 +48,9 @@ LOW_DEGREE_DRUG_THRESHOLD: int = 10
 
 _NORMALIZE_STRIP_CHARS: str = " ,;:."
 
-# Atomic numbers — kept identical to the legacy notebook
-# (`Notebooks/Data_Extraction.ipynb` cell 30) so Step 6 reproduces the paper's
-# 1,994 drug / 565,978 edge / 215 type counts. Note that `Tc` (43) and `Tl`
-# (81) are deliberately omitted: they are chemically transition / post-
-# transition metals but the original pipeline never excluded drugs containing
-# them, and matching the legacy behaviour is a hard requirement.
+# Match Notebooks/Data_Extraction.ipynb cell 30 for the Step 6 counts.
+# Tc (43) and Tl (81) remain omitted despite being metals; adding them
+# would change the published filtering protocol.
 METAL_ATOMIC_NUMS: frozenset[int] = frozenset(
     {
         3, 11, 19, 37, 55,                          # Li, Na, K, Rb, Cs
@@ -111,9 +102,7 @@ class FilterReport:
         return pd.DataFrame(rows)
 
 
-# ---------------------------------------------------------------------
-# Per-step primitives (kept tiny so they compose cleanly)
-# ---------------------------------------------------------------------
+# Per-step filters
 
 
 def _is_valid_smiles(smi: object) -> bool:
@@ -130,7 +119,7 @@ def _is_valid_smiles(smi: object) -> bool:
 
 
 def _has_carbon_and_no_metal(smi: object) -> tuple[bool, bool]:
-    """Return (has_carbon, contains_metal). Mirrors notebook semantics."""
+    """Return (has_carbon, contains_metal) using the notebook's metal list."""
     from rdkit import Chem
 
     if not isinstance(smi, str) or not smi:
@@ -146,7 +135,7 @@ def _has_carbon_and_no_metal(smi: object) -> tuple[bool, bool]:
 def _normalize_description(desc: str, name_a: str, name_b: str) -> str:
     """Strip the two drug names and collapse whitespace.
 
-    Matches `Notebooks/Data_Extraction.ipynb` cell 39 verbatim:
+    Matches ``Notebooks/Data_Extraction.ipynb`` cell 39:
     case-insensitive, no word-boundary, strip ``" ,;:."`` then collapse.
     """
     out = desc
@@ -159,9 +148,7 @@ def _normalize_description(desc: str, name_a: str, name_b: str) -> str:
     return out
 
 
-# ---------------------------------------------------------------------
 # Driver
-# ---------------------------------------------------------------------
 
 
 def _prune_aux_tables(
@@ -197,11 +184,8 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     )
     log(f"Step 0: {len(drugs_df):,} drugs, {len(edges):,} raw edges")
 
-    # --- Step 1: small molecules ---
-    # Retain edges only when *both* endpoints survive — single-endpoint
-    # filtering would leave dangling references that the later steps then
-    # have to repair. Apply the same double-end filter to all subsequent
-    # drug-level filters (Steps 1, 2, 3, 6).
+    # Step 1: small molecules. Every drug-level filter keeps an edge only
+    # when both endpoints survive, avoiding dangling references.
     drugs_df = drugs_df[drugs_df["type"] == "small molecule"].reset_index(drop=True)
     keep_set = set(drugs_df["drugbank_id"])
     edges = edges[edges["drug_a_id"].isin(keep_set) & edges["drug_b_id"].isin(keep_set)].reset_index(drop=True)
@@ -210,7 +194,7 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     )
     log(f"Step 1: {len(drugs_df):,} drugs, {len(edges):,} edges")
 
-    # --- Step 2: valid RDKit SMILES ---
+    # Step 2: valid RDKit SMILES
     valid_mask = drugs_df["smiles"].map(_is_valid_smiles)
     drugs_df = drugs_df[valid_mask].reset_index(drop=True)
     keep_set = set(drugs_df["drugbank_id"])
@@ -220,7 +204,7 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     )
     log(f"Step 2: {len(drugs_df):,} drugs, {len(edges):,} edges")
 
-    # --- Step 3: approved ---
+    # Step 3: approved compounds
     approved_mask = drugs_df["groups"].fillna("").str.contains(r"\bapproved\b")
     drugs_df = drugs_df[approved_mask].reset_index(drop=True)
     keep_set = set(drugs_df["drugbank_id"])
@@ -230,7 +214,7 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     )
     log(f"Step 3: {len(drugs_df):,} drugs, {len(edges):,} edges")
 
-    # --- Step 4: extract + normalize descriptions ---
+    # Step 4: normalize descriptions
     name_lookup = dict(zip(drugs_df["drugbank_id"], drugs_df["name"]))
     edges["drug_b_name"] = edges["drug_b_id"].map(name_lookup).fillna("")
     edges["ddi_type"] = [
@@ -248,7 +232,7 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     )
     log(f"Step 4: {len(drugs_df):,} drugs, {len(edges):,} edges, {edges['ddi_type'].nunique()} types")
 
-    # --- Step 5: remove low-frequency types ---
+    # Step 5: remove low-frequency types
     type_counts = edges["ddi_type"].value_counts()
     keep_types = set(type_counts[type_counts >= LOW_FREQ_TYPE_THRESHOLD].index)
     edges = edges[edges["ddi_type"].isin(keep_types)].reset_index(drop=True)
@@ -265,7 +249,7 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     )
     log(f"Step 5: {len(drugs_df):,} drugs, {len(edges):,} edges, {edges['ddi_type'].nunique()} types")
 
-    # --- Step 6: remove inorganic & metal-containing drugs ---
+    # Step 6: remove inorganic and metal-containing drugs
     flags = drugs_df["smiles"].map(_has_carbon_and_no_metal)
     drugs_df["has_carbon"] = flags.map(lambda t: t[0])
     drugs_df["contains_metal"] = flags.map(lambda t: t[1])
@@ -273,10 +257,8 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     drugs_df = drugs_df.drop(columns=["has_carbon", "contains_metal"])
     keep_set = set(drugs_df["drugbank_id"])
     edges = edges[edges["drug_a_id"].isin(keep_set) & edges["drug_b_id"].isin(keep_set)].reset_index(drop=True)
-    # Re-apply low-frequency type filter: removing metal/inorganic drugs
-    # drops edges from a few rare types below the 10-occurrence floor.
-    # Paper Step 6 reports 215 types (down from 221 at Step 5), which only
-    # matches if this prune is repeated here.
+    # Reapply the 10-occurrence floor after drug removal: Step 6 has 215
+    # types, down from 221 in Step 5.
     type_counts_after_metals = edges["ddi_type"].value_counts()
     keep_types_step6 = set(
         type_counts_after_metals[type_counts_after_metals >= LOW_FREQ_TYPE_THRESHOLD].index
@@ -295,7 +277,7 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     )
     log(f"Step 6: {len(drugs_df):,} drugs, {len(edges):,} edges, {edges['ddi_type'].nunique()} types")
 
-    # --- Step 7: remove low-degree drugs (degree < 10) ---
+    # Step 7: remove low-degree drugs (degree < 10)
     # The original 800-drug sampler consumes this degree-ordered pool.
     # Explicit quicksort preserves pandas 2.x tie ordering under pandas 3.x.
     # Upstream counted canonical (min-ID, max-ID) pairs. Preserve that
@@ -324,7 +306,7 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     )
     log(f"Step 7: {len(drugs_df):,} drugs, {len(edges):,} edges, {edges['ddi_type'].nunique()} types")
 
-    # --- Prune auxiliary tables to the final drug set ---
+    # Prune auxiliary tables to the final drug set.
     final_drug_set = set(drugs_df["drugbank_id"])
     enzymes, targets, transporters, carriers, pathways = _prune_aux_tables(
         final_drug_set,
@@ -361,9 +343,7 @@ def run_filter_pipeline(raw: RawTables, *, verbose: bool = True) -> FilterReport
     )
 
 
-# ---------------------------------------------------------------------
 # CSV output
-# ---------------------------------------------------------------------
 
 
 _FILTERED_TABLE_FILES: tuple[tuple[str, str], ...] = (
@@ -378,7 +358,7 @@ _FILTERED_TABLE_FILES: tuple[tuple[str, str], ...] = (
 
 
 def write_filter_report(report: FilterReport, out_dir: Path) -> None:
-    """Dump the seven filtered tables + ``stats.json`` + ``type_to_text.json``."""
+    """Write filtered tables, stats, type text, and available subset candidate order."""
     out_dir.mkdir(parents=True, exist_ok=True)
     for attr, fname in _FILTERED_TABLE_FILES:
         df = getattr(report, attr)
@@ -395,9 +375,7 @@ def write_filter_report(report: FilterReport, out_dir: Path) -> None:
     )
 
 
-# ---------------------------------------------------------------------
 # CLI
-# ---------------------------------------------------------------------
 
 
 def main(argv: list[str] | None = None) -> int:

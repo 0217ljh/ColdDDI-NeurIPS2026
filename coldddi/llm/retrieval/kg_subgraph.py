@@ -1,25 +1,8 @@
-"""Build the per-drug one-hop subgraph dict consumed by the P3 / P4 / R*
-prompt branches.
+"""Build one-hop prompt context from the dataset KG and drug SMILES.
 
-The output structure matches the legacy
-``bundle.extra["drug_subgraph_1hop_map"]`` shape:
-
-    {
-        "DB00001": {
-            "transporters": ["SLC22A1", "ABCB1", ...],
-            "pathways":     ["Coagulation cascade", ...],
-            "targets":      ["F2", "F10", ...],
-            "enzymes":      ["CYP3A4", ...],
-            "carriers":     ["ALB", ...],
-            "smiles":       ["<SMILES string>"],   # always a single-element list
-        },
-        ...
-    }
-
-There is no new data source here — :func:`build_subgraph_map` is a
-**pure reshape** of :class:`coldddi.data.kg.KnowledgeGraph` (already
-loaded by :class:`coldddi.data.dataset.PairDataset`) plus the
-``smiles`` column of :attr:`PairDataset.drugs`.
+Output maps drug IDs to entity-type lists: transporters, pathways, targets,
+enzymes, carriers and smiles. SMILES uses a single-element list; missing
+values use ``["unknown"]``.
 """
 
 from __future__ import annotations
@@ -31,9 +14,7 @@ import pandas as pd
 from coldddi.data.kg import KnowledgeGraph
 
 
-#: Order matters: the original prompt builder iterates ``list(neighbors.keys())``
-#: and renders one line per entity type. Keep this tuple aligned with
-#: ``Version_1_1/configs/ddi_finetune_config_k8s.py::selected_entities``.
+#: Entity order controls the order of facts in rendered prompts.
 SUBGRAPH_ENTITY_TYPES: tuple[str, ...] = (
     "transporters",
     "pathways",
@@ -43,8 +24,7 @@ SUBGRAPH_ENTITY_TYPES: tuple[str, ...] = (
     "smiles",
 )
 
-#: Mapping from the *plural* entity-type key used in prompts back to the
-#: singular ``edge_type`` enum :class:`KnowledgeGraph` exposes.
+#: Map plural prompt keys to KG edge types.
 _PLURAL_TO_EDGE: dict[str, str] = {
     "transporters": "transporter",
     "pathways":     "pathway",
@@ -56,22 +36,11 @@ _PLURAL_TO_EDGE: dict[str, str] = {
 
 @dataclass
 class SubgraphMap:
-    """Per-drug one-hop neighbourhood, keyed by entity type (plural).
+    """Per-drug neighbors and prompt rendering order.
 
-    Attributes
-    ----------
-    data
-        ``{drug_id: {entity_type: [neighbor_name, ...]}}``.
-        ``entity_type`` follows :data:`SUBGRAPH_ENTITY_TYPES` order;
-        ``smiles`` is always a single-element list (the SMILES string).
-        Missing entity types are filled with ``["unknown"]`` so the
-        prompt builder's singularised "whose X is unknown" branch fires
-        consistently.
-    topk
-        Top-k truncation per entity type; ``None`` = keep all neighbours.
-    selected_entities
-        The exact list of entity types rendered into the prompt, in the
-        rendering order.
+    ``data`` maps drug IDs to entity-type lists, with ``["unknown"]`` for
+    missing values and one entry for SMILES. ``topk=None`` retains all
+    neighbors; ``selected_entities`` defines their rendering order.
     """
 
     data: dict[str, dict[str, list[str]]]
@@ -81,9 +50,7 @@ class SubgraphMap:
     )
 
     def get_neighbors_block(self, drug_a_id: str, drug_b_id: str) -> dict:
-        """Return the ``{"neighbors": {type: {"A": [...], "B": [...]}}}``
-        block that :func:`coldddi.llm.prompts.binary_cls._format_pair`
-        expects under ``sample["subgraph_1hop"]``."""
+        """Return ``{"neighbors": {type: {"A": [...], "B": [...]}}}`` for a pair."""
         a = self.data.get(str(drug_a_id), {})
         b = self.data.get(str(drug_b_id), {})
         out: dict[str, dict[str, list[str]]] = {}
@@ -96,14 +63,7 @@ class SubgraphMap:
 
 
 def _topk(items: list[str], k: int | None) -> list[str]:
-    """Truncate to ``k`` items.
-
-    ``None`` means "no truncation, keep all" (paper "Full KG" condition).
-    Any non-None integer is passed to a plain slice — including ``0``
-    (which empties the list, matching the upstream ``tolist()[:topk]``
-    semantics). Negative values are rejected to avoid the surprising
-    Python slice meaning (``items[:-1]`` drops the last element).
-    """
+    """Keep the first k items; None keeps all, zero empties, and negatives raise."""
     if k is None:
         return items
     if k < 0:
@@ -118,25 +78,11 @@ def build_subgraph_map(
     topk: int | None = 3,
     selected_entities: tuple[str, ...] = SUBGRAPH_ENTITY_TYPES,
 ) -> SubgraphMap:
-    """Reshape ``KnowledgeGraph`` + drug SMILES into a per-drug subgraph dict.
+    """Build prompt context from KG tables and a drugbank_id/smiles DataFrame.
 
-    Parameters
-    ----------
-    kg
-        :class:`KnowledgeGraph` carrying the five drug-entity tables.
-    drugs
-        DataFrame with ``drugbank_id`` and ``smiles`` columns (the one
-        attached to :attr:`PairDataset.drugs`). Drugs missing from this
-        table fall back to ``"unknown"`` in the ``smiles`` slot.
-    topk
-        Truncate each entity type to the first ``k`` neighbours
-        (DataFrame row order is the natural alphabetic/registration
-        order from DrugBank XML — same as the original
-        ``Preprocessor/subgraph.py``). ``None`` keeps all neighbours
-        (paper Table 5/6 "Full KG" condition).
-    selected_entities
-        Entity types to materialise. Must be a subset of
-        :data:`SUBGRAPH_ENTITY_TYPES` (raises ``ValueError`` otherwise).
+    ``topk`` takes the first k neighbors in table order; None retains all.
+    Missing drug SMILES become ``"unknown"``. ``selected_entities`` must be
+    a subset of SUBGRAPH_ENTITY_TYPES or a ValueError is raised.
     """
     bad = set(selected_entities) - set(SUBGRAPH_ENTITY_TYPES)
     if bad:
@@ -145,20 +91,19 @@ def build_subgraph_map(
             f"must be a subset of {SUBGRAPH_ENTITY_TYPES}"
         )
 
-    # All drug IDs we want to materialise (union of KG drugs and the
-    # passed drugs table).
+    # Include drug IDs from both the KG and the supplied drug table.
     drug_ids: set[str] = set(kg.drug_ids)
     if drugs is not None and "drugbank_id" in drugs.columns:
         drug_ids.update(drugs["drugbank_id"].astype(str))
 
-    # Pre-build per-entity-type name dicts (one DataFrame scan per type).
+    # Scan each KG entity table once.
     name_dicts: dict[str, dict[str, list[str]]] = {}
     for stype in selected_entities:
         if stype == "smiles":
             continue
         name_dicts[stype] = kg.name_dict(_PLURAL_TO_EDGE[stype])
 
-    # SMILES lookup from the drugs table.
+
     smiles_lookup: dict[str, str] = {}
     if drugs is not None and "smiles" in drugs.columns:
         for did, smi in zip(

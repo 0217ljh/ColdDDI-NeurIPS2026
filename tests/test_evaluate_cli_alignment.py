@@ -1,16 +1,7 @@
-"""CLI alignment with paper A.6.2 walkthrough (Step 3).
+"""Test evaluate.py against the Appendix A.6.2 CLI, lines 549-557.
 
-Paper appendix line 549-557 defines the canonical ``evaluate.py``
-CLI signature.  These tests pin the surface so a future refactor
-can't drift from the paper:
-
-* ``--setting`` default is ``"all"`` (was ``"S2"`` pre-Step-3).
-* ``--subset {800,1900}`` paper shortcut, mutually exclusive with
-  ``--data``.
-* ``--adapter PATH`` is accepted as an alias for ``--checkpoint``
-  (paper uses ``--adapter`` for the LLM-FT path).
-* Legacy ``.pkl`` dispatch routes through ``PairDataset.from_pkl``;
-  directory dispatch routes through ``PairDataset.from_release_dir``.
+Cover defaults, subset/data exclusivity, the adapter alias, and PKL/directory
+dispatch through PairDataset.from_pkl/from_release_dir.
 """
 
 from __future__ import annotations
@@ -28,12 +19,11 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-# ─── argparse default surfaces ────────────────────────────────────
+# argparse default surfaces
 
 class TestArgparseDefaults:
     def test_setting_default_is_all(self):
-        """Paper A.6.2 walkthrough line 553: ``--setting`` default is
-        ``"all"``.  Earlier release had it at ``"S2"``."""
+        """Appendix A.6.2 specifies --setting all by default."""
         from coldddi.evaluate import _build_parser
 
         parser = _build_parser()
@@ -70,10 +60,7 @@ class TestArgparseDefaults:
             ])
 
     def test_data_and_subset_both_optional_at_argparse_level(self):
-        """argparse marks neither --data nor --subset required; the
-        mutual-exclusive check happens in ``main()`` so the error
-        message can read cleanly.  Without it, argparse would give
-        a less useful "argument required" message."""
+        """main(), not argparse, validates --data/--subset for clearer errors."""
         from coldddi.evaluate import _build_parser
 
         parser = _build_parser()
@@ -85,13 +72,11 @@ class TestArgparseDefaults:
         assert args.data is None and args.subset is None
 
 
-# ─── --adapter accepted as alias for --checkpoint ─────────────────
+# --adapter accepted as alias for --checkpoint
 
 class TestAdapterAlias:
     def test_adapter_routes_to_checkpoint_dest(self):
-        """Paper line 555: ``[--adapter PATH]``.  In our codebase the
-        canonical name is ``--checkpoint``; ``--adapter`` is an
-        argparse alias so both work and both write to ``args.checkpoint``."""
+        """The paper's --adapter alias stores its value in args.checkpoint."""
         from coldddi.evaluate import _build_parser
 
         parser = _build_parser()
@@ -105,13 +90,12 @@ class TestAdapterAlias:
         ])
         assert a1.checkpoint == Path("/tmp/ckpt")
         assert a2.checkpoint == Path("/tmp/ckpt")
-        # No separate ``args.adapter`` attribute is created — the alias
-        # is purely an argparse routing convenience.
+        # Both flags share one destination.
         assert not hasattr(a1, "adapter")
         assert not hasattr(a2, "adapter")
 
 
-# ─── --subset resolver ────────────────────────────────────────────
+# --subset resolver
 
 class TestSubsetResolver:
     def test_subset_800_resolves_to_legacy_pkl_with_seed(self):
@@ -138,7 +122,7 @@ class TestSubsetResolver:
         assert path == path43
 
 
-# ─── main() mutual-exclusion + dispatch ────────────────────────────
+# main() mutual-exclusion + dispatch
 
 class TestMainMutualExclusion:
     def test_both_data_and_subset_errors(self, tmp_path):
@@ -162,7 +146,7 @@ class TestMainMutualExclusion:
             ])
 
 
-# ─── from_pkl path dispatch on .pkl extension ──────────────────────
+# from_pkl path dispatch on .pkl extension
 
 class TestPklDispatchInRunEvaluation:
     def test_pkl_path_routes_through_from_pkl(self, tmp_path, monkeypatch):
@@ -247,11 +231,7 @@ class TestPklDispatchInRunEvaluation:
     def test_missing_pkl_routes_to_from_pkl_not_silent_fallthrough(
         self, tmp_path, monkeypatch,
     ):
-        """Codex IMPORTANT: when a ``.pkl`` doesn't exist on disk, the
-        dispatcher MUST still route to ``from_pkl`` (which raises a
-        clean FileNotFoundError) rather than silently falling through
-        to ``from_release_dir`` (which would error with "drugs.csv not
-        found" further down — much less actionable for the user)."""
+        """Missing PKLs still use from_pkl, preserving the relevant file-not-found error."""
         from coldddi import evaluate
         from coldddi.data import dataset as dataset_mod
 
@@ -290,7 +270,7 @@ class TestPklDispatchInRunEvaluation:
         assert "from_release_dir" not in called
 
 
-# ─── --device restricted choices (codex IMPORTANT) ────────────────
+# --device choices.
 
 class TestDeviceChoices:
     def test_device_accepts_cuda_cpu_auto(self):
@@ -305,11 +285,7 @@ class TestDeviceChoices:
             assert args.device == v
 
     def test_device_rejects_freeform_string(self):
-        """Paper line 555: ``[--device {cuda,cpu}]``.  ``cuda:1`` etc.
-        must NOT parse — users requesting a specific GPU index should
-        set CUDA_VISIBLE_DEVICES instead.  Without the choices guard,
-        a typo (``--device CPU`` capitalised) would silently propagate
-        and crash deep inside a baseline."""
+        """Accept only cuda/cpu per paper line 555; GPU indices use CUDA_VISIBLE_DEVICES."""
         from coldddi.evaluate import _build_parser
 
         parser = _build_parser()
@@ -325,7 +301,7 @@ class TestDeviceChoices:
             ])
 
 
-# ─── --out optional with sensible default (codex IMPORTANT) ────────
+# Optional --out default.
 
 class TestOutOptional:
     def test_out_is_not_required_by_argparse(self):
@@ -371,13 +347,10 @@ class TestOutOptional:
         )
 
 
-# ─── Smoke: default --setting all on the toy fixture writes all 6 CSVs ──
+# Smoke: default --setting all on the toy fixture writes all 6 CSVs
 
 class TestDefaultSettingAllSmoke:
-    """When `--setting all` becomes the default, every plain
-    ``python evaluate.py`` invocation produces 6 per-split CSVs
-    (val + test for each of S0/S1/S2).  This guards against the
-    default reverting silently."""
+    """Default --setting all writes six CSVs: val/test for S0, S1, and S2."""
 
     @pytest.mark.skipif(
         not (TOY_RELEASE / "filtered" / "drugs.csv").is_file(),

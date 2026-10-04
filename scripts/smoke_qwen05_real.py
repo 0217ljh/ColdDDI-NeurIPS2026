@@ -1,20 +1,13 @@
-"""Real-LLM smoke for Qwen2.5-0.5B on the 1900-drug release.
+"""Smoke-test Qwen2.5-0.5B on the 1900-drug release.
 
-Goal: stress every L1-L6 component against a REAL (non-tiny-random)
-LLM on the REAL (non-toy) dataset to surface bugs that the tiny-random
-v3 smoke cannot catch:
+Stages: 1 load data; 2 check Yes/No tokens; 3 print two P4 prompts;
+4 check loss and gradients; 5 fit LoRA with S0/S1/S2 validation;
+6 select checkpoints by per-split validation AUC; 7 report test_s2 AUC.
 
-  Stage 0  CLI + auto batch size from VRAM
-  Stage 1  Dataset loading        — PairDataset.from_release_dir + sizes
-  Stage 2  Yes/No token sanity    — Qwen2.5 tokenizer
-  Stage 3  Prompt rendering check — dump 2 samples for visual inspection
-  Stage 4  Loss-function sanity   — collator + compute_loss on 1 batch
-  Stage 5  Mini FT + multi-eval   — small train subset, eval on val_s0/s1/s2
-  Stage 6  L5 select_best         — per-split val AUC ranking
-  Stage 7  Test inference         — best-S2 LoRA → test_s2 AUC
-
-Defaults are tuned for a single 24-40 GB GPU; pass ``--micro-bs``
-etc. to override. Skip a stage with ``--skip 4,5`` if iterating.
+Batch defaults are estimated from VRAM; override with ``--micro-bs`` and
+``--eval-bs``. Use ``--data-root`` for a release directory or ``--legacy-pkl``
+for a fold bundle. ``--skip 4,5`` skips those stages; stage 1 is required,
+and skipping stage 5 also skips checkpoint selection and test inference.
 """
 from __future__ import annotations
 
@@ -39,8 +32,6 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-# ───────────────────────── helpers ─────────────────────────
-
 def banner(s: str) -> None:
     print("\n" + "=" * 90)
     print(f"  {s}")
@@ -54,53 +45,28 @@ def auto_batch_size(
     lora_r: int = 16,
     cache_dir: str | None = None,
 ) -> tuple[int, int]:
-    """Pick a safe ``(train_bs, eval_bs)`` from VRAM + the model's
-    own AutoConfig.
+    """Estimate ``(train_bs, eval_bs)`` from VRAM and AutoConfig.
 
-    Empirical formula (bf16, RTX-class GPUs, LoRA-only trainable
-    parameters; assumes ``trainer.py:compute_loss`` does NOT pass
-    ``labels`` into ``model.forward`` — that's the post-fix path).
-    Treats every term as ``B × per_sample_bytes`` so we can divide
-    free VRAM by the per-sample budget.
+    Assumes bf16, RTX-class GPUs, LoRA-only training, and compute_loss
+    calling model.forward without labels (no full-vocabulary fp32 CE).
+    This is an empirical budget, not an OOM guarantee.
 
-    Per-sample memory budget at seq-length L, vocab V, hidden H,
-    intermediate I (SwiGLU MLP width), layers N,
-    bytes-per-param d (= 2 for bf16):
+    For sequence length L, vocab V, hidden width H, SwiGLU width I,
+    layers N, and d = 2 bytes per bf16 value, per-sample bytes are:
 
-      mlp_acts       ≈ L · I · N · d · 6   ← SwiGLU keeps 3 (B,L,I) tensors
-                                             per layer (gate, up, gate*up),
-                                             x6 for fwd + bwd scratch +
-                                             grad activations. Empirically
-                                             calibrated: x3 OOMs on backward.
-      attn_acts      ≈ L · H · N · d · 6   ← Q/K/V proj outputs;
-                                             same x6 reasoning.
-      logits         ≈ L · V · d           ← (B,L,V); fp32 CE skipped
-                                             after the trainer fix.
-
+      mlp_acts         ≈ L · I · N · d · 6
+      attn_acts        ≈ L · H · N · d · 6
+      logits          ≈ L · V · d
       per_sample_train ≈ mlp_acts + attn_acts + logits
-      per_sample_eval  ≈ (mlp_acts + attn_acts) / 6 + logits  ← no
-                                                                bwd scratch
+      per_sample_eval  ≈ (mlp_acts + attn_acts) / 6 + logits
 
-    Static budget (not B-scaled):
-
-      model_weights  ≈ 2 · n_params · d / 1e9   ← x2 because gradients
-                                                  live on the LoRA path
-                                                  anyway; conservative.
-      cuda headroom  = 4 GB                     ← kernel scratch,
-                                                  allocator slack.
-
-    Free VRAM ÷ per-sample-budget, multiplied by 0.7 safety factor so
-    live usage stays well under the calculated ceiling.  Falls back to
-    ``(4, 8)`` on CPU. The MLP-intermediate term dominates for SwiGLU
-    models like Qwen2 / Llama where I is 4-6× H; ignoring it
-    underestimates training memory by 5×.
-
-    Parameters
-    ----------
-    lora_r
-        Currently unused in the budget (LoRA optimizer state is
-        sub-1% of everything else); kept in the signature so we can
-        tighten the estimate later if full FT becomes a use case.
+    The activation factor 6 includes backward scratch; evaluation omits
+    that scratch. Keep I explicit: SwiGLU activations dominate the budget.
+    Reserve 2 · n_params · d / 1e9 GB for weights/gradient overhead and
+    4 GB for CUDA scratch and allocator slack. Estimate batch size as
+    0.7 · remaining_VRAM / per_sample_budget, capped at 64/128 for train/eval.
+    Return (4, 8) on CPU or estimation failure. lora_r is currently unused;
+    LoRA optimizer state is omitted from this estimate.
     """
     try:
         import torch
@@ -114,16 +80,12 @@ def auto_batch_size(
         )
         V = int(getattr(cfg, "vocab_size", 50000))
         H = int(getattr(cfg, "hidden_size", 1024))
-        # SwiGLU MLP width — falls back to 4·H if the config doesn't
-        # expose it (older GPT2-style models).  This is the term that
-        # actually dominates training memory for Qwen/Llama.
+        # Use 4·H when the config omits the MLP intermediate width.
         I = int(getattr(cfg, "intermediate_size", 4 * H))
         N = int(getattr(cfg, "num_hidden_layers",
                         getattr(cfg, "num_layers", 24)))
         dtype_bytes = 2
-        # Crude transformer scaling for n_params:
-        # per layer ≈ 4·H² (attention QKVO) + 3·H·I (SwiGLU gate/up/down)
-        # plus embedding + lm_head ≈ 2·V·H.
+        # Parameters: N · (4·H² attention + 3·H·I SwiGLU) + 2·V·H embeddings/head.
         n_params_M = (N * (4 * H * H + 3 * H * I) + 2 * V * H) / 1e6
 
         vram_gb = torch.cuda.get_device_properties(0).total_memory / 1e9
@@ -131,14 +93,12 @@ def auto_batch_size(
         headroom_gb = 4.0
         free_gb = max(vram_gb - model_gb - headroom_gb, 1.0)
 
-        # x6 multiplier on activations: 1x fwd stored + several backward
-        # scratch tensors (the autograd graph for `down_proj(silu(gate)
-        # * up)` materialises extras during bwd). x3 OOMs in practice.
+        # Factor 6 covers forward activations and backward scratch; 3 caused OOM.
         mlp_acts = max_length * I * N * dtype_bytes * 6
         attn_acts = max_length * H * N * dtype_bytes * 6
         logits = max_length * V * dtype_bytes
         per_train_gb = (mlp_acts + attn_acts + logits) / 1e9
-        # Eval path has no bwd scratch — divide acts back down by 6:
+        # Evaluation needs no backward scratch.
         per_eval_gb = ((mlp_acts + attn_acts) / 6 + logits) / 1e9
 
         safety = 0.7
@@ -188,7 +148,7 @@ def make_cli() -> argparse.Namespace:
     return p.parse_args()
 
 
-# ───────────────────── Stage 1: dataset ─────────────────────
+# Stage 1: dataset
 
 def stage1_dataset(args):
     banner("STAGE 1  Dataset loading")
@@ -234,8 +194,7 @@ def stage1_dataset(args):
         ds.drugs["smiles"].astype(str),
     ))
 
-    # Key-entity map for entity-mask prompts (R2/R3) — load FULL ab
-    # parquet for the real run (was ab_sample.parquet in toy smoke).
+    # Key entities for R2/R3 masks come from the supplied annotation parquet.
     ab_df = pd.read_parquet(args.ab_parquet)
     ke_map = {
         (str(r.drug_a_id), str(r.drug_b_id)): {
@@ -257,7 +216,7 @@ def stage1_dataset(args):
     return ds, sm, id2name, id2smi, ke_map, bucket_lookup
 
 
-# ─────────────────── Stage 2: tokens ───────────────────
+# Stage 2: tokens
 
 def stage2_tokens(args):
     banner("STAGE 2  Yes/No token sanity (Qwen tokenizer)")
@@ -282,7 +241,7 @@ def stage2_tokens(args):
     return tok, int(yes_ids[0]), int(no_ids[0])
 
 
-# ─────────────────── Stage 3: prompt rendering ───────────────────
+# Stage 3: prompt rendering
 
 def stage3_prompts(args, ds, sm, id2name, id2smi, tok):
     banner("STAGE 3  Prompt rendering check (P4 OHS, one pos + one neg)")
@@ -300,12 +259,12 @@ def stage3_prompts(args, ds, sm, id2name, id2smi, tok):
     labels = [1, 0]
     samples = to_llm_samples(pairs, labels, ds=ds, subgraph_map=sm)
     for s, label in zip(samples, labels):
-        # FT-time prompt (carries answer token at end)
+        # FT prompts include the answer token.
         text = build_binary_prompt(
             s, cfg,
             drug_id2name=id2name, drug_id2smiles=id2smi,
         )
-        # Inference-time prompt (no answer, ready for next-token scoring)
+        # Inference prompts omit the answer for next-token scoring.
         text_inf = build_binary_prompt(
             s, cfg,
             drug_id2name=id2name, drug_id2smiles=id2smi,
@@ -320,7 +279,7 @@ def stage3_prompts(args, ds, sm, id2name, id2smi, tok):
     print(f"\n  → 1 positive + 1 negative sample rendered cleanly")
 
 
-# ─────────────────── Stage 4: loss-function sanity ───────────────────
+# Stage 4: loss-function sanity
 
 def stage4_loss_sanity(args, ds, sm, id2name, id2smi, tok, yes_id, no_id):
     banner("STAGE 4  Loss-function sanity (collator + compute_loss on 1 batch)")
@@ -363,20 +322,16 @@ def stage4_loss_sanity(args, ds, sm, id2name, id2smi, tok, yes_id, no_id):
           f"non-masked tokens={int((batch['labels'] != -100).sum())}")
     print(f"  batch.cls_labels     : {batch['cls_labels'].tolist()}")
 
-    # Load model in bf16 (full grad path).
+    # This loss check uses full-model gradients, not LoRA.
     model = AutoModelForCausalLM.from_pretrained(
         args.model, torch_dtype=torch.bfloat16, trust_remote_code=True,
     ).to(device)
-    model.train()  # gradients needed for compute_loss
+    model.train()
 
     from coldddi.llm.trainer import _BinaryClsTrainer
-    # Build a no-op trainer just to access compute_loss-style logic.
-    # We call the inner subclass directly (it's the only thing we need).
     from coldddi.llm.trainer import _build_binary_trainer_cls
     Cls = _build_binary_trainer_cls()
-    # Construct without going through HF Trainer.__init__ (which wants
-    # TrainingArguments etc.). We only need compute_loss as a method —
-    # bind self manually.
+    # Supply token IDs to compute_loss without initializing an HF Trainer.
     class _Stub:
         yes_token_id = yes_id
         no_token_id = no_id
@@ -387,7 +342,6 @@ def stage4_loss_sanity(args, ds, sm, id2name, id2smi, tok, yes_id, no_id):
     if not torch.isfinite(loss):
         raise AssertionError(f"compute_loss returned non-finite: {loss}")
 
-    # Backward sanity — verify gradients actually flow.
     loss.backward()
     grad_norms = [p.grad.norm().item() for p in model.parameters() if p.grad is not None]
     print(f"  backward grad pieces : {len(grad_norms)}, "
@@ -402,7 +356,7 @@ def stage4_loss_sanity(args, ds, sm, id2name, id2smi, tok, yes_id, no_id):
         torch.cuda.empty_cache()
 
 
-# ─────────────────── Stage 5: mini FT + multi-eval ───────────────────
+# Stage 5: mini FT + multi-eval
 
 def _build_ft_pairs(ds, args, sm, id2name, id2smi, cfg):
     """Balanced train subset + per-split val subset."""
@@ -506,7 +460,7 @@ def stage5_ft(args, ds, sm, id2name, id2smi):
     return cfg, info, cfg_p4, val_dict
 
 
-# ─────────────────── Stage 6: L5 select_best ───────────────────
+# Stage 6: L5 select_best
 
 def stage6_select(args, cfg, ds, sm, cfg_p4, val_dict):
     banner("STAGE 6  L5 select_best (per-split val AUC)")
@@ -552,7 +506,7 @@ def stage6_select(args, cfg, ds, sm, cfg_p4, val_dict):
     return manifest, fit_info
 
 
-# ─────────────────── Stage 7: test inference ───────────────────
+# Stage 7: test inference
 
 def stage7_test(args, manifest, fit_info, ds, sm, id2name, id2smi):
     banner("STAGE 7  Test inference on test_s2")
@@ -607,8 +561,6 @@ def stage7_test(args, manifest, fit_info, ds, sm, id2name, id2smi):
           f"(p_yes mean={df['p_yes'].mean():.3f})")
 
 
-# ─────────────────── main ───────────────────
-
 def main() -> int:
     args = make_cli()
     skip = {int(x) for x in args.skip.split(",") if x.strip()}
@@ -623,12 +575,10 @@ def main() -> int:
     print(f"  skipping    : {sorted(skip) if skip else '(none)'}")
     print(f"{'#' * 90}")
 
-    # Stage 1
     if 1 in skip:
         raise SystemExit("Cannot skip Stage 1 — every later stage depends on it.")
     ds, sm, id2name, id2smi, ke_map, bucket_lookup = stage1_dataset(args)
 
-    # Stage 2
     if 2 not in skip:
         tok, yes_id, no_id = stage2_tokens(args)
     else:
@@ -641,25 +591,20 @@ def main() -> int:
         yes_id = tok.encode(" Yes", add_special_tokens=False)[0]
         no_id = tok.encode(" No", add_special_tokens=False)[0]
 
-    # Stage 3
     if 3 not in skip:
         stage3_prompts(args, ds, sm, id2name, id2smi, tok)
 
-    # Stage 4
     if 4 not in skip:
         stage4_loss_sanity(args, ds, sm, id2name, id2smi, tok, yes_id, no_id)
 
-    # Stage 5
     cfg, info, cfg_p4, val_dict = None, None, None, None
     if 5 not in skip:
         cfg, info, cfg_p4, val_dict = stage5_ft(args, ds, sm, id2name, id2smi)
 
-    # Stage 6
     manifest, fit_info = None, None
     if 6 not in skip and cfg is not None:
         manifest, fit_info = stage6_select(args, cfg, ds, sm, cfg_p4, val_dict)
 
-    # Stage 7
     if 7 not in skip and manifest is not None:
         stage7_test(args, manifest, fit_info, ds, sm, id2name, id2smi)
 

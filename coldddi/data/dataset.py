@@ -1,26 +1,10 @@
-"""Top-level dataset class — composition of KG + Splits + Negatives.
+"""Dataset combining positive edges, a knowledge graph, splits, and negatives.
 
-Replaces the legacy ``Preprocessor.pipeline.FoldBundle`` with a
-parquet-backed, protocol-driven dataset object. The legacy bundles
-remain readable via :meth:`PairDataset.from_pkl` so existing 800-drug
-and 1,900-drug pickles still work.
-
-Two construction paths
-----------------------
-1. :meth:`PairDataset.from_release_dir` — modern path. Reads parquet
-   tables produced by :mod:`coldddi.data.{filter,splits,release_parquet}`
-   and the annotation modules. Optional ``regenerate_negatives=True``
-   discards any pre-computed negatives and re-samples from scratch.
-2. :meth:`PairDataset.from_pkl` — legacy path. Reuses the
-   ``Preprocessor.pipeline.FoldBundle`` schema and **preserves** the
-   pre-computed ``train_neg_epochs`` so paper experiments reproduce
-   bit-exactly.
-
-Public surface
---------------
-- :class:`FoldBundle`         — minimal stand-in for legacy pickle reads.
-- :class:`PairDataset`        — the modern composition object.
-- :func:`load_release_dataset` — thin wrapper around :meth:`from_release_dir`.
+``PairDataset.from_release_dir`` loads filtered CSVs and Parquet splits,
+reusing cached negatives unless ``regenerate_negatives=True``.
+``PairDataset.from_pkl`` loads legacy ``Preprocessor.pipeline.FoldBundle``
+pickles, preserving cached ``train_neg_epochs`` for the 800- and 1,900-drug
+experiments. ``FoldBundle`` provides the compatible pickle schema.
 """
 
 from __future__ import annotations
@@ -36,10 +20,8 @@ from typing import Any, ClassVar, Iterable, Iterator
 import numpy as np
 import pandas as pd
 
-# numpy 1.x <-> 2.x pickle compat: paper bundles are pickled under
-# numpy 2.x (`numpy._core.*`); alias to numpy 1.x equivalents under
-# `numpy.core.*`. Gate on major version (pandas 1.x sets `np._core`
-# partially, so `hasattr` is unreliable). Legacy from_pkl path only.
+# Read NumPy 2.x pickles under 1.x by aliasing numpy._core.* to numpy.core.*.
+# Check the version: pandas 1.x may partially populate np._core.
 if int(np.__version__.split(".", 1)[0]) < 2:
     import numpy.core
     sys.modules.setdefault("numpy._core", numpy.core)
@@ -70,27 +52,20 @@ from coldddi.data.splits import SPLIT_NAMES, SplitFolds, build_splits
 
 DEFAULT_LABEL_COL: str = "label"
 
-#: Canonical two-column schema for any negative-pair DataFrame returned
-#: by the modern API. Legacy bundles often carry ``label`` /
-#: ``drug_a_name`` / ``drug_b_name`` columns; these are preserved on
-#: :meth:`PairDataset.get_legacy_train_negatives` (the bypass) but
-#: stripped on :meth:`PairDataset.get_train_negatives` for schema
-#: consistency.
+#: Training-negative schema. get_train_negatives strips legacy label/name
+#: columns; get_legacy_train_negatives preserves them.
 PAIR_COLUMNS: tuple[str, ...] = ("drug_a_id", "drug_b_id")
 
 
 def _narrow_pair_columns(df: pd.DataFrame) -> pd.DataFrame:
-    """Return ``df[["drug_a_id","drug_b_id"]]`` if those columns exist,
-    else return the input unchanged. Always materialises a fresh frame."""
+    """Copy with a reset index, keeping only pair columns if both exist."""
     if all(c in df.columns for c in PAIR_COLUMNS):
         return df.loc[:, list(PAIR_COLUMNS)].reset_index(drop=True)
     return df.reset_index(drop=True)
 
 
 def _supports_train_neg_sampling(splits: object) -> bool:
-    """Duck-type check: enough of :class:`SplitFoldsProtocol` to sample
-    train negatives. Lets caller use any SplitFoldsProtocol implementation
-    (not just :class:`SplitFolds`)."""
+    """Check for a train DataFrame, g1_drugs, and seed without requiring a class."""
     return (
         hasattr(splits, "train")
         and isinstance(getattr(splits, "train", None), pd.DataFrame)
@@ -99,18 +74,12 @@ def _supports_train_neg_sampling(splits: object) -> bool:
     )
 
 
-# ---------------------------------------------------------------------
-# Legacy pkl bridge (kept for compatibility — see state4.md)
-# ---------------------------------------------------------------------
+# Legacy pickle compatibility
 
 
 @dataclass
 class FoldBundle:
-    """Minimal stand-alone replacement for ``Preprocessor.pipeline.FoldBundle``.
-
-    Mirrors the attributes produced by the legacy preprocessing pipeline
-    so legacy pickles can be unpickled without that dependency.
-    """
+    """Load ``Preprocessor.pipeline.FoldBundle`` pickles without that dependency."""
 
     df: pd.DataFrame
     split: SimpleNamespace
@@ -149,9 +118,7 @@ def _load_legacy_pickle(path: Path) -> FoldBundle:
     )
 
 
-# ---------------------------------------------------------------------
-# Modern PairDataset (composition: edges + KG + Splits + Negatives)
-# ---------------------------------------------------------------------
+# Dataset composition
 
 
 @dataclass
@@ -163,20 +130,15 @@ class PairDataset:
     edges
         The full DDI edge table (positives only).
     splits
-        A :class:`SplitFolds` (or anything matching :class:`SplitFoldsProtocol`).
+        A :class:`SplitFoldsProtocol` implementation.
     kg
-        A :class:`KnowledgeGraph` (or anything matching :class:`KnowledgeGraphProtocol`).
+        A :class:`KnowledgeGraphProtocol` implementation.
     negatives_by_split
-        Optional pre-computed static negatives per val/test split. When
-        absent, callers can lazily produce them via :meth:`get_negatives`.
+        Cached val/test negatives; :meth:`get_negatives` samples missing splits.
     sampler
-        Default :class:`NegativeSamplerProtocol` used when
-        :meth:`get_negatives` is asked for a split that has no
-        pre-computed negatives, or when ``regenerate=True``.
+        Sampler for missing or explicitly regenerated static negatives.
     legacy_bundle
-        Populated only when constructed from :meth:`from_pkl`; lets
-        callers reach into the original pickle for bit-exact paper
-        reproduction (e.g. accessing ``train_neg_epochs``).
+        Original :meth:`from_pkl` payload, including ``train_neg_epochs``.
     """
 
     edges: pd.DataFrame
@@ -191,9 +153,7 @@ class PairDataset:
     source: str | None = None
     base_seed: int | None = None
 
-    # ------------------------------------------------------------------
-    # Modern constructor
-    # ------------------------------------------------------------------
+    # Release loader
 
     @classmethod
     def from_release_dir(
@@ -203,31 +163,17 @@ class PairDataset:
         seed: int,
         regenerate_negatives: bool = False,
     ) -> "PairDataset":
-        """Assemble a :class:`PairDataset` from a release-style directory.
+        """Load filtered tables and one seed's release splits.
 
-        Expected layout under ``root``::
+        ``root/filtered`` contains Stage-1b KG tables, ``ddi_edges.csv``, and
+        optional ``drugs.csv``. ``root/splits/seed{seed}`` contains
+        ``manifest.json`` and seven split Parquets.
 
-            root/
-            ├── filtered/                     # Stage 1b output (KG csvs + ddi_edges.csv)
-            ├── splits/seed{seed}/            # Stage 4 output (train.parquet, val_s0.parquet, ...)
-            │   ├── manifest.json
-            │   ├── train.parquet
-            │   ├── val_s0.parquet
-            │   └── ... (7 split files)
-            └── splits/seed{seed}/negatives/  # Optional; reused unless regenerate_negatives
-                ├── val_s0.parquet
-                └── ... (6 static negatives)
-
-        Parameters
-        ----------
-        root
-            Directory containing ``filtered/`` and ``splits/`` sub-trees.
-        seed
-            Which split seed to load.
-        regenerate_negatives
-            If True, ignore any cached ``splits/seed{seed}/negatives/``
-            and re-sample from scratch using a fresh
-            :class:`UniformNegativeSampler` over the loaded G1 / G2.
+        Reuse all six static ``negatives/{split}.parquet`` files if present;
+        otherwise regenerate the full set with split-specific G1/G2 pools.
+        Load ``train_negatives/epoch_{i}.parquet`` consecutively from zero.
+        ``regenerate_negatives=True`` skips both caches; training negatives
+        are then sampled on demand.
         """
         root = Path(root)
         filtered = root / "filtered"
@@ -238,13 +184,12 @@ class PairDataset:
             raise FileNotFoundError(f"splits/seed{seed}/ not found under {root}")
 
         edges = pd.read_csv(filtered / "ddi_edges.csv")
-        # `drugs.csv` carries SMILES + names that several baselines need
-        # (DeepDDI / SSI-DDI / DSN-DDI feature extraction).
+        # SMILES and names for DeepDDI, SSI-DDI, and DSN-DDI features.
         drugs_csv = filtered / "drugs.csv"
         if drugs_csv.is_file():
             drugs_df = pd.read_csv(drugs_csv)
         else:
-            import warnings  # local import — only triggered on missing files
+            import warnings  # Only needed when drugs.csv is missing.
             warnings.warn(
                 f"{drugs_csv} not found; PairDataset.drugs is None. "
                 "SMILES-based baselines (DeepDDI / SSI-DDI / DSN-DDI) will "
@@ -269,12 +214,10 @@ class PairDataset:
             for name in PHASE_OFFSETS:
                 negatives_by_split[name] = pd.read_parquet(cache_dir / f"{name}.parquet")
         else:
-            # Either cache is missing entirely, partial, or the caller asked
-            # for fresh sampling. In all three cases we recompute the full
-            # set so split-specific drug pools are guaranteed to be applied.
+            # Rebuild all splits for a missing/partial cache or explicit regeneration.
             negatives_by_split = build_static_negatives(splits, base_seed=seed)
 
-        # Optionally pre-load any pre-baked train-negative epochs.
+        # Load cached training epochs until the first missing file.
         train_neg_dir = splits_dir / "train_negatives"
         train_neg_epochs: list[pd.DataFrame] = []
         if train_neg_dir.is_dir() and not regenerate_negatives:
@@ -298,9 +241,7 @@ class PairDataset:
             base_seed=seed,
         )
 
-    # ------------------------------------------------------------------
-    # Legacy constructor
-    # ------------------------------------------------------------------
+    # Legacy loader
 
     @classmethod
     def from_pkl(
@@ -309,19 +250,17 @@ class PairDataset:
         *,
         kg: KnowledgeGraphProtocol | None = None,
     ) -> "PairDataset":
-        """Load a legacy ``*.pkl`` fold bundle (paper-reproduction path).
+        """Load a legacy 800- or 1,900-drug ``*.pkl`` fold bundle.
 
-        New code should use :meth:`from_release_dir`; this loader exists
-        only so the 800-drug / 1,900-drug paper bundles stay readable.
-        Pre-computed negatives in ``extra["train_neg_epochs"]`` and
-        ``split.<name>_neg`` are preserved verbatim.
+        Preserve ``extra["train_neg_epochs"]`` payloads and pairs referenced
+        by ``split.<name>_neg``. Use :meth:`from_release_dir` for release tables.
         """
         p = Path(path)
         if not p.is_file():
             raise FileNotFoundError(f"PairDataset.from_pkl: file not found: {p}")
         bundle = _load_legacy_pickle(p)
 
-        # Build a SplitFolds-shaped façade from bundle.split + bundle.df.
+        # Adapt bundle indices to positive-only split DataFrames.
         df = bundle.df.reset_index(drop=True)
         legacy_split = bundle.split
         positives = df[df[bundle.label_col] == 1].copy() if bundle.label_col in df.columns else df
@@ -337,10 +276,8 @@ class PairDataset:
                 return sliced[sliced[bundle.label_col] == 1].reset_index(drop=True)
             return sliced
 
-        # Legacy bundles store a single `train_idx` that is already
-        # holdout-safe (it was produced by `cold_start_split_fair_step`
-        # which excludes val_s0/test_s0 from the G1×G1 pool before
-        # writing). We pass it through verbatim.
+        # cold_start_split_fair_step excludes S0 val/test from G1 x G1.
+        # Reuse its single train_idx without repartitioning.
         legacy_splits = SplitFolds(
             train=_slice("train"),
             val_s0=_slice("val_s0"),
@@ -354,9 +291,7 @@ class PairDataset:
             seed=int(bundle.extra.get("random_seed", 0)),
         )
 
-        # Pre-computed static negatives (per-split index lists in legacy
-        # bundles, e.g. `split.test_idx_s0_neg`). When present, materialize
-        # them as DataFrames so the modern API works the same way.
+        # Materialize cached negative indices, e.g. split.test_idx_s0_neg.
         negatives_by_split: dict[str, pd.DataFrame] = {}
         for name in PHASE_OFFSETS:
             base = name.split("_", 1)
@@ -374,9 +309,7 @@ class PairDataset:
         else:
             kg_obj = _build_kg_from_legacy_kb(bundle.extra.get("kb", {}) or {})
 
-        # Legacy bundles store `my_drugs_list` (cols include `smiles`)
-        # under `extra['kb']`. Surface it here so baselines that need
-        # SMILES (DeepDDI, SSI-DDI, …) can use the same `ds.drugs` API.
+        # Expose extra['kb']['my_drugs_list'] as ds.drugs for SMILES baselines.
         legacy_drugs_df: pd.DataFrame | None = None
         kb_dict = bundle.extra.get("kb", {}) or {}
         if isinstance(kb_dict, dict):
@@ -395,9 +328,7 @@ class PairDataset:
             source=str(p),
         )
 
-    # ------------------------------------------------------------------
     # Convenience APIs
-    # ------------------------------------------------------------------
 
     #: Per-split drug-pool selection that must match
     #: :func:`coldddi.data.negatives.build_static_negatives`.
@@ -419,21 +350,17 @@ class PairDataset:
     ) -> pd.DataFrame:
         """Return cached negatives for a static split, or sample fresh ones.
 
-        Honors **per-split drug pools** (S0 → ``G1×G1``, S1 → ``G1×G2``,
-        S2 → ``G2×G2``) so regenerating S1/S2 negatives never falls back
-        to the dataset-default ``G1×G1`` sampler pool.
+        Use split-specific pools: S0 ``G1×G1``, S1 ``G1×G2``, S2 ``G2×G2``.
+        Fresh samples exclude all dataset positives, not just the chosen split.
 
         Parameters
         ----------
         split
             Name of a val/test split, e.g. ``"test_s2"``.
         regenerate
-            If False (default), return the cached negatives produced
-            during construction. If True, sample fresh ones using a
-            split-correct sampler.
+            Reuse cached negatives unless True or the cache is missing.
         seed
-            When ``regenerate=True``, controls the sub-seed (defaults
-            to ``PHASE_OFFSETS[split]``).
+            Sampling seed when needed; defaults to ``PHASE_OFFSETS[split]``.
         """
         if split not in PHASE_OFFSETS:
             raise ValueError(f"split must be one of {sorted(PHASE_OFFSETS)}, got {split!r}")
@@ -474,22 +401,13 @@ class PairDataset:
     ) -> pd.DataFrame:
         """Return one epoch of training negatives.
 
-        The returned DataFrame is **always** narrowed to the canonical
-        two-column schema ``[drug_a_id, drug_b_id]`` so downstream
-        baselines see a consistent shape regardless of which fallback
-        path served the request.
+        Return ``[drug_a_id, drug_b_id]`` pairs at the 1:1 training ratio.
+        Unless ``regenerate=True``, try ``train_negatives_epochs[epoch]``,
+        then legacy ``train_neg_epochs[epoch]``. Out-of-range cache indices
+        fall through to sampling rather than raising.
 
-        Resolution order:
-
-        1. ``regenerate=True`` → always sample fresh on the fly.
-        2. Pre-baked ``train_negatives_epochs[epoch]`` if present.
-        3. Legacy bundle's ``train_neg_epochs[epoch]`` (only if **in
-           range** — out-of-range epochs cleanly fall through to (4),
-           they do not raise).
-        4. Sample on the fly using
-           ``base_seed + TRAIN_NEGATIVES_SEED_BASE + epoch``.
-
-        Row count equals ``len(splits.train)`` (1:1 negatives-to-positives).
+        Fresh samples use ``base_seed + TRAIN_NEGATIVES_SEED_BASE + epoch``,
+        falling back to the split's seed when ``base_seed`` is unset.
         """
         if not regenerate:
             if 0 <= epoch < len(self.train_negatives_epochs):
@@ -500,8 +418,7 @@ class PairDataset:
                     return _narrow_pair_columns(self.get_legacy_train_negatives(epoch))
                 # Out-of-range legacy epochs fall through to fresh sampling.
 
-        # Fresh sample — duck-type the splits object so any
-        # SplitFoldsProtocol implementation works (not just SplitFolds).
+        # Accept compatible split implementations, not just SplitFolds.
         if not _supports_train_neg_sampling(self.splits):
             raise RuntimeError(
                 "get_train_negatives requires a splits object that exposes "
@@ -520,11 +437,10 @@ class PairDataset:
     def get_legacy_train_negatives(self, epoch: int = 0) -> pd.DataFrame:
         """Return one epoch of legacy training negatives (pkl path only).
 
-        The legacy bundles store ``train_neg_epochs`` either as a list of
-        DataFrames or a list of list-of-dicts (depending on which
-        ``Preprocessor.negatives`` revision wrote the bundle). We
-        normalize to a DataFrame either way so downstream code is
-        uniform.
+        Normalize DataFrame, dict-row, or pair-sequence payloads from
+        ``Preprocessor.negatives`` to a DataFrame, preserving extra columns.
+        Missing bundles/epochs return an empty pair schema; an out-of-range
+        index into an existing epoch list raises ``IndexError``.
         """
         if self.legacy_bundle is None:
             return pd.DataFrame(columns=["drug_a_id", "drug_b_id"])
@@ -541,11 +457,7 @@ class PairDataset:
         items = list(payload)
         if not items:
             return pd.DataFrame(columns=["drug_a_id", "drug_b_id"])
-        # `train_neg_epochs` was written either as a list[dict] (newer
-        # bundles) or a list[tuple] (older bundles). Normalize to a
-        # DataFrame whose first two columns are always
-        # ``drug_a_id, drug_b_id`` so downstream baselines need not
-        # branch on bundle vintage.
+        # Normalize row payloads with drug_a_id and drug_b_id first.
         first = items[0]
         if isinstance(first, dict):
             df = pd.DataFrame(items)
@@ -585,15 +497,11 @@ class PairDataset:
         )
 
 
-# ---------------------------------------------------------------------
-# Adapter so legacy `extra['kb']` dicts satisfy KnowledgeGraphProtocol
-# ---------------------------------------------------------------------
+# Legacy extra['kb'] adapter
 
 
-#: Required column schemas for the five legacy ``my_X_list`` DataFrames.
-#: A legacy KB is only promoted to a real :class:`KnowledgeGraph` if all
-#: five tables are present and each carries at least these columns;
-#: otherwise we fall back to the adapter to avoid silent data loss.
+#: Wrap my_X_list tables as KnowledgeGraph only if all five have these columns.
+#: Otherwise use the legacy adapter.
 _LEGACY_MY_LIST_REQUIRED_COLUMNS: dict[str, set[str]] = {
     "my_enzyme_list": {"drugbank_id", "enzyme_id", "enzyme_name"},
     "my_target_list": {"drugbank_id", "target_id", "target_name"},
@@ -604,25 +512,12 @@ _LEGACY_MY_LIST_REQUIRED_COLUMNS: dict[str, set[str]] = {
 
 
 def _build_kg_from_legacy_kb(kb: dict[str, Any]) -> KnowledgeGraphProtocol:
-    """Best-effort construction of a real :class:`KnowledgeGraph` from a
-    legacy bundle's ``extra['kb']`` dict.
+    """Wrap legacy ``extra['kb']`` tables or name lookups.
 
-    Two known on-disk layouts:
-
-    * ``my_X_list`` keys hold the five raw entity DataFrames produced by
-      the legacy ``data_pipeline.drugbank_loader`` (the 800-drug /
-      1,900-drug bundles use this format). Schema matches
-      :class:`KnowledgeGraph` exactly, so we wrap them directly **only
-      when all five tables are present and each carries the required
-      columns**.
-    * Older ``dbid_2_X`` lookup-dict keys: a flat ``{drug_id: [name, ...]}``
-      mapping produced by even-earlier code. We fall back to
-      :class:`_LegacyKGAdapter` for these (or for any legacy KB that
-      fails the strict schema check above).
-
-    Strict promotion criteria avoid the silent failure mode where a
-    legacy bundle missing one of the five tables would otherwise be
-    promoted to a half-empty :class:`KnowledgeGraph`.
+    Use :class:`KnowledgeGraph` when all five ``my_X_list`` DataFrames from
+    ``data_pipeline.drugbank_loader`` contain the required columns.
+    Otherwise use :class:`_LegacyKGAdapter` for ``dbid_2_X`` mappings of
+    ``{drug_id: [name, ...]}``; do not construct a partial KnowledgeGraph.
     """
     if not isinstance(kb, dict):
         return _LegacyKGAdapter({})
@@ -646,8 +541,7 @@ def _build_kg_from_legacy_kb(kb: dict[str, Any]) -> KnowledgeGraphProtocol:
                 pathways=kb["my_pathway_list"],
             )
         except (TypeError, ValueError, KeyError):
-            # Schema too far off to safely build a KG; the adapter is
-            # the more honest representation.
+            # Incomplete schemas use the legacy adapter.
             pass
     return _LegacyKGAdapter(kb)
 
@@ -656,17 +550,14 @@ def _build_kg_from_legacy_kb(kb: dict[str, Any]) -> KnowledgeGraphProtocol:
 class _LegacyKGAdapter:
     """Wrap a legacy ``extra['kb']`` dict as a :class:`KnowledgeGraphProtocol`.
 
-    The legacy "kb" stored a flat dict ``{drug_id: {...}, ...}`` plus
-    ``dbid_2_enzymes / dbid_2_targets / ...`` lookups; we expose enough
-    of the modern API to stay compatible without copying the dicts.
+    Read ``dbid_2_enzymes / dbid_2_targets / ...`` name lookups. Entity IDs,
+    organisms, and actions are unavailable and returned as empty strings.
     """
 
     kb: dict[str, Any]
 
     def __repr__(self) -> str:
-        # Avoid the default dataclass repr — the legacy kb dict can be
-        # several thousand entries (drug-id-keyed) and would dump
-        # entire DataFrames.
+        # Summarize keys without printing large tables.
         if not isinstance(self.kb, dict):
             return "_LegacyKGAdapter(kb=<non-dict>)"
         keys = sorted(self.kb.keys())

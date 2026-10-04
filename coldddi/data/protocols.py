@@ -1,21 +1,7 @@
-"""Pluggable interfaces (typing.Protocol) for the data layer.
+"""Structural interfaces for graphs, negative samplers, and cold-start splits.
 
-Defining these as :class:`typing.Protocol` rather than abstract base
-classes lets baseline code, LLM prompt builders, and external research
-tools plug in their own implementations without inheriting from a
-specific class hierarchy. Anything that exposes the listed methods
-satisfies the protocol structurally.
-
-Three protocols cover the data-layer plug points:
-
-* :class:`KnowledgeGraphProtocol` — drug-to-entity lookup.
-* :class:`NegativeSamplerProtocol` — generate negative DDI pairs.
-* :class:`SplitFoldsProtocol` — drug-wise S0/S1/S2 train/val/test access.
-
-The default implementations live in
-:mod:`coldddi.data.kg`,
-:mod:`coldddi.data.negatives`, and
-:mod:`coldddi.data.splits`.
+Implementations need the declared methods, not a shared base class.
+Defaults live in ``coldddi.data.kg``, ``negatives``, and ``splits``.
 """
 
 from __future__ import annotations
@@ -30,9 +16,7 @@ import pandas as pd
 class KnowledgeGraphProtocol(Protocol):
     """A typed drug-to-entity knowledge graph.
 
-    Implementations must support both a *modern* DataFrame API and a
-    *legacy* dict-of-list view, because the LLM prompt builder
-    inherited from earlier code expects the dict shape.
+    Support DataFrame lookups and the dict-of-lists view used by LLM prompts.
     """
 
     @property
@@ -53,8 +37,7 @@ class KnowledgeGraphProtocol(Protocol):
     def name_dict(self, edge_type: str) -> dict[str, list[str]]:
         """Return ``{drug_id: [entity_name, ...]}`` for one edge type.
 
-        This is the format the legacy prompt code (e.g.
-        ``dataloader/prompts/blocks/subgraph.py``) expects.
+        Used by legacy ``dataloader/prompts/blocks/subgraph.py``.
         """
 
     def save(self, out_dir: Path) -> None:
@@ -65,9 +48,7 @@ class KnowledgeGraphProtocol(Protocol):
 class NegativeSamplerProtocol(Protocol):
     """Generate negative DDI pairs.
 
-    Implementations are pure functions of (drug pool, exclude set, seed)
-    so the same call with the same seed always returns the same pairs —
-    a hard requirement for reproducing paper results.
+    Identical pools, exclusions, counts, and seeds must return identical pairs.
     """
 
     def sample(
@@ -87,20 +68,17 @@ class NegativeSamplerProtocol(Protocol):
 class SplitFoldsProtocol(Protocol):
     """Drug-wise S0 / S1 / S2 train/val/test splits.
 
-    Implementations expose every named split as a positive-only
-    :class:`pandas.DataFrame` and, separately, the cold-start drug
-    groups :math:`G_1` (seen) and :math:`G_2` (unseen). Each of the
-    three settings (S0/S1/S2) has its **own** train so that val/test
-    can never leak into the corresponding train.
+    Expose positive-only DataFrames and drug groups :math:`G_1` (seen) and
+    :math:`G_2` (unseen). One training set serves all three settings and
+    must exclude every validation and test pair.
     """
 
     @property
     def train(self) -> pd.DataFrame:
         """The single canonical training set, shared by all three settings.
 
-        Concretely: ``G1 × G1`` minus the held-out S0 val/test edges.
-        Disjoint from every val/test bucket because S1/S2 val/test are
-        crosses or ``G2 × G2`` (no overlap with ``G1 × G1`` is possible).
+        Use ``G1 × G1`` minus S0 val/test holdouts. S1 cross-group and S2
+        ``G2 × G2`` val/test pairs are disjoint from this training pool.
         """
 
     @property

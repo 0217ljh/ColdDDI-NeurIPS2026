@@ -1,23 +1,8 @@
-"""Binary-classification DDI prompt builder.
+"""Build binary DDI prompts from task, method, context and pair information.
 
-Byte-exact port of ``Version_1_1/dataloader/prompts/binary_cls.py``,
-adapted to use a simple :class:`PromptBuildConfig` instead of the
-original ``SimpleNamespace``-based ``cfg``.
-
-The prompt has six sections (numbering follows the original)::
-
-    Prompt_1 = "Task: <task name>\\n"
-    Prompt_2 = TASK_INSTRUCTION[task]
-    Prompt_3 = METHOD_PROMPT[method]               (zero-shot / few-shot / KG / ...)
-    Prompt_4 = method-specific aux block           (few-shot examples, retrieved KG, ...)
-    Prompt_5 = OUTPUT_CONSTRAINT_TEXT              (force ' Yes' / ' No')
-    Prompt_6 = formatted target pair               (the [Prediction] block)
-
-``Prompt_1+Prompt_2`` go into the system message, the remaining four
-into the user message, and the assistant message receives the answer
-token (`` Yes`` / `` No``) — this is the answer the LoRA fine-tune
-predicts.  The whole tuple is then run through
-:func:`coldddi.llm.prompts.chat_formatter.format_messages_for_model`.
+Task instructions form the system message; method instructions, examples,
+output constraints and the query form the user message. The assistant
+message carries the training answer or an empty inference slot.
 """
 
 from __future__ import annotations
@@ -30,7 +15,7 @@ import numpy as np
 from coldddi.llm.prompts.chat_formatter import format_messages_for_model
 
 
-# ─── Section 1+2: task setup (system message body) ───────────────────────────
+# Task instructions
 
 TASK_DISPLAY_NAME: dict[str, str] = {
     "Binary_cls": "Binary Classification of Drug-Drug Interactions (DDI)",
@@ -48,7 +33,7 @@ TASK_INSTRUCTION: dict[str, str] = {
 }
 
 
-# ─── Section 3: method-specific instructions (user message head) ─────────────
+# Method instructions
 
 _OHS_KG_INSTRUCTION = (
     "This inference is augmented by external biomedical knowledge transformed "
@@ -114,8 +99,7 @@ METHOD_PROMPT: dict[str, str] = {
         "xxx target)). Integrate these structured facts with your internal "
         "knowledge to assess the likelihood of an interaction.\n"
     ),
-    # All P4-derived methods (R0 plus the seven masking variants) share
-    # the same Section-3 instruction.
+    # P4 masking variants share the same instruction.
     "one_hop_subgraph_sequence":       _OHS_KG_INSTRUCTION,
     "one_hop_subgraph_sequence_mask_name": _OHS_KG_INSTRUCTION,
     "one_hop_subgraph_sequence_mask_pk":   _OHS_KG_INSTRUCTION,
@@ -143,7 +127,7 @@ METHOD_PROMPT: dict[str, str] = {
 }
 
 
-# ─── Section 5: output constraint (always included in the user message) ──────
+# Answer constraint
 
 OUTPUT_CONSTRAINT_TEXT = (
     "Output Constraint: Respond strictly with exactly one token: ' Yes' or "
@@ -152,14 +136,11 @@ OUTPUT_CONSTRAINT_TEXT = (
 )
 
 
-# ─── Config + method canonicalisation ────────────────────────────────────────
+# Configuration and method aliases
 
 @dataclass
 class PromptBuildConfig:
-    """Light replacement for the original ``cfg`` ``SimpleNamespace``.
-
-    Only the fields that the prompt builder actually reads are kept.
-    """
+    """Prompt configuration and optional per-drug descriptions."""
 
     task_name: str = "Binary_cls"
     method: str = "Zero_Shot_Sequence"
@@ -169,8 +150,7 @@ class PromptBuildConfig:
 
 
 _METHOD_ALIASES: dict[str, str] = {
-    # Pretty (paper) → canonical lowercase used by METHOD_PROMPT and
-    # the _format_pair branch dispatcher.
+    # Map public method names to prompt keys.
     "Zero_Shot":                              "zero_shot",
     "Zero_Shot_Sequence":                     "zero_shot",
     "Few_Shot_Similarity_SMILES":             "few_shot_similarity_smiles",
@@ -194,11 +174,7 @@ _METHOD_ALIASES: dict[str, str] = {
 
 
 def canon_method(method: str) -> str:
-    """Map the public method string to the internal canonical key.
-
-    Falls back to the lowercase input when no alias is registered (so
-    new methods can be added by simply extending :data:`METHOD_PROMPT`).
-    """
+    """Resolve a method alias, or return the lowercase input."""
     if not method:
         return "zero_shot"
     if method in _METHOD_ALIASES:
@@ -207,21 +183,10 @@ def canon_method(method: str) -> str:
 
 
 def infer_model_family(model_name: str) -> str:
-    """Map a HF model name to a chat-template family.
+    """Map a model name to qwen, llama, gemma or mistral.
 
-    Byte-exact port of the original ``_infer_model_family``: only
-    ``qwen / llama / gemma / mistral`` are recognised; anything else
-    (including ChatGLM, Baichuan, DeepSeek) falls back to ``"qwen"``.
-
-    .. note::
-       The default differs from
-       :func:`coldddi.llm.prompts.chat_formatter.format_messages_for_model`,
-       which falls back to **Llama-3** for an unknown direct model
-       name.  This asymmetry is intentional and matches the upstream
-       research code: ``build_binary_prompt`` routes through
-       ``infer_model_family`` first, so its default is the one ColdDDI
-       actually uses for the paper experiments.  Direct callers of
-       :func:`format_messages_for_model` see the other default.
+    Unknown names, including ChatGLM, Baichuan and DeepSeek, default to qwen.
+    Direct calls to ``format_messages_for_model`` instead default to Llama-3.
     """
     m = (model_name or "").lower()
     if "qwen" in m:
@@ -235,7 +200,7 @@ def infer_model_family(model_name: str) -> str:
     return "qwen"
 
 
-# ─── Helper: subgraph rendering ──────────────────────────────────────────────
+# Subgraph rendering
 
 def _build_line(prefix: str, name: str, d: dict, keys: list[str]) -> str:
     parts = [f"{prefix}{name}\n"]
@@ -266,13 +231,10 @@ def _apply_entity_mask(
     drug_b_id: str,
     key_entity_map: dict | None,
 ) -> dict:
-    """Return a copy of ``neighbors`` with the key entity masked as
-    ``[ENTITY]``.
+    """Copy neighbors and mask key entities with ``[ENTITY]``.
 
-    * has_key_entity=True  (A-groups) — replace the exact confirmed
-      key-entity name (string match) in every non-smiles type.
-    * has_key_entity=False (B-groups) — replace the first non-``unknown``
-      entry per type per drug.
+    For Type A, mask the confirmed entity in each non-SMILES type. For Type B,
+    mask the first non-``unknown`` entry per type and drug.
     """
     ke_map = key_entity_map or {}
     ke_info = ke_map.get((drug_a_id, drug_b_id), None)
@@ -300,7 +262,7 @@ def _apply_entity_mask(
     return masked
 
 
-# ─── Section 6: target pair formatter ────────────────────────────────────────
+# Query formatting
 
 def _format_pair(
     sample: dict,
@@ -309,7 +271,7 @@ def _format_pair(
     drug_id2smiles: dict | None = None,
     key_entity_map: dict | None = None,
 ) -> str:
-    """Render the ``### [Prediction]`` block. Method-specific."""
+    """Render the method-specific prediction block."""
     a_name = sample.get("drugA_name", None)
     b_name = sample.get("drugB_name", None)
     if a_name is None or b_name is None:
@@ -419,8 +381,7 @@ def _format_pair(
         )
 
     if method == "one_hop_subgraph_sequence_mask_pk":
-        # Mask the PK-related entity values (enzymes / transporters)
-        # to the literal string ``"unknown"``.
+        # Hide enzyme and transporter values.
         raw = sample.get("subgraph_1hop", "") or ""
         A_dict, B_dict = {}, {}
         keys = list(raw["neighbors"].keys())
@@ -440,7 +401,7 @@ def _format_pair(
             f"### Answer: "
         )
 
-    # ── Masking experiment branches R1-R7 ──────────────────────────────────
+    # R1--R7 masking variants
 
     if method == "ohs_mask_name":
         raw = sample.get("subgraph_1hop", "") or ""
@@ -585,15 +546,13 @@ def _format_pair(
     return ""
 
 
-# ─── Section 4: method-specific auxiliary block (few-shot examples etc) ──────
+# Few-shot examples
 
 def _fewshot_similarity_smiles_block(sample: dict, drug_id2name: dict, drug_id2smiles: dict) -> str:
     fs_samples = sample.get("fewshot_samples", None)
     if not fs_samples:
         return ""
-    # Shuffle a copy — the underlying list lives in the shared
-    # ``fewshot_map`` and an in-place shuffle would mutate other
-    # samples' few-shot pools (silent cross-pair contamination).
+    # Shuffle a copy to leave shared few-shot lists unchanged.
     fs_samples = list(fs_samples)
     np.random.shuffle(fs_samples)
     lines = ["### Reference Examples (Structural Analogs):\n"]
@@ -619,11 +578,7 @@ def _fewshot_2hop_block(sample: dict, drug_id2name: dict) -> str:
     if not fs_samples:
         return ""
 
-    # Synchronised shuffle of (samples, metadata) — matches the
-    # original. Always operate on copies so the underlying lists in
-    # the shared ``fewshot_map`` are never mutated (an in-place
-    # shuffle would leak cross-pair ordering between unrelated
-    # samples that share the same map entry by reference).
+    # Shuffle samples and metadata together without modifying shared input lists.
     if fs_metadata and len(fs_samples) == len(fs_metadata):
         combined = list(zip(fs_samples, fs_metadata))
         np.random.shuffle(combined)
@@ -694,7 +649,7 @@ def _build_prompt_4(
     return ""
 
 
-# ─── Entry point ─────────────────────────────────────────────────────────────
+# Prompt assembly
 
 def build_binary_prompt(
     sample: dict,
@@ -705,32 +660,15 @@ def build_binary_prompt(
     key_entity_map: dict | None = None,
     assistant_content: str | None = None,
 ) -> str:
-    """Assemble the final chat-formatted prompt string for one DDI pair.
+    """Build the chat-formatted prompt for one DDI pair.
 
-    Parameters
-    ----------
-    sample
-        Pair-level dict produced by
-        :func:`coldddi.llm.retrieval.llm_view.to_llm_samples`.
-    cfg
-        :class:`PromptBuildConfig` carrying ``task_name`` / ``method`` /
-        ``model_name``.
-    drug_id2name / drug_id2smiles
-        Lookup tables — required for any few-shot method.
-    key_entity_map
-        ``{(drug_a_id, drug_b_id): {key_entity_name, key_entity_type,
-        has_key_entity}}``.  Required for the four R4/R5/R6/R7 entity-
-        masking variants; ignored otherwise.
-    assistant_content
-        Override for the assistant message's content. When ``None``
-        (default, byte-exact with the upstream FT-time behaviour) the
-        content is ``" Yes"`` / ``" No"`` derived from ``sample["label"]``
-        — with an empty label it becomes the bare ``" "`` (single space).
-        Pass ``""`` to drop the assistant content entirely; that is the
-        right setting for **open-ended inference** so the prompt ends at
-        the chat-template's assistant header and the model's next-token
-        logit directly scores ``" Yes"`` vs ``" No"`` (each a single
-        leading-space token in Llama-3 / Qwen / Gemma tokenizers).
+    ``sample`` follows ``to_llm_samples``. Few-shot methods use the name and
+    SMILES lookups; R4--R7 use ``key_entity_map`` entries keyed by drug pairs
+    with ``key_entity_name``, ``key_entity_type`` and ``has_key_entity``.
+
+    With ``assistant_content=None``, derive ``" Yes"`` or ``" No"`` from the
+    label (a missing label gives one space). Pass ``""`` for inference so
+    scoring starts immediately after the assistant header.
     """
     task = cfg.task_name or "Binary_cls"
     task_display = TASK_DISPLAY_NAME.get(task, task)
@@ -770,8 +708,7 @@ def build_binary_prompt(
     user_content = "".join(p for p in (prompt_3, prompt_4, prompt_5, prompt_6) if p).strip()
 
     if assistant_content is None:
-        # Default (FT-time) path: derive the assistant content from the
-        # sample's label.  Byte-exact with the upstream behaviour.
+        # Use the sample label as the training answer.
         response = sample.get("label", "")
         if response == 1:
             response = "Yes"
@@ -781,10 +718,7 @@ def build_binary_prompt(
     else:
         asst_content = assistant_content
 
-    # Match the upstream contract: pick the family first, then hand the
-    # family string (not the raw model name) to the formatter.  This is
-    # why ChatGLM / Baichuan never trigger their own template branches
-    # via build_binary_prompt — they collapse to the "qwen" default.
+    # Resolve the family first so unknown models use the qwen fallback.
     family = infer_model_family(cfg.model_name)
     return format_messages_for_model(
         [

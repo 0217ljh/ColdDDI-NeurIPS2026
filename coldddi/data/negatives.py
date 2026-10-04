@@ -1,24 +1,10 @@
-"""Default negative-pair samplers.
+"""Seeded negative-pair sampling for the paper's 1:1 protocol.
 
-Two implementations of :class:`coldddi.data.protocols.NegativeSamplerProtocol`:
-
-* :class:`UniformNegativeSampler` — uniform random sampling over a drug
-  pool. Used by the paper's main 1:1 negative protocol.
-* :class:`FairNegativeSampler` — the legacy "fair" sampler from
-  ``Preprocessor/negatives.py``: per-split drug pools, per-split seed
-  offsets, and an undirected (canonicalized) exclude set.
-  This reproduces the negatives baked into the legacy bundles.
-
-Both samplers are pure functions of (drug pool, exclude set, seed) so
-the same call always returns the same pairs — required for
-reproducing paper numbers.
-
-Helper
-------
-:func:`build_static_negatives` walks a :class:`SplitFolds` and produces
-one negative pair per positive pair for each val/test split, following
-the legacy phase-offset convention (``+100/+200/+300/+400/+500/+600``
-relative to the configured base seed).
+``FairNegativeSampler`` aliases ``UniformNegativeSampler``; "fair" refers
+to excluding all observed positives, as in ``Preprocessor/negatives.py``.
+Fixed pools, exclusions, counts, and seeds give reproducible pairs.
+Static val/test negatives use split-specific pools and seed offsets
+``+100/+200/+300/+400/+500/+600`` from the configured base seed.
 """
 
 from __future__ import annotations
@@ -55,12 +41,10 @@ class UniformNegativeSampler:
     ) -> pd.DataFrame:
         """Sample ``n_pairs`` undirected negative pairs.
 
-        ``drug_pool_a`` / ``drug_pool_b`` override the constructor pools
-        when given (lets a single instance serve multiple splits). The
-        ``exclude`` set is canonicalized internally as ``(min(a, b),
-        max(a, b))`` so callers may pass either orientation. Raises
-        :class:`RuntimeError` if the candidate space is too small to
-        produce ``n_pairs`` distinct pairs.
+        Optional pools override constructor pools. Canonicalize exclusions
+        as ``(min(a, b), max(a, b))``, accepting either orientation.
+        Return distinct, sorted, non-self pairs; raise :class:`RuntimeError`
+        if capacity is too small or sampling exceeds the attempt limit.
         """
         pool_a = drug_pool_a if drug_pool_a is not None else self.drug_pool_a
         pool_b = drug_pool_b if drug_pool_b is not None else self.drug_pool_b
@@ -72,7 +56,7 @@ class UniformNegativeSampler:
                 f"(|pool_a|={len(pool_a)}, |pool_b|={len(pool_b)})"
             )
 
-        # Canonicalize the exclude set internally so callers can't get it wrong.
+        # Exclude both orientations of each pair.
         canonical_exclude: set[tuple[str, str]] = set()
         for a, b in exclude:
             a_s, b_s = str(a), str(b)
@@ -80,13 +64,8 @@ class UniformNegativeSampler:
                 a_s, b_s = b_s, a_s
             canonical_exclude.add((a_s, b_s))
 
-        # Cheap upper-bound capacity check. A tighter check would require
-        # intersecting the exclude set with the pool-restricted candidate
-        # space, but that is expensive when `exclude` is the full graph
-        # (~565 K pairs) yet only a few hundred lie inside any one pool.
-        # We instead detect impossibility cheaply (any one pool empty,
-        # cross-pool capacity below `n_pairs`) and let the loop's
-        # `max_attempts` guard catch the rest.
+        # Capacity upper bound before exclusions; max_attempts handles
+        # dense exclusions and overlap between unequal pools.
         pool_a_set = set(map(str, pool_a))
         pool_b_set = set(map(str, pool_b))
         if pool_a_set == pool_b_set:
@@ -131,18 +110,12 @@ class UniformNegativeSampler:
         return pd.DataFrame(rows, columns=["drug_a_id", "drug_b_id"])
 
 
-# Re-export the same class under a "fair" name for documentation
-# clarity. The legacy `Preprocessor/negatives.py::fair_negatives_step`
-# is structurally identical to UniformNegativeSampler — the "fair"
-# name in the source repository refers to the *exclude set* coming
-# from *all* observed positive pairs, not a different sampling
-# distribution. We reuse the same implementation.
+# Legacy Preprocessor/negatives.py::fair_negatives_step uses this distribution;
+# "fair" means excluding all observed positives, not changing the sampler.
 FairNegativeSampler = UniformNegativeSampler
 
 
-# ----------------------------------------------------------------------
-# Helper for static (val/test) negatives keyed off a SplitFolds
-# ----------------------------------------------------------------------
+# Static val/test negatives
 
 #: Legacy seed offsets per static split (matches Preprocessor/negatives.py).
 PHASE_OFFSETS: dict[str, int] = {
@@ -219,8 +192,7 @@ def build_static_negatives(
     return out
 
 
-#: Seed offset used for training-set negatives so the train-time
-#: sub-seeds never collide with the val/test offsets above.
+#: Training seed offset; nonnegative epochs stay above val/test offsets.
 TRAIN_NEGATIVES_SEED_BASE: int = 1000
 
 
@@ -234,17 +206,10 @@ def build_train_negatives(
 ) -> pd.DataFrame:
     """Sample one epoch of training negatives.
 
-    Pool is ``G1 × G1`` (matches the canonical ``train``); exclude set
-    contains every observed positive across all 7 splits plus any
-    user-supplied extras. Sub-seed is
-    ``base_seed + TRAIN_NEGATIVES_SEED_BASE + epoch`` so:
-
-    * Different epochs return different draws (deterministically).
-    * Train-negative seeds are disjoint from val/test
-      :data:`PHASE_OFFSETS` (which are 100..600).
-
-    Returns a DataFrame ``[drug_a_id, drug_b_id]`` with exactly
-    ``len(splits.train) * n_per_pos`` rows.
+    Sample from ``G1 × G1``, excluding positives from all seven splits and
+    ``exclude_extra``. Use ``base_seed + TRAIN_NEGATIVES_SEED_BASE + epoch``;
+    nonnegative epochs have distinct seeds above val/test offsets 100..600.
+    Return ``[drug_a_id, drug_b_id]`` with ``len(splits.train) * n_per_pos`` rows.
     """
     if len(splits.train) == 0:
         return pd.DataFrame(columns=["drug_a_id", "drug_b_id"])
@@ -272,11 +237,9 @@ def build_train_negatives_epochs(
     n_epochs: int,
     n_per_pos: int = 1,
 ) -> list[pd.DataFrame]:
-    """Pre-bake ``n_epochs`` worth of training negatives.
+    """Return one training-negative DataFrame per epoch, indexed from zero.
 
-    Returned list[i] is the negatives for training epoch ``i``. Each
-    epoch uses a distinct sub-seed so the per-epoch draws differ but
-    are reproducible.
+    Each epoch uses a distinct seed for reproducible sampling.
     """
     return [
         build_train_negatives(

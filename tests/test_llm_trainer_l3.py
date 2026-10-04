@@ -1,13 +1,7 @@
-"""L3 smoke test: LoRATrainer + BinaryFTCollator end-to-end on tiny LLM.
+"""Test collator masks and LoRA fit/save/reload on a tiny LLM.
 
-Verifies:
-
-* :class:`BinaryFTCollator` produces input_ids / labels / cls_labels
-  with the correct mask boundary (every token before the assistant
-  header is ``-100``).
-* :class:`LoRATrainer` can fit a few steps on the tiny model, save a
-  LoRA adapter, and the saved adapter is loadable by
-  :class:`LLMInferenceRunner` so end-to-end FT → predict works.
+Tokens before the assistant header are masked with -100; saved adapters must
+load through LLMInferenceRunner for prediction.
 """
 
 from __future__ import annotations
@@ -31,7 +25,7 @@ pytest.importorskip("transformers", reason="transformers required for L3 tests")
 pytest.importorskip("peft", reason="peft required for L3 tests")
 
 
-# ─── Synthetic samples for both train and val ─────────────────────────────
+# Synthetic samples for both train and val
 
 def _build_samples(n: int):
     """Build `n` toy {text, cls_labels} samples by rendering the prompt
@@ -62,7 +56,7 @@ def _build_samples(n: int):
     return out
 
 
-# ─── Collator tests ───────────────────────────────────────────────────────
+# Collator tests
 
 class TestBinaryFTCollator:
     def test_mask_boundary_llama(self):
@@ -109,13 +103,10 @@ class TestBinaryFTCollator:
             BinaryFTCollator(tok, model_family="t5", max_length=128)
 
 
-# ─── End-to-end LoRA fit + reload ─────────────────────────────────────────
+# End-to-end LoRA fit + reload
 
 class TestLoRATrainerFit:
-    """Fit a couple of steps and verify the adapter loads back via the
-    L2 inference runner. We don't check that predictions improved —
-    the tiny random-init model has no signal — only that the full pipe
-    completes without crashing."""
+    """Fit and reload through L2; the random model tests execution, not prediction quality."""
 
     @pytest.fixture(scope="class")
     def fit_output(self, tmp_path_factory):
@@ -164,7 +155,6 @@ class TestLoRATrainerFit:
         info = fit_output["info"]
         assert "output_dir" in info
         assert "log_history" in info
-        # At least one optim step recorded.
         assert any("loss" in e for e in info["log_history"]), (
             "trainer state has no logged train loss"
         )

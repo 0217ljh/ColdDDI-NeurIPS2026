@@ -1,23 +1,12 @@
-"""Capture byte-exact reference prompts from the upstream
-``Version_1_1/dataloader/prompts/binary_cls.py`` for every
-(method, label, model_family) combination we need to support in the
-new ``coldddi/llm/prompts/binary_cls.py``.
+"""Capture byte-exact prompts from upstream
+``Version_1_1/dataloader/prompts/binary_cls.py`` for parity tests.
 
 Usage::
 
     export COLDDDI_UPSTREAM_V11=/path/to/Version_1_1
     python tests/fixtures/prompts/_capture_reference.py
 
-Each output is a JSON file containing:
-    {
-        "method": "...",
-        "model_family": "...",
-        "sample": {...},      # the input dict
-        "label": 0 or 1,
-        "cfg": {...},         # the cfg surface that build_binary_prompt reads
-        "bundle_extra_kb": {...},
-        "prompt": "...",      # the rendered string (the canonical reference)
-    }
+Each JSON fixture stores the inputs, configuration, seed, and rendered prompt.
 """
 
 from __future__ import annotations
@@ -31,10 +20,7 @@ from types import SimpleNamespace
 
 import numpy as np
 
-# Make upstream Version_1_1 importable.  Point ``COLDDDI_UPSTREAM_V11``
-# at a checkout of the upstream repo (the script only runs at fixture-
-# regen time; the shipped JSON fixtures are version-controlled, so end
-# users never invoke this).
+# The upstream checkout is needed only when regenerating the shipped fixtures.
 _v11_env = os.environ.get("COLDDDI_UPSTREAM_V11")
 if not _v11_env:
     raise RuntimeError(
@@ -53,7 +39,7 @@ OUT_DIR = Path(__file__).resolve().parent
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
-# ─── Fixed inputs used across every method ──────────────────────────────────
+# Shared inputs for all methods.
 DRUG_A_ID = "DB00001"
 DRUG_B_ID = "DB00002"
 DRUG_A_NAME = "Lepirudin"
@@ -91,7 +77,7 @@ NEIGHBORS = {
     }
 }
 
-# Few-shot samples (score, ref_a, ref_b, label_str) — 3 examples.
+# Few-shot samples: (score, ref_a, ref_b, label_str).
 FEWSHOT_SAMPLES = [
     (0.91, "DB00003", "DB00004", "1"),
     (0.85, "DB00005", "DB00006", "0"),
@@ -186,19 +172,14 @@ METHODS = [
     ("R7_ohs_mask_name_entity",               "OHS_Mask_Name_Entity"),
 ]
 
-#: Full matrix of model families × every method × both labels.  Used
-#: for the paper-evaluated families (Llama / Qwen / Gemma) so we lock in
-#: byte-exact prompt rendering for every P/R variant.
+#: Paper families cover every method and both labels for byte-exact parity.
 PAPER_MODEL_FAMILIES = [
     ("llama", "/tmp/mydata/Models/Hub/Llama-3.2-1B"),
     ("qwen",  "/tmp/mydata/Models/Hub/Qwen2.5-3B"),
     ("gemma", "/tmp/mydata/Models/Hub/gemma-3-1b-pt"),
 ]
 
-#: Non-paper families.  The chat-template logic is independent of the
-#: method, so we only capture P1 (Zero_Shot_Sequence) per family — that
-#: is enough to byte-exact verify the formatter while keeping fixture
-#: count small.
+#: Other families need only P1: chat formatting is independent of the method.
 NON_PAPER_MODEL_FAMILIES = [
     ("mistral",  "mistralai/Mistral-7B-Instruct"),
     ("deepseek", "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"),
@@ -220,7 +201,6 @@ def _build_sample(method_internal: str, label: int) -> dict:
         "OHS_Full_Mask_Entity", "OHS_Full_Mask_Name_Entity",
     ):
         s["subgraph_1hop"] = NEIGHBORS
-    # Few-shot:
     if method_internal == "Few_Shot_Similarity_SMILES":
         s["fewshot_samples"] = list(FEWSHOT_SAMPLES)
     if method_internal == "Few_Shot_2hop":
@@ -270,9 +250,7 @@ def _capture_one(
         "prompt": prompt,
     }
 
-    # Filename: append "ke{variant}" only for entity-masking R variants
-    # so the rest of the fixture set keeps its current names and skipped
-    # tests across the previous capture remain valid.
+    # Only entity-masking variants need a suffix; keep other fixture names stable.
     suffix = ""
     if method_internal in (
         "OHS_Mask_Entity", "OHS_Mask_Name_Entity",
@@ -288,8 +266,7 @@ def _capture_one(
 def main():
     n = 0
 
-    # 1) Paper families × every method × both labels.
-    #    Entity-masking methods are captured twice (A and B variants).
+    # Paper families cover every method and label, with A/B entity-mask variants.
     entity_mask_methods = {
         "OHS_Mask_Entity",
         "OHS_Mask_Name_Entity",
@@ -324,7 +301,7 @@ def main():
                     )
                     n += 1
 
-    # 2) Non-paper families × P1 (Zero_Shot_Sequence) only.
+    # Other families cover P1 only.
     for family, model_name in NON_PAPER_MODEL_FAMILIES:
         for label in (0, 1):
             _capture_one(

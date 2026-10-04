@@ -1,23 +1,10 @@
 """A/B subdivision protocol (Appendix A.3).
 
-For each positive DDI pair, attempt to find a shared biomedical *key
-entity* whose participation explains the interaction:
-
-* **PK** pairs → search for a shared enzyme / transporter / carrier whose
-  drug-side actions form a recognized PK role pattern (e.g.
-  ``inhibitor`` × ``substrate``). The entity name is reported alongside
-  a textual mechanism chain.
-* **PD** pairs → search for a shared human target whose drug-side
-  actions form a convergent / opposing pharmacological pattern.
-* **Mixed** pairs (very rare) → try PK first, then PD.
-
-Pairs with a found entity are labelled **Type A** (``has_key_entity =
-True``); the rest are **Type B**.
-
-The implementation mirrors the legacy
-``scripts/Label_ddi_for_key_entities/find_ddi_key_entities.py`` but is
-streamlined for the release package and exposes a CLI driven by
-:func:`run_ab_subdivision`.
+Find a shared entity with recognized drug-side actions for each positive pair:
+PK searches enzymes, transporters, or carriers; PD searches human targets;
+Mixed tries PK, then PD. Pairs with an entity are Type A
+(``has_key_entity=True``); the rest are Type B. Report the entity and mechanism
+chain, following ``scripts/Label_ddi_for_key_entities/find_ddi_key_entities.py``.
 
 Inputs
 ------
@@ -48,9 +35,7 @@ from pathlib import Path
 
 import pandas as pd
 
-# ---------------------------------------------------------------------
 # PK role patterns
-# ---------------------------------------------------------------------
 
 PK_ROLE_PAIRS: frozenset[tuple[str, str]] = frozenset(
     {
@@ -91,27 +76,11 @@ def _pk_subtype(ddi_type: str) -> list[str]:
 
 
 def _first_occurrence_ranks(entries: list[dict]) -> dict[str, int]:
-    """Return ``{entity_id: rank}`` where ``rank`` is the entity's
-    first-occurrence position in ``entries`` (0-indexed).
+    """Map each entity ID to its zero-based first position in ``entries``.
 
-    DrugBank's XML iterates ``<enzymes>/<enzyme>``,
-    ``<targets>/<target>``, ``<transporters>/<transporter>``, and
-    ``<carriers>/<carrier>`` in curator document order.  Rank 0
-    therefore corresponds to the curator-prioritised polypeptide for
-    that drug.  :func:`coldddi.data.extract._polypeptide_entities`
-    preserves that order (it uses ``container.findall(item_tag)``),
-    so a single pass over the per-drug entry list reproduces the
-    DrugBank ranking that downstream tooling (e.g. the LLM mask
-    experiment in :mod:`coldddi.llm.prompts.binary_cls`) relies on.
-
-    HISTORICAL NOTE: pre-audit, PK best-entity selection used a
-    hand-rolled ``CYP_PRIORITY`` substring table.  That table never
-    matched the actual DrugBank enzyme name format ("Cytochrome P450
-    3A4") so all enzymes fell through to a catch-all bucket and the
-    "best" candidate was determined by Python set iteration order
-    (process-hash-dependent).  The DrugBank-rank approach replaces
-    the broken table with the curator's own importance ordering and
-    is deterministic across processes.
+    :func:`coldddi.data.extract._polypeptide_entities` preserves DrugBank XML
+    document order for enzymes, targets, transporters, and carriers. Use that
+    order for reproducible entity ranking and downstream LLM mask selection.
     """
     ranks: dict[str, int] = {}
     for i, e in enumerate(entries):
@@ -119,9 +88,7 @@ def _first_occurrence_ranks(entries: list[dict]) -> dict[str, int]:
     return ranks
 
 
-# ---------------------------------------------------------------------
 # PD role patterns
-# ---------------------------------------------------------------------
 
 PD_PAIR_CONFIDENCE: dict[tuple[str, str], str] = {
     # high-confidence convergent
@@ -209,9 +176,7 @@ def _pd_target_relevance(ddi_type: str, target_name: str) -> int:
     return 99
 
 
-# ---------------------------------------------------------------------
 # Entity index loader
-# ---------------------------------------------------------------------
 
 
 def _load_entity_index(
@@ -224,11 +189,9 @@ def _load_entity_index(
 ) -> dict[str, list[dict]]:
     """Load an entity table into ``{drug_id: [{id,name,type,action}, ...]}``.
 
-    A missing CSV with ``required=True`` raises :class:`FileNotFoundError`;
-    silently degrading would cause the whole pipeline to label every pair
-    as Type-B and quietly destroy the Type-A coverage statistics.
-    Optional inputs (currently only ``carriers``) may set
-    ``required=False`` to allow the empty index.
+    Missing required CSVs raise :class:`FileNotFoundError` to avoid treating
+    missing evidence as Type B. Optional carriers use ``required=False``
+    and return an empty index. Filter to Humans when organism is present.
     """
     if not csv_path.exists():
         if required:
@@ -259,9 +222,7 @@ def _load_entity_index(
     return dict(out)
 
 
-# ---------------------------------------------------------------------
 # Per-pair search
-# ---------------------------------------------------------------------
 
 
 def _find_key_entity_pk(
@@ -285,8 +246,7 @@ def _find_key_entity_pk(
 
         entries_a = source.get(drug_a, [])
         entries_b = source.get(drug_b, [])
-        # DrugBank-XML document-order rank per (drug, entity).  Lower
-        # rank == higher curator-assigned importance for that drug.
+        # Lower ranks come earlier in each drug's XML entity list.
         rank_a = _first_occurrence_ranks(entries_a)
         rank_b = _first_occurrence_ranks(entries_b)
 
@@ -320,11 +280,7 @@ def _find_key_entity_pk(
                             f"{name_a} --[{pair[0]}]--> {ea['name']} "
                             f"<--[{pair[1]}]-- {name_b}"
                         )
-                    # Joint DrugBank importance: prefer entities that
-                    # rank highly for BOTH drugs.  Summing the per-drug
-                    # ranks is monotone in either drug's rank, so a
-                    # candidate that is rank-0 for one side and rank-0
-                    # for the other always beats any mixed pair.
+                    # Minimize the sum of both drugs' XML ranks.
                     drugbank_rank = rank_a[eid] + rank_b[eid]
                     candidates.append(
                         {
@@ -345,15 +301,8 @@ def _find_key_entity_pk(
 
     if not candidates:
         return None
-    # Deterministic ordering: (drugbank_rank, name, id).  The primary
-    # key is the joint DrugBank XML document-order rank — DrugBank
-    # curates the per-drug polypeptide list so that the most
-    # mechanistically important entry comes first, so the entity
-    # ranked highest by BOTH drugs is the natural mask target for
-    # the LLM mask experiments (R2/R3/R6/R7 in
-    # :mod:`coldddi.llm.prompts.binary_cls`).  (name, id) break any
-    # remaining ties so the pick is reproducible across processes
-    # (set iteration is Python-hash-seeded otherwise).
+    # Sort by joint XML rank, then name and ID; tie-breaks remove dependence
+    # on set iteration order and keep downstream mask selection reproducible.
     candidates.sort(
         key=lambda x: (
             x["_drugbank_rank"],
@@ -381,8 +330,7 @@ def _find_key_entity_pd(
 ) -> dict | None:
     entries_a = target_idx.get(drug_a, [])
     entries_b = target_idx.get(drug_b, [])
-    # DrugBank-XML document-order rank per (drug, target).  Lower
-    # rank == higher curator-assigned importance for that drug.
+    # Lower ranks come earlier in each drug's XML target list.
     rank_a = _first_occurrence_ranks(entries_a)
     rank_b = _first_occurrence_ranks(entries_b)
 
@@ -431,17 +379,8 @@ def _find_key_entity_pd(
         )
     if not candidates:
         return None
-    # Deterministic ordering:
-    #   (confidence, ddi-type relevance, drugbank rank, name, id)
-    # Semantic keys come first: high-confidence convergence beats
-    # low-confidence, then DDI-type-specific target relevance (e.g.
-    # for "QTc prolongation" prefer KCNH2/hERG-like targets).  Among
-    # semantically equivalent candidates we fall back to the DrugBank
-    # XML rank so the "best target" matches the curator's per-drug
-    # priority (same notion as the PK path, important for the mask
-    # experiment).  (name, id) break any remaining ties so the pick
-    # is reproducible across processes (set iteration is Python-
-    # hash-seeded otherwise).
+    # Prefer high confidence, DDI-type relevance, then joint XML rank.
+    # Name and ID break ties independently of set iteration order.
     candidates.sort(
         key=lambda x: (
             0 if x["confidence"] == "high" else 1,
@@ -461,9 +400,7 @@ def _find_key_entity_pd(
     return best
 
 
-# ---------------------------------------------------------------------
 # Driver
-# ---------------------------------------------------------------------
 
 
 def run_ab_subdivision(
@@ -616,7 +553,7 @@ def run_ab_subdivision(
     if per_pair.empty:
         return per_pair, pd.DataFrame(columns=summary_columns)
 
-    # type-level summary
+    # Type-level summary
     summary_rows: list[dict] = []
     for ddi_type, grp in per_pair.groupby("ddi_type"):
         n_pairs = len(grp)

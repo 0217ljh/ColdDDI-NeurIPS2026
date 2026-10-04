@@ -1,41 +1,14 @@
-"""P5 few-shot retrieval — 2-hop shared-entity reference pairs.
+"""Retrieve P5 reference pairs through shared KG entities.
 
-Port of ``Version_1_1/Preprocessor/fewshot.fewshot_network_retrieval_2hop_step``.
+Candidates are positive training pairs sharing a target, enzyme, transporter,
+carrier or pathway with either query drug. Exclude pairs containing query
+drugs, rank by the better direct/cross Morgan-Tanimoto match, and retain k.
 
-For each query pair ``(query_a, query_b)``:
-
-1. Gather the union of ``(entity_name, entity_type)`` tuples that
-   ``query_a`` or ``query_b`` connects to via the knowledge graph
-   (5 edge types: targets / enzymes / transporters / carriers / pathways).
-2. Look up every training-positive pool pair that shares **at least one
-   entity** with the query.
-3. Exclude pool pairs that include either ``query_a`` or ``query_b``
-   directly (self-exclusion).
-4. Score remaining candidates by Morgan-FP Tanimoto similarity,
-   ``max(straight, cross)`` like P2.
-5. Return Top-k plus a metadata dict listing the shared entities for
-   each (query-drug × reference-drug) cell.
-
-The output dict shape matches what
-:func:`coldddi.llm.prompts.binary_cls._fewshot_2hop_block` expects::
-
-    {
-        (qa, qb): {
-            "fewshot_samples":  [(score, ref_a, ref_b, "1"), ...],
-            "fewshot_metadata": [
-                {
-                    "shared_QA_CA": [(entity_name, entity_type), ...],
-                    "shared_QA_CB": [...],
-                    "shared_QB_CA": [...],
-                    "shared_QB_CB": [...],
-                    # Optional fallback marker:
-                    "note": "no_protein_overlap" | "no_fp" | "all_filtered",
-                },
-                ...
-            ],
-        },
-        ...
-    }
+Each pair-keyed result has ``fewshot_samples`` tuples
+``(score, ref_a, ref_b, "1")`` and aligned ``fewshot_metadata`` entries.
+Metadata lists ``(entity_name, entity_type)`` under ``shared_QA_CA``,
+``shared_QA_CB``, ``shared_QB_CA`` and ``shared_QB_CB``. Fallback entries
+include a ``note``; if no disjoint pair exists, it marks unavoidable overlap.
 """
 
 from __future__ import annotations
@@ -52,8 +25,7 @@ if TYPE_CHECKING:
     from coldddi.data.dataset import PairDataset
 
 
-# Maps KG edge_type enum value → human-readable entity-class label
-# used in the rendered fewshot prompt block.
+# Entity-class labels used in few-shot prompts.
 _EDGE_TYPE_DISPLAY: dict[str, str] = {
     "target":      "Target",
     "enzyme":      "Enzyme",
@@ -64,12 +36,7 @@ _EDGE_TYPE_DISPLAY: dict[str, str] = {
 
 
 def _build_drug_to_entities(ds: "PairDataset") -> dict[str, set[tuple[str, str]]]:
-    """``{drug_id: {(entity_name, entity_class_str), ...}}``.
-
-    Uses :meth:`coldddi.data.kg.KnowledgeGraph.name_dict` for each edge
-    type so the same KG accessor that the GNN baselines use is the one
-    feeding the P5 retrieval — no schema drift.
-    """
+    """Map drug IDs to (entity name, class) sets using KG name lookups."""
     out: dict[str, set[tuple[str, str]]] = defaultdict(set)
     for edge_type, display in _EDGE_TYPE_DISPLAY.items():
         try:
@@ -98,41 +65,19 @@ def build_fewshot_2hop_map(
     pool_pairs: pd.DataFrame | None = None,
     fallback_pool_cap: int = 2000,
 ) -> dict[tuple[str, str], dict]:
-    """Build the P5 fewshot map.
+    """Build P5 examples for positive splits and cached static negatives.
 
-    Parameters
-    ----------
-    ds
-        Loaded :class:`PairDataset`.
-    k
-        Top-k examples per query (paper default = 3).
-    seed
-        RNG seed for the fallback path.
-    radius / nbits
-        Morgan-FP hyperparameters used for the similarity tie-break.
-    max_pool
-        Cap the training-positive pool to this many pairs (random
-        sample with the given seed) to keep the inverted index small.
-        ``None`` keeps every positive train pair.
-    pool_pairs
-        Optional override for the candidate pool.  Default is every
-        positive training pair (no G1 filter — P5 deliberately keeps
-        all positives, see the upstream notes).
-    fallback_pool_cap
-        When no shared entity is found, sub-sample at most this many
-        pool indices before computing Tanimoto similarity (avoids the
-        full-pool quadratic blow-up for very cold queries).
+    ``pool_pairs`` defaults to all positive training pairs, without a G1 filter.
+    ``max_pool`` limits this pool by seeded sampling. ``radius`` and ``nbits``
+    set Morgan fingerprints; ``fallback_pool_cap`` limits similarity scoring
+    when no shared entity is found. ``seed`` controls sampling and padding.
 
-    Returns
-    -------
-    Map keyed by ``(drug_a_id, drug_b_id)`` containing
-    ``fewshot_samples`` (always exactly ``k`` rows) and
-    ``fewshot_metadata`` (same length, may carry a ``"note"`` field on
-    fallback rows).
+    Return pair-keyed entries with exactly ``k`` examples and aligned metadata,
+    including fallback notes where applicable.
     """
     rng = np.random.default_rng(seed)
 
-    # --- 1. Pool ----------------------------------------------------------------
+    # Training-pair pool
     if pool_pairs is None:
         pool_pairs = ds.splits.train[["drug_a_id", "drug_b_id"]].copy()
     pool_pairs = pool_pairs.copy().reset_index(drop=True)
@@ -146,17 +91,17 @@ def build_fewshot_2hop_map(
     if pool_len == 0:
         raise ValueError("Few-shot 2-hop pool is empty (ds.splits.train empty).")
 
-    # --- 2. Drug → set of (entity, type) ----------------------------------------
+    # Per-drug entities
     drug_to_entities = _build_drug_to_entities(ds)
 
-    # --- 3. Inverted index: (entity, type) → list of pool indices ----------------
+    # Index candidate pairs by entity and type.
     entity_to_pool_idx: dict[tuple[str, str], list[int]] = defaultdict(list)
     for idx, (da, db) in enumerate(zip(pool_a, pool_b)):
         ents = drug_to_entities.get(da, set()) | drug_to_entities.get(db, set())
         for item in ents:
             entity_to_pool_idx[item].append(idx)
 
-    # --- 4. Per-drug Morgan FPs -------------------------------------------------
+    # Morgan fingerprints
     smiles_map: dict[str, str] = {}
     if ds.drugs is not None and "smiles" in ds.drugs.columns:
         for did, smi in zip(
@@ -166,7 +111,7 @@ def build_fewshot_2hop_map(
                 continue
             smiles_map[did] = str(smi)
 
-    # Compute FPs lazily, on demand, since the universe can be large.
+    # Cache fingerprints as drugs are queried.
     fp_cache: dict[str, object] = {}
 
     def _fp(drug_id: str):
@@ -176,13 +121,10 @@ def build_fewshot_2hop_map(
             )
         return fp_cache[drug_id]
 
-    # --- 5. Query helper --------------------------------------------------------
+    # Per-query retrieval
     from rdkit import DataStructs
 
-    # Precompute the leakage-free fallback pool ONCE per query at scoring
-    # time. Sampling with replacement from this pre-filtered list
-    # guarantees we can always emit exactly the requested count without
-    # the rejection-loop attempts cap.
+    # Pad from disjoint pairs with replacement to reach the requested count.
     def _random_fallback(qa: str, qb: str, note: str, need: int = k) -> tuple[list, list]:
         empty_meta = {
             "shared_QA_CA": [], "shared_QA_CB": [],
@@ -200,8 +142,7 @@ def build_fewshot_2hop_map(
             chosen = rng.choice(safe_idx, size=need, replace=True)
             leak_note = note
         else:
-            # No leakage-free pool entry exists. Mark the meta so the
-            # caller can detect this; fall back to any pool row.
+            # Mark unavoidable overlap when no disjoint candidate exists.
             chosen = rng.integers(0, pool_len, size=need)
             leak_note = (note + "_leaking_unavoidable") if note else "leaking_unavoidable"
         out_samples = [
@@ -267,7 +208,7 @@ def build_fewshot_2hop_map(
             (np.asarray(s_ab) + np.asarray(s_ba)) * 0.5,
         )
 
-        # Top-k.
+
         order = np.argsort(-scores)[:k]
         samples: list = []
         metas: list = []
@@ -293,21 +234,10 @@ def build_fewshot_2hop_map(
             fb_s, fb_m = _random_fallback(qa, qb, "padding", need=need)
             samples.extend(fb_s)
             metas.extend(fb_m)
-        # Trim to k for defensive guarantee (handles k=0 edge case).
+        # Return empty lists when k is zero.
         return samples[:k], metas[:k]
 
-    # --- 6. Run on every pair across all splits ---------------------------------
-    # Iterates BOTH positives (from ``ds.splits.items()``) AND cached
-    # static negatives (from ``ds.negatives_by_split``) per split.
-    # Without the negatives loop, negative samples would silently
-    # miss their few-shot pool entry and the P5 prompt would
-    # degenerate into a bare query-only template for half of every
-    # batch.  We read ``negatives_by_split`` directly rather than via
-    # ``ds.get_negatives()`` because the latter can raise on
-    # synthetic fixtures (exhausted pool capacity) or non-static
-    # splits; the cached map is exactly what real workflows feed
-    # into FT/inference, so it is also the correct surface for the
-    # few-shot pool.
+    # Build examples for positives and cached negatives across all splits.
     out: dict[tuple[str, str], dict] = {}
     seen: set[tuple[str, str]] = set()
 
@@ -328,14 +258,7 @@ def build_fewshot_2hop_map(
                 "fewshot_metadata": metas,
             }
 
-    # Read cached static negatives (val/test) directly off the
-    # dataset rather than calling ``ds.get_negatives()``: the
-    # regeneration path can raise on non-static splits ("train") or
-    # capacity-exhausted synthetic pools, but only the cached set
-    # ever reaches FT / inference — so it's also the right surface
-    # for the few-shot pool. Splits without cached negatives are
-    # silently skipped (train pulls negatives per epoch via
-    # ``get_train_negatives``, not via this map).
+    # Reuse cached negatives; per-epoch training negatives are not in this map.
     cached_negs = getattr(ds, "negatives_by_split", {}) or {}
     for split_name, split_df in ds.splits.items():
         _ingest(split_df)

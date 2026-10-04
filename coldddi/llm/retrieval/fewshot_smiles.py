@@ -1,21 +1,8 @@
-"""P2 few-shot retrieval — SMILES Morgan-FP similarity.
+"""Retrieve P2 examples by Morgan-fingerprint Tanimoto similarity.
 
-Port of ``Version_1_1/Preprocessor/fewshot.fewshot_sequence_retrieval_step``.
-
-Builds a ``fewshot_map: {(drug_a_id, drug_b_id): {...}}`` that
-:func:`coldddi.llm.retrieval.llm_view.to_llm_samples` can splice into
-each sample's ``fewshot_samples`` field.  Used by the P2 prompt branch
-(``Few_Shot_Similarity_SMILES``) at LLM inference / FT time.
-
-Pool design
------------
-* **Universe** (sim matrix scope): every drug appearing in any
-  :class:`PairDataset` split.  This guarantees G2 (cold-start) drugs
-  also get fingerprints so we can score similarity *against* them.
-* **Pool** (candidates we may emit): only positive **G1** training
-  pairs.  Cold-start integrity demands the retrieved examples come
-  from the train side; cross-pool leakage (sharing a drug with the
-  query) is filtered out at scoring time.
+Fingerprints cover drugs across all splits. Candidates default to positive
+G1 training pairs; similarity ranking excludes pairs containing query drugs.
+Random padding draws from the candidate pool without that exclusion.
 """
 
 from __future__ import annotations
@@ -63,36 +50,19 @@ def build_fewshot_smiles_map(
     nbits: int = 1024,
     pool_pairs: pd.DataFrame | None = None,
 ) -> dict[tuple[str, str], dict]:
-    """Return a ``{(drug_a_id, drug_b_id): {"fewshot_samples": [...]}}``
-    map covering every pair in **all** of ``ds.splits``.
+    """Build a pair-keyed map of P2 few-shot examples.
 
-    Parameters
-    ----------
-    ds
-        Loaded :class:`PairDataset`.
-    k
-        Top-k to keep per query (paper default = 3).
-    seed
-        RNG seed for the fallback (random) path.
-    radius / nbits
-        Morgan-FP hyperparameters.
-    pool_pairs
-        Optional override for the candidate pool.  When ``None``
-        defaults to ``ds.splits.train`` filtered to G1×G1 pairs (the
-        upstream behaviour).
+    Candidates default to positive G1 x G1 training pairs unless ``pool_pairs``
+    is supplied. ``radius`` and ``nbits`` set Morgan fingerprints; ``seed``
+    controls random padding.
 
-    Returns
-    -------
-    ``{(drug_a_id, drug_b_id): {"fewshot_samples":
-    [(score, ref_a_id, ref_b_id, "1"), ...]}}``
-
-    The list always has exactly ``k`` entries; if Top-k cannot fill
-    that many high-similarity hits, random fallback rows (score=0.0001)
-    are appended from the same pool.
+    Each entry contains exactly ``k`` ``fewshot_samples`` tuples
+    ``(score, ref_a_id, ref_b_id, "1")``. Random padding uses score 0.0001.
+    The map covers positive splits and cached static negatives.
     """
     rng = np.random.default_rng(seed)
 
-    # --- 1. Universe + Pool ---------------------------------------------------
+    # Drug universe and training-pair pool
     universe = _all_drug_ids(ds)
     drug2idx = {d: i for i, d in enumerate(universe)}
 
@@ -116,7 +86,7 @@ def build_fewshot_smiles_map(
             "or check that ds.splits.g1_drugs is populated."
         )
 
-    # --- 2. Per-drug Morgan FPs ----------------------------------------------
+    # Morgan fingerprints
     smiles_map: dict[str, str] = {}
     if ds.drugs is not None and "smiles" in ds.drugs.columns:
         for did, smi in zip(
@@ -129,7 +99,7 @@ def build_fewshot_smiles_map(
     fps = [_morgan_fingerprint(smiles_map.get(d, ""), radius, nbits)
            for d in universe]
 
-    # --- 3. Tanimoto sim matrix on the valid subset --------------------------
+    # Similarities for drugs with valid fingerprints
     from rdkit import DataStructs
 
     valid_idx = [i for i, fp in enumerate(fps) if fp is not None]
@@ -146,7 +116,7 @@ def build_fewshot_smiles_map(
     pool_a_global = np.array([drug2idx[d] for d in pool_a], dtype=np.int64)
     pool_b_global = np.array([drug2idx[d] for d in pool_b], dtype=np.int64)
 
-    # --- 4. Query helper ------------------------------------------------------
+    # Per-query ranking
     def _score_one(qa: str, qb: str) -> list[tuple]:
         qa_i = drug2idx.get(qa, -1)
         qb_i = drug2idx.get(qb, -1)
@@ -174,7 +144,7 @@ def build_fewshot_smiles_map(
         if topk_count == 0:
             return _random_fallback()
         top_idx = np.argpartition(-score, kth=topk_count - 1)[:topk_count]
-        # Keep only positive-score hits, sort descending.
+        # Exclude masked pairs; retain zero-similarity candidates.
         top_idx = top_idx[score[top_idx] >= 0]
         top_idx = top_idx[np.argsort(-score[top_idx])]
         out: list[tuple] = []
@@ -193,18 +163,7 @@ def build_fewshot_smiles_map(
             for i in idxs
         ]
 
-    # --- 5. Materialise the map over EVERY pair in any split -----------------
-    # Iterates BOTH positives (from ``ds.splits.items()``) AND cached
-    # static negatives (from ``ds.negatives_by_split``) for each split
-    # — without the negatives loop, negative samples used at FT/eval
-    # time would silently miss their few-shot pool entry and the
-    # prompt would render as zero-shot, breaking the P2 / P5 contract
-    # for half of every batch.  We read ``negatives_by_split``
-    # directly rather than via ``ds.get_negatives()`` because the
-    # latter can raise on synthetic fixtures (exhausted pool capacity)
-    # or non-static splits; the cached map is exactly what real
-    # workflows feed into FT/inference, so it is also the correct
-    # surface for the few-shot pool.
+    # Build examples for positives and cached negatives across all splits.
     fewshot_map: dict[tuple[str, str], dict] = {}
     seen: set[tuple[str, str]] = set()
 
@@ -221,15 +180,7 @@ def build_fewshot_smiles_map(
             seen.add(key)
             fewshot_map[key] = {"fewshot_samples": _score_one(a, b)}
 
-    # Cached static negatives for val/test (S0/S1/S2). We read
-    # ``negatives_by_split`` directly rather than calling
-    # ``ds.get_negatives()`` because the regeneration path can raise
-    # (RuntimeError on empty pools, ValueError on non-static splits
-    # like "train"); the cached map is what real workflows feed into
-    # FT / inference, so it's also the correct surface for the
-    # few-shot pool. Splits without cached negatives (e.g. "train" or
-    # a synthetic fixture that skipped pre-sampling) are silently
-    # ignored.
+    # Reuse cached negatives without resampling; skip splits with no cache.
     cached_negs = getattr(ds, "negatives_by_split", {}) or {}
     for split_name, split_df in ds.splits.items():
         _ingest(split_df)

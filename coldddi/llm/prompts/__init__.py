@@ -1,16 +1,4 @@
-"""LLM prompt construction for ColdDDI.
-
-Mirrors the layout of the original ``Version_1_1/dataloader/prompts/``
-but takes plain dict samples + a :class:`PromptBuildConfig` (no global
-SimpleNamespace dependency).
-
-Public surface:
-
-* :func:`format_messages_for_model` — chat-template formatter for
-  Llama-3 / Qwen / Gemma / Mistral / DeepSeek / Baichuan / ChatGLM.
-* :func:`build_binary_prompt`        — six-section prompt for the
-  binary DDI task (P1-P5 + R0-R7 masking).
-"""
+"""Chat formatting and binary DDI prompts, including masking variants."""
 
 from __future__ import annotations
 

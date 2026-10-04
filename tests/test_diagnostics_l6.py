@@ -1,13 +1,8 @@
-"""L6 tests — byte-exact port verification.
-
-The indicator math + bucket conventions mirror
+"""Test indicator math and bucket conventions against upstream
 ``Code-Released/exps/sec5-3/2_indicators/compute_*.py``:
 
-* ALL bucket = positive base pairs only (``label_uv == 1``).
-* Primary buckets are ``PK-A``, ``PK-B``, ``PD-A``, ``PD-B`` —
-  pairs that fall outside these are dropped from per-bucket rows.
-* ``KPS-F`` works as long as the baseline (R0 / "base") predictions
-  exist, so single-modality baselines stay first-class.
+ALL contains positive base pairs only; per-bucket rows use PK-A/B and PD-A/B.
+KPS-F needs only R0/base predictions, including for single-modality baselines.
 """
 
 from __future__ import annotations
@@ -25,7 +20,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-# ─── Bucket lookup (unchanged) ────────────────────────────────────────────
+# Bucket lookup.
 
 class TestBuckets:
     def test_lookup_from_dataframe(self):
@@ -62,11 +57,10 @@ class TestBuckets:
             build_bucket_lookup(pd.DataFrame({"drug_a_id": [], "drug_b_id": []}))
 
 
-# ─── ALL-bucket convention is "positives only" ────────────────────────────
+# ALL-bucket convention is "positives only"
 
 class TestALLBucketConvention:
-    """Upstream's ``_agg_buckets`` defines ALL as positive base pairs
-    only (``label_uv == 1``).  Verify our port matches."""
+    """ALL includes only positive base pairs, matching upstream _agg_buckets."""
 
     def setup_method(self):
         from coldddi.diagnostics.kps_swap import SwapTriple
@@ -91,9 +85,7 @@ class TestALLBucketConvention:
         }
 
     def test_all_bucket_is_positives_only(self):
-        """KPS-F's ALL bucket should ignore the negative base pair —
-        but its bucket-level PK-A row should include it.
-        Upstream convention exactly.
+        """ALL excludes the negative base pair; PK-A includes it, as upstream does.
         """
         from coldddi.diagnostics.indicators import compute_indicators
 
@@ -101,7 +93,6 @@ class TestALLBucketConvention:
             {"R0": self.r0}, self.swap, bucket_fn=self.bucket_fn,
         )
         # PK-A: 3 deltas → |0.9-0.5| (pos), |0.5-0.9| (pos), |0.2-0.5| (neg)
-        # Hmm wait: each swap triple = one delta. So 3 rows in PK-A.
         pk_a = df.query("indicator == 'KPS-F' and bucket == 'PK-A'").iloc[0]
         assert pk_a["n"] == 3
         # ALL = only positives = 2 rows → |0.9-0.5| + |0.5-0.9| → mean = 0.4
@@ -110,13 +101,11 @@ class TestALLBucketConvention:
         assert all_row["value"] == pytest.approx(0.4)
 
 
-# ─── "Other" bucket is NOT emitted (upstream parity) ──────────────────────
+# "Other" bucket is NOT emitted (upstream parity)
 
 class TestNoOtherBucket:
     def test_no_other_bucket_for_kps_f(self):
-        """KPS-F with an empty bucket label should NOT produce
-        ``"Other"``; the upstream convention is to drop the per-bucket
-        row entirely (only the ALL row, populated by positives, fires).
+        """Empty bucket labels contribute only positives to ALL, never an Other row.
         """
         from coldddi.diagnostics.indicators import compute_indicators
         from coldddi.diagnostics.kps_swap import SwapTriple
@@ -133,13 +122,11 @@ class TestNoOtherBucket:
         assert "Other" not in set(df["bucket"].unique())
 
 
-# ─── Empty / NaN-rich primary bucket rows ─────────────────────────────────
+# Empty / NaN-rich primary bucket rows
 
 class TestEmptyBuckets:
     def test_empty_primary_bucket_dropped(self):
-        """Primary buckets with zero records are NOT emitted (NaN row
-        block only fires when the WHOLE indicator's condition is
-        missing — upstream parity)."""
+        """Omit empty primary buckets; NaN blocks mean a whole condition is missing."""
         from coldddi.diagnostics.indicators import compute_indicators
         from coldddi.diagnostics.kps_swap import SwapTriple
 
@@ -159,7 +146,7 @@ class TestEmptyBuckets:
             ).empty
 
 
-# ─── Single-modality baseline path (only R0 / "base") ─────────────────────
+# Single-modality baseline path (only R0 / "base")
 
 class TestSingleModalityBaselinePath:
     def test_only_kps_f_computed(self):
@@ -189,7 +176,7 @@ class TestSingleModalityBaselinePath:
             assert (sub["n"] == 0).all()
 
 
-# ─── LLM full path: 7 indicators, math correctness ─────────────────────────
+# LLM full path: 7 indicators, math correctness
 
 class TestLLMFullPath:
     def setup_method(self):
@@ -264,7 +251,7 @@ class TestLLMFullPath:
         assert all_["value"] == pytest.approx((-0.1 + -0.1) / 2)
 
 
-# ─── Baseline channel indicators (MKG-FENN / TIGER) ───────────────────────
+# Baseline channel indicators (MKG-FENN / TIGER)
 
 class TestBaselineChannelIndicators:
     def setup_method(self):
@@ -315,7 +302,7 @@ class TestBaselineChannelIndicators:
             assert (sub["n"] == 0).all()
 
 
-# ─── A-B gap (paper-headline) ─────────────────────────────────────────────
+# A-B gap (paper-headline)
 
 class TestABGap:
     def test_gap_formula(self):
@@ -351,7 +338,7 @@ class TestABGap:
         assert math.isnan(compute_ab_gap(df, "KPS-F"))
 
 
-# ─── Directional lookup ────────────────────────────────────────────────────
+# Directional lookup
 
 class TestDirectionalLookup:
     def test_swap_pair_stored_in_reverse(self):
@@ -371,7 +358,7 @@ class TestDirectionalLookup:
         assert pk_a["value"] == pytest.approx(0.5)
 
 
-# ─── KPS-Swap ───────────────────────────────────────────────────────────────
+# KPS-Swap
 
 def _make_tiny_dataset_for_swap():
     from coldddi.data.dataset import PairDataset
@@ -409,10 +396,7 @@ def _make_tiny_dataset_for_swap():
 
 class TestKPSSwap:
     def test_both_directions_emitted(self):
-        """Upstream byte-exact: each base pair (da, db) generates
-        triples in BOTH directions (u=da, v=db) AND (u=db, v=da) —
-        the "expectation over both head-drug positions" step from
-        upstream build_kps_data.py:183-187."""
+        """Generate both base-pair directions, matching upstream build_kps_data.py:183-187."""
         from coldddi.data.dataset import PairDataset
         from coldddi.data.kg import KnowledgeGraph
         from coldddi.data.splits import SplitFolds
@@ -483,14 +467,10 @@ class TestKPSSwap:
             build_swap_candidates(ds, source_split="val_s99")
 
     def test_s1_setting_preserved(self):
-        """Regression for the cold-start setting rule:
+        """Keep S1 swaps cross-partition in both directions.
 
-        For a test_s1 base pair (u_g1, v_g2), the canonical direction
-        (u=u_g1) would push the swap pair (u', v_g2) into (G2, G2)=S2
-        if u' were forced into G2.  The default pool-selection must
-        pick u' ∈ G1 in that direction so the resulting (u', v_g2)
-        stays (G1, G2)=S1.  Conversely the reverse direction (u=u_g2)
-        must pick u' ∈ G2.
+        Replace a G1 head with G1 and a G2 head with G2; forcing both
+        replacements into G2 would turn the canonical S1 pair into S2.
         """
         from coldddi.data.dataset import PairDataset
         from coldddi.data.kg import KnowledgeGraph
@@ -550,10 +530,7 @@ class TestKPSSwap:
             assert u_prime_in_g2 != v_in_g2
 
     def test_no_self_pair_swaps(self):
-        """``u' != v`` is enforced — a swap that would produce a
-        (v, v) pair is biologically meaningless ("a drug interacting
-        with itself is not a DDI") and must be filtered out even if
-        the search pool contains a self-loop entry."""
+        """Reject self-pair swaps (u' == v), even if the search pool includes them."""
         from coldddi.data.dataset import PairDataset
         from coldddi.data.kg import KnowledgeGraph
         from coldddi.data.splits import SplitFolds
@@ -568,9 +545,7 @@ class TestKPSSwap:
 
         # base pair (DBA, DBB), positive.
         pos = pd.DataFrame({"drug_a_id": ["DBA"], "drug_b_id": ["DBB"]})
-        # PATHOLOGICAL: search pool contains the self-loop (DBB, DBB)
-        # as a negative. Without the u'!=v guard, this would make a
-        # swap triple (u=DBA, v=DBB, u'=DBB) — i.e. swap pair (DBB,DBB).
+        # A self-loop negative would create a self-pair swap without the u' != v guard.
         neg = pd.DataFrame({
             "drug_a_id": ["DBB", "DBC"],
             "drug_b_id": ["DBB", "DBB"],
@@ -601,9 +576,7 @@ class TestKPSSwap:
             )
 
     def test_explicit_drug_pool_overrides_auto(self):
-        """If the caller passes an explicit ``drug_pool``, the auto
-        per-direction selection is bypassed (escape hatch for
-        ablations)."""
+        """An explicit drug_pool bypasses per-direction selection for ablations."""
         from coldddi.diagnostics.kps_swap import build_swap_candidates
 
         ds = _make_tiny_dataset_for_swap()

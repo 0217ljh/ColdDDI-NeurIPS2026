@@ -1,15 +1,4 @@
-"""DeepDDI thin adapter — implementation of :class:`BaselineModel`.
-
-Wraps :class:`coldddi.baselines.deepddi.model.DeepDDIModel` (the MLP)
-and :mod:`coldddi.baselines.deepddi.ssp_features` (the SSP feature
-extractor) without re-implementing either. The adapter's job is just
-to bridge :class:`PairDataset` → numpy/torch tensors and back.
-
-This module is the **template** for how every other baseline (SSI-DDI,
-DSN-DDI, …) gets wrapped: import the model, write a sub-100-line
-``fit`` driving its native PyTorch loop, return predictions through a
-shared ``ssp_lookup``-style helper.
-"""
+"""DeepDDI adapter combining SSP features and an MLP for :class:`PairDataset`."""
 
 from __future__ import annotations
 
@@ -41,20 +30,15 @@ if TYPE_CHECKING:
     from coldddi.data.protocols import KnowledgeGraphProtocol
 
 
-#: Paper-spec hyperparameters from Appendix C.1 Table 8 (the
-#: "DeepDDI" row).  Class ``__init__`` defaults are deliberately
-#: smoke-test values so unit tests stay fast; the paper-grade
-#: configuration is materialised at run time by ``evaluate.py
-#: --preset paper`` (default), which constructs the baseline with
-#: these kwargs.
+#: Appendix C.1 Table 8 settings, applied by ``evaluate.py --preset paper``.
+#: Constructor defaults use fewer epochs for smoke tests.
 PAPER_HYPERPARAMS: dict[str, object] = {
     "ssp_dim":        50,
     "hidden_dim":     2048,
     "n_layers":       9,
     "dropout":        0.3,
     "learning_rate":  1e-3,
-    # Paper specifies weight_decay=0; this is the optimizer's default,
-    # but documenting it for paper-parity audits.
+    # Adam's default weight_decay=0 matches the paper.
     "batch_size":     256,
     "n_epochs":       100,
 }
@@ -67,11 +51,8 @@ class DeepDDIBaseline(BaselineModel):
     Modality: ``"mol"`` — SSP fingerprint from SMILES only, no KG
     channel. L6 dispatch produces KPS-F; KPS-mol / KPS-KG are NaN.
 
-    Paper-grade hyperparameters live in :data:`PAPER_HYPERPARAMS`
-    (App C.1 Table 8) and are auto-applied by
-    ``evaluate.py --preset paper`` (default).  Class ``__init__``
-    defaults below are smoke-test values for fast CI; pass paper
-    kwargs explicitly or use ``--preset paper`` for reproduction.
+    Use :data:`PAPER_HYPERPARAMS` or ``--preset paper`` for reproduction;
+    constructor defaults use fewer epochs for smoke tests.
     """
 
     VERSION = "1.0"
@@ -107,9 +88,7 @@ class DeepDDIBaseline(BaselineModel):
             return "cuda" if torch.cuda.is_available() else "cpu"
         return d
 
-    # ------------------------------------------------------------------
     # SSP utilities
-    # ------------------------------------------------------------------
 
     def _drug_smiles_dict(self, train: "PairDataset") -> dict[str, str]:
         if train.drugs is None:
@@ -160,9 +139,7 @@ class DeepDDIBaseline(BaselineModel):
             torch.from_numpy(b.astype(np.float32)),
         )
 
-    # ------------------------------------------------------------------
     # ABC surface
-    # ------------------------------------------------------------------
 
     def fit(
         self,

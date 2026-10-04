@@ -1,5 +1,4 @@
-"""HDN-DDI co-attention + RESCAL + intra/inter graph attention
-(verbatim from the upstream research repo, with import paths fixed).
+"""HDN-DDI co-attention, RESCAL, and intra/inter-graph attention.
 
 Source: ``Code-Released/baseline/HDN-DDI-NEW/drugbank_test/layers.py``.
 """

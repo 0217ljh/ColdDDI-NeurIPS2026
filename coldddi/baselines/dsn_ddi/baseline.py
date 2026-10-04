@@ -1,14 +1,7 @@
-"""DSN-DDI thin adapter — implementation of :class:`BaselineModel`.
+"""DSN-DDI adapter with intra/inter-graph attention and RESCAL scoring.
 
-Wraps :class:`coldddi.baselines.dsn_ddi.models.MVN_DDI` (the verbatim
-DSN-DDI dual-view network — intra-graph + inter-graph attention with
-RESCAL scoring) and reuses
-:mod:`coldddi.baselines.ssi_ddi.mol_features` for atom-level features
-(both papers use the same atom feature set).
-
-As with SSI-DDI, we collapse multi-relation training to a single
-"interaction" relation (``rel_total=1``) and train binary cross-entropy
-on ``train + train_negatives``.
+Uses SSI-DDI atom features and a single interaction relation (``rel_total=1``),
+trained with binary cross-entropy on positive and negative pairs.
 """
 
 from __future__ import annotations
@@ -62,9 +55,8 @@ def _bipartite_edge_index(n_s: int, n_t: int) -> torch.Tensor:
 
 
 #: Paper-spec hyperparameters from Appendix C.1 Table 8 (DSN-DDI row).
-#: Note: DSN-DDI's IntraGraphAttention / InterGraphAttention hardcode
-#: 32*2=64 dims per block so the SAGPooling head needs
-#: ``n_heads * head_out_feats == 128`` to match the concat output.
+#: Each attention view outputs 32*2=64 dims, so SAGPooling requires
+#: ``n_heads * head_out_feats == 128`` for their concatenation.
 PAPER_HYPERPARAMS: dict[str, object] = {
     "in_features":            55,
     "hidd_dim":               128,
@@ -86,10 +78,8 @@ class DSNDDIBaseline(BaselineModel):
     graphs, no KG channel. L6 dispatch produces KPS-F; KPS-mol /
     KPS-KG are NaN.
 
-    Paper-grade hyperparameters live in :data:`PAPER_HYPERPARAMS`
-    (App C.1 Table 8) and are auto-applied by
-    ``evaluate.py --preset paper`` (default).  Class ``__init__``
-    defaults below are smoke-test values for fast CI.
+    ``evaluate.py --preset paper`` applies :data:`PAPER_HYPERPARAMS`
+    (Appendix C.1 Table 8); constructor defaults are for smoke tests.
     """
 
     VERSION = "1.0"
@@ -113,12 +103,8 @@ class DSNDDIBaseline(BaselineModel):
             raise ValueError(
                 "heads_out_feat_params and blocks_params must have the same length."
             )
-        # Architectural invariant: IntraGraphAttention and
-        # InterGraphAttention hardcode their output to 32*2=64 dims, so
-        # the per-block concat is always 128. SAGPooling and the
-        # downstream RESCAL/CoAttention all assume the per-block
-        # embedding dim is `n_heads * head_out_feats == 128`, and that
-        # `kge_dim` matches it.
+        # Both attention views output 64 dims. Pooling, co-attention, and
+        # RESCAL require n_heads * head_out_feats == kge_dim == 128.
         for h, n in zip(heads_out_feat_params, blocks_params):
             if h * n != 128:
                 raise ValueError(
@@ -195,9 +181,7 @@ class DSNDDIBaseline(BaselineModel):
         mask[np.asarray(keep_idx)] = True
         return h_batch, t_batch, rels, b_batch, mask
 
-    # ------------------------------------------------------------------
     # ABC surface
-    # ------------------------------------------------------------------
 
     def fit(
         self,

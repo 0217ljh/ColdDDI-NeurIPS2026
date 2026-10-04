@@ -1,14 +1,8 @@
-"""
-Morgan fingerprint featurizer for EmerGNN drug entities.
+"""Compute Morgan fingerprints from SMILES for EmerGNN drug entities.
 
-EmerGNN's original code expects a (n_drugs, 1024) float array loaded from
-`DB_molecular_feats.pkl`. We compute the same on-the-fly from SMILES and
-cache by seed under <output_dir>/morgan_cache/<seed>.pkl.
-
-For non-drug entities (targets, enzymes, pathways, ...), we return a zero
-row; the model then relies on `nn.Embedding` (args.feat='E') or lets those
-rows propagate zeros under `Went` (args.feat='M'). We follow the paper's
-default 'M' mode.
+Produces the (n_drugs, 1024) float array used by upstream
+``DB_molecular_feats.pkl``, with optional pickle caching. The baseline
+adapter supplies zero feature rows for non-drug entities.
 """
 from __future__ import annotations
 
@@ -27,7 +21,7 @@ MORGAN_NBITS = 1024
 
 
 def _smiles_to_morgan_np(smiles: str) -> np.ndarray:
-    """Returns a (1024,) uint8 numpy array (0/1 bits), or zeros if SMILES invalid."""
+    """Return (1024,) float32 bits, or zeros for missing or invalid SMILES."""
     vec = np.zeros(MORGAN_NBITS, dtype=np.float32)
     if not smiles:
         return vec

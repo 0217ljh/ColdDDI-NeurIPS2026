@@ -1,4 +1,4 @@
-"""One-command P4 LLM benchmark using the existing training and L6 modules."""
+"""Run P4 training, evaluation and knowledge-channel diagnostics."""
 
 from __future__ import annotations
 
@@ -64,7 +64,7 @@ def resolve_model(model: str, revision: str) -> tuple[str, str, str]:
     ))
     if not (path / "config.json").is_file():
         raise ValueError(f"Model directory has no config.json: {path}")
-    # Prompt family is inferred by the existing builder from model_name.
+    # Keep the model name for chat-template selection.
     if not any(family in str(path).lower() for family in ("qwen", "llama", "gemma", "mistral")):
         raise ValueError("Model path must identify its supported prompt family (qwen/llama/gemma/mistral); "
                          "the existing prompt builder otherwise guesses. Use a family-named local directory.")
@@ -105,7 +105,7 @@ def validate_predictions(frame: pd.DataFrame, pairs: pd.DataFrame, *, complete: 
 
 
 def diagnostic_pairs(test_pairs: pd.DataFrame, swaps: list[SwapTriple]) -> pd.DataFrame:
-    """Include BOTH orientations of anchors, not just targets or canonical pairs."""
+    """Include both anchor orientations as well as swap targets."""
     import pandas as pd
 
     extra = [(t.qa, t.qb) for t in swaps] + [(t.qa_prime, t.qb) for t in swaps]
@@ -191,15 +191,14 @@ def run(args: argparse.Namespace) -> Path | None:
                  "trainer": asdict(cfg), "inference_batch_size": batch,
                  "prediction_save_every": 10 if args.smoke else 1000,
                  "python": sys.version.split()[0], "packages": versions}
-    # Record the implementation as well as the data: changed code must not reuse old results.
+    # Invalidate cached results when code or data changes.
     code_root = Path(__file__).resolve().parent
     code_digest = hashlib.sha256()
     for source in sorted(code_root.rglob("*.py")):
         code_digest.update(str(source.relative_to(code_root)).encode())
         code_digest.update(file_sha256(source).encode())
     effective["code_sha256"] = code_digest.hexdigest()
-    # JSON turns dataclass tuples into lists. Compare the serialized contract,
-    # otherwise an unchanged run would be rejected on every --resume.
+    # Compare serialized settings because JSON converts tuples to lists.
     effective = json.loads(json.dumps(effective))
     output.mkdir(parents=True, exist_ok=True)
     with FileLock(str(output / ".benchmark.lock"), timeout=0):

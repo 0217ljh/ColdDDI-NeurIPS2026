@@ -1,48 +1,12 @@
-"""Parametrized end-to-end correctness test for all baselines via evaluate.py.
+"""Verify evaluate.py indicators and CSVs across seven torch baselines.
 
-Answers the trust/scope challenge: are the indicators actually
-correct on every baseline?  We assert six things across the 7
-torch-based registered baselines (TextDDI covered separately in
-``test_evaluate_indicators_e2e.py`` because of the transformers
-backbone download):
+Check modality-specific outputs, shared swap counts, exact union key sets,
+and KPS values recomputed from CSVs within 1e-6. ALL uses positives only;
+primary buckets include both labels. Channel indicators deduplicate anchors.
 
-1. **Output files** — ``indicators_test_s2_seed*.csv`` plus base
-   predictions CSV (Step 1) plus the L6 union predictions CSV
-   (Step 2) all land for every baseline; mask CSVs land only for
-   ``mol+kg`` baselines (modality dispatch).
-2. **Unified swap_candidates set** — every baseline reports the
-   SAME ``{bucket: n}`` map for KPS-F, because the swap-anchor set
-   is a property of the dataset, not the baseline.  Full dict
-   compare against a reference baseline + against the ground
-   truth from ``build_swap_candidates``.
-3. **Union CSV key-set exact** — the persisted L6 union CSV's
-   key set equals the production union
-   ``test_s2 base ∪ swap_anchor (qa, qb) ∪ swap_target (qa_prime, qb)``
-   reconstructed from the dataset.  Pins the artefact a downstream
-   user re-running L6 from CSV would consume.
-4. **Hand-recomputed KPS-F equals reported (exact to 1e-6)** —
-   reads the union predictions CSV, replays
-   ``mean(|P(u, v) - P(u', v)|)`` over swap_candidates per bucket
-   (ALL positives-only AND each of PK-A / PK-B / PD-A / PD-B with
-   positives+negatives), asserts equality to the value + ``n`` in
-   the indicators CSV.
-5. **Hand-recomputed KPS-mol / KPS-KG equals reported (exact to
-   1e-6)** — for each mol+kg baseline × {mol, kg} channel: reads
-   base-union CSV + mask CSV, replays ``mean(|P_base - P_mask|)``
-   over deduplicated swap-anchor pairs per bucket (ALL + 4 primary),
-   asserts equality to value + ``n``.
-6. **Channel mask CSV schema sanity** — mask CSVs carry the
-   canonical schema with values in ``[0, 1]``.
-
-Channel mask wiring (the "do the masks actually do something?"
-guarantee) is covered by the per-baseline unit tests
-(``test_baseline_mkg_fenn.py::test_channel_mask_outputs_differ_from_base``
-and ``test_baseline_tiger.py``), not here — those use trained
-fixtures and assert ``not np.allclose(base, mask_*)``.  On the
-parametrised e2e fixture some baselines collapse to constants
-(TIGER on toy due to cold-start patch over a tiny KG; documented
-as a fixture artifact) and we don't want to false-positive on
-that.
+TextDDI downloads are covered separately in test_evaluate_indicators_e2e.py.
+Per-baseline MKG-FENN/TIGER tests check that masks change predictions: tiny
+end-to-end fixtures can yield constant scores, especially TIGER's sparse KG.
 """
 
 from __future__ import annotations
@@ -67,7 +31,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-# ─── Modality table (single source of truth for parametrize) ────────
+# Modality table (single source of truth for parametrize)
 
 ALL_BASELINES: list[tuple[str, str]] = [
     ("deepddi",  "mol"),
@@ -80,12 +44,7 @@ ALL_BASELINES: list[tuple[str, str]] = [
     ("tiger",    "mol+kg"),
 ]
 
-#: Subset run in this file's parametrised fixture.  TextDDI is
-#: excluded because its transformers download adds ~5-10s and the
-#: dispatch path it exercises (modality="text") is identical to the
-#: "mol" / "mol+kg-fused" paths from a dispatch-correctness
-#: standpoint (both single-modality, both NaN channel indicators).
-#: TextDDI gets full e2e coverage in test_evaluate_indicators_e2e.py.
+#: TextDDI's download-dependent single-modality path is covered in the e2e file.
 PARAMETRIZED_BASELINES = [
     (m, mod) for m, mod in ALL_BASELINES if m != "textddi"
 ]
@@ -96,17 +55,15 @@ MOL_KG_BASELINES = [
 ]
 
 
-# ─── Tiny-hyperparam kwargs per baseline ───────────────────────────
+# Tiny-hyperparam kwargs per baseline
 
 
 def _make_tiny_kwargs(method: str) -> dict:
-    """Per-baseline tiny hyperparams to keep the parametrised e2e
-    test fast.  Each baseline carries its own arch constraints
-    (e.g. SSI-DDI needs ``head_out_feats * n_heads == kge_dim`` per
-    block; DSN/HDN hardcode 32*2=64 dims in IntraGraphAttention so
-    the per-block concat is always 128); the kwargs below mirror
-    the working combinations already validated by the per-baseline
-    test files."""
+    """Use small configs that respect each architecture's dimensions.
+
+    SSI-DDI needs head_out_feats * n_heads == kge_dim per block.
+    DSN/HDN concatenate two fixed 64-dim attention outputs into 128 dims.
+    """
     if method == "deepddi":
         return dict(ssp_dim=4, hidden_dim=8, n_layers=2, n_epochs=1, batch_size=64)
     if method == "ssi_ddi":
@@ -165,9 +122,7 @@ def _run_evaluate(method: str, out_dir: Path) -> None:
             settings=["S2"],
             out_dir=out_dir,
             device="cpu",
-            preset="smoke",   # CI: Tiny(**kw) accepts paper kwargs and
-                              # they'd override tiny_kwargs → multi-hour
-                              # paper-spec training per baseline.
+            preset="smoke",   # prevent paper kwargs from overriding the tiny config
         )
     finally:
         _REGISTRY[method] = OrigCls
@@ -175,9 +130,7 @@ def _run_evaluate(method: str, out_dir: Path) -> None:
 
 @pytest.fixture(scope="module")
 def trained_outputs(tmp_path_factory):
-    """Run every PARAMETRIZED_BASELINES baseline once.  Returns
-    ``{method: out_dir}`` so per-baseline assertions can read the
-    files without re-training."""
+    """Run each baseline once and return {method: out_dir} for shared assertions."""
     pytest.importorskip("torch")
     pytest.importorskip("rdkit")
     out: dict[str, Path] = {}
@@ -200,7 +153,7 @@ def _load_pred_dict(csv_path: Path) -> dict[tuple[str, str], float]:
     }
 
 
-# ─── 1. Required output files per modality ─────────────────────────
+# 1. Required output files per modality
 
 
 class TestOutputFilesExistPerBaseline:
@@ -210,7 +163,7 @@ class TestOutputFilesExistPerBaseline:
 
     @pytest.mark.parametrize("method,modality", PARAMETRIZED_BASELINES)
     def test_base_predictions_csv_written(self, trained_outputs, method, modality):
-        """Step-1 artefact: test_s2 only base predictions."""
+        """Base predictions cover test_s2 only."""
         assert (trained_outputs[method] / "predictions_test_s2_seed42.csv").is_file()
 
     @pytest.mark.parametrize("method,modality", PARAMETRIZED_BASELINES)
@@ -237,22 +190,14 @@ class TestOutputFilesExistPerBaseline:
             assert not kg_csv.is_file()
 
 
-# ─── 2. Unified swap_candidates set across baselines ───────────────
+# 2. Unified swap_candidates set across baselines
 
 
 class TestUnifiedSwapCandidatesAcrossBaselines:
-    """The paper-spec swap_candidates set is a property of the
-    DATASET (split + KG), not the baseline.  Every baseline run on
-    the same (data, seed) must therefore consume identical
-    KPS-F triple counts AND bucket distributions.  Catches accidental
-    per-baseline drift in the indicator pipeline."""
+    """Swap triples and bucket counts depend on the dataset and seed, not the baseline."""
 
     def test_full_bucket_n_map_identical_across_baselines(self, trained_outputs):
-        """Full ``{bucket: n}`` dict compare against the first
-        baseline — every other baseline must report EXACTLY the
-        same buckets with EXACTLY the same counts.  Per-bucket-only
-        checks would miss the case where a baseline emits an extra
-        or missing bucket row."""
+        """Compare complete bucket/count maps to catch extra or missing rows."""
         ref_method, _ = PARAMETRIZED_BASELINES[0]
         ref_df = pd.read_csv(
             trained_outputs[ref_method] / "indicators_test_s2_seed42.csv"
@@ -281,11 +226,7 @@ class TestUnifiedSwapCandidatesAcrossBaselines:
             )
 
     def test_union_csv_keys_match_reconstructed_union(self, trained_outputs):
-        """The persisted L6 union CSV's key set must exactly equal
-        ``test_s2 base ∪ swap-anchor (qa, qb) ∪ swap-target
-        (qa_prime, qb)`` (deduplicated).  Catches the case where the
-        union computation diverges from what the indicator math
-        actually iterated over."""
+        """The union CSV contains exactly the deduplicated S2 base, anchor, and target pairs."""
         from coldddi.data.dataset import PairDataset
         from coldddi.diagnostics import build_swap_candidates
 
@@ -302,9 +243,7 @@ class TestUnifiedSwapCandidatesAcrossBaselines:
             expected_keys.add((str(t.qa), str(t.qb)))
             expected_keys.add((str(t.qa_prime), str(t.qb)))
 
-        # Check ONE baseline (the union is dataset-property; per-
-        # baseline equality is already guarded by the unified-swap
-        # test, so checking the reference baseline is sufficient).
+        # Check the reference baseline; shared swap counts are verified separately.
         ref_method, _ = PARAMETRIZED_BASELINES[0]
         union_df = pd.read_csv(
             trained_outputs[ref_method] / "predictions_test_s2_union_seed42.csv"
@@ -325,20 +264,14 @@ class TestUnifiedSwapCandidatesAcrossBaselines:
             f"L6 union CSV has {len(extra)} unexpected pairs "
             f"(first 5: {sorted(extra)[:5]})"
         )
-        # No duplicate rows: each (drug_a, drug_b) must appear once.
-        # Without this check a set-only compare would silently pass
-        # on a CSV with repeated rows.
+        # Set equality alone would miss duplicate rows.
         assert len(union_df) == len(union_keys), (
             f"L6 union CSV has {len(union_df) - len(union_keys)} "
             "duplicate (drug_a_id, drug_b_id) rows"
         )
 
     def test_n_matches_reconstructed_swap_candidates(self, trained_outputs):
-        """The reported KPS-F ``n`` for ALL bucket must equal the
-        number of POSITIVE swap-candidate triples produced by
-        :func:`build_swap_candidates` on the same dataset.  This
-        pins the dispatch to the canonical swap generator, not just
-        cross-baseline agreement."""
+        """KPS-F's ALL count matches positive triples from build_swap_candidates."""
         from coldddi.data.dataset import PairDataset
         from coldddi.diagnostics import build_swap_candidates
 
@@ -358,7 +291,7 @@ class TestUnifiedSwapCandidatesAcrossBaselines:
         )
 
 
-# ─── 3. Modality dispatch correctness ──────────────────────────────
+# 3. Modality dispatch correctness
 
 
 class TestModalityDispatchOnE2E:
@@ -399,21 +332,15 @@ class TestModalityDispatchOnE2E:
                 assert (sub["n"] == 0).all()
 
 
-# ─── 4. Hand-recomputed KPS-F equals reported (EXACT, no tolerance) ─
+# Recompute KPS-F from persisted predictions (1e-6 tolerance).
 
 
 class TestKpsFMathMatchesUnionRecomputation:
-    """Strongest correctness guarantee: read the persisted L6 union
-    predictions CSV (the EXACT input the indicator math saw), replay
-    ``mean(|P(u, v) - P(u', v)|)`` over the swap_candidates set per
-    bucket, assert equal (abs=1e-6) to the reported indicator value
-    AND ``n``.
+    """Recompute mean(|P(u,v) - P(u',v)|) and counts from union CSVs.
 
-    Covers BOTH single-modality AND mol+kg baselines AND BOTH the
-    ALL bucket (positives-only, the upstream ``_agg_buckets``
-    convention) AND each primary bucket (positives + negatives in
-    that bucket).  A regression that only affected per-bucket
-    averaging or per-bucket assignment would now fail loudly."""
+    Values match within 1e-6 for every baseline. Following upstream
+    _agg_buckets, ALL uses positives only; primary buckets use both labels.
+    """
 
     @pytest.mark.parametrize("method,modality", PARAMETRIZED_BASELINES)
     def test_kps_f_all_bucket_exact(self, trained_outputs, method, modality):
@@ -453,10 +380,7 @@ class TestKpsFMathMatchesUnionRecomputation:
     def test_kps_f_primary_bucket_exact(
         self, trained_outputs, method, modality, bucket,
     ):
-        """Primary buckets = all positives + negatives whose
-        ``bucket_fn(qa, qb) == <bucket>``.  Different aggregation
-        from ALL — catches regressions that only break bucket
-        assignment or per-bucket averaging."""
+        """Primary buckets aggregate both labels, unlike positives-only ALL."""
         from coldddi.data.dataset import PairDataset
         from coldddi.diagnostics import (
             build_bucket_lookup,
@@ -505,7 +429,7 @@ class TestKpsFMathMatchesUnionRecomputation:
         assert int(rows.iloc[0]["n"]) == len(deltas)
 
 
-# ─── 5. Hand-recomputed KPS-mol / KPS-KG (EXACT) ───────────────────
+# Recompute KPS-mol / KPS-KG (1e-6 tolerance).
 
 
 def _channel_indicator_name(channel: str) -> str:
@@ -623,16 +547,14 @@ class TestChannelMathMatchesUnionRecomputation:
         assert int(rows.iloc[0]["n"]) == len(deltas)
 
 
-# ─── 6. Channel mask CSV schema sanity ─────────────────────────────
+# 6. Channel mask CSV schema sanity
 
 
 class TestChannelMaskCsvSchemaSanity:
-    """Mask CSVs must carry the canonical schema with values in
-    [0, 1].  Whether they DIFFER from base on the toy fixture is
-    not asserted here (TIGER's KG branch can collapse on toy due
-    to the cold-start patch over a sparse KG — covered as a known
-    fixture artefact in the module docstring).  The "masks actually
-    do something" guarantee lives in the per-baseline unit tests."""
+    """Mask CSVs use the canonical schema and probabilities in [0, 1].
+
+    Per-baseline tests check mask effects; toy scores can be constant.
+    """
 
     @pytest.mark.parametrize("method,modality", MOL_KG_BASELINES)
     @pytest.mark.parametrize("channel", ["mol", "kg"])
@@ -656,12 +578,7 @@ class TestChannelMaskCsvSchemaSanity:
     def test_mask_csv_covers_full_union_keyset(
         self, trained_outputs, method, modality, channel,
     ):
-        """The mask CSV's (drug_a, drug_b) key set must equal the
-        base union CSV's key set (same union pair set is fed through
-        both the base and the masked predict_proba pass).  Without
-        this guard, a missing mask row silently lowers the channel
-        ``n`` and the hand-recompute test would pass on the reduced
-        set even though the indicator is computed on the full union."""
+        """Mask and base CSV key sets match, preventing reduced-set recomputation."""
         d = trained_outputs[method]
         union = pd.read_csv(d / "predictions_test_s2_union_seed42.csv")
         mask = pd.read_csv(

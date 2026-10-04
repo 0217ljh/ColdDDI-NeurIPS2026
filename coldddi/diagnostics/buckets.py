@@ -1,18 +1,14 @@
 """Per-pair bucket assignment (PK-A / PK-B / PD-A / PD-B / Other).
 
-The four buckets in paper §4.3 / Table 6 stratify each drug-drug
-interaction by two binary axes:
+Paper §4.3 / Table 6 uses two axes:
 
-* **PK vs PD** — pharmacokinetic vs pharmacodynamic mechanism class,
+* PK vs PD — pharmacokinetic vs pharmacodynamic mechanism class,
   set by :mod:`coldddi.annotations.pkpd_keywords` at Stage 2a.
-* **A vs B** — whether a *confirmed* mediating-entity for the DDI
-  exists in the knowledge graph (Type-A = present, Type-B = candidates
-  only, set by :mod:`coldddi.annotations.ab_subdivision` at Stage 2b).
+* A vs B — confirmed mediating entity in the KG (A) vs candidates only
+  (B), set by :mod:`coldddi.annotations.ab_subdivision` at Stage 2b.
 
-Both labels are already pre-computed in
-``annotations/ab_sample.parquet`` (toy) or ``ab.parquet`` (full
-release) — this module just exposes a lookup-by-pair API plus the
-aggregate ``"ALL"`` bucket.
+Labels come from ``annotations/ab_sample.parquet`` (toy) or
+``ab.parquet`` (full release). Indicators compute the ``ALL`` aggregate.
 """
 
 from __future__ import annotations
@@ -27,8 +23,7 @@ import pandas as pd
 #: The four primary buckets plus the aggregate.
 BUCKET_NAMES: tuple[str, ...] = ("PK-A", "PK-B", "PD-A", "PD-B", "ALL")
 
-#: Bucket for pairs whose mechanism class (PK/PD) is unknown or for
-#: which the AB annotation file did not produce a label.
+#: Pairs with unknown mechanism or missing AB annotation.
 BUCKET_OTHER: str = "Other"
 
 
@@ -36,12 +31,9 @@ BUCKET_OTHER: str = "Other"
 class BucketLookup:
     """Per-pair bucket map ``{(drug_a, drug_b): "PK-A" | ...}``.
 
-    A pair always falls into exactly one of the four primary buckets
-    (or :data:`BUCKET_OTHER`).  Use :meth:`bucket` to look up a pair;
-    use :meth:`buckets_for_pairs` to vectorise.
-
-    Aggregations across all pairs (the ``"ALL"`` bucket) are handled
-    by the indicator pipeline directly — not by this lookup.
+    Each pair maps to one primary bucket or :data:`BUCKET_OTHER`.
+    Use :meth:`bucket` for one pair or :meth:`buckets_for_pairs` for many.
+    The indicator pipeline, not this lookup, computes ``ALL``.
     """
 
     pair_to_bucket: dict[tuple[str, str], str]
@@ -49,10 +41,8 @@ class BucketLookup:
     def bucket(self, drug_a_id: str, drug_b_id: str) -> str:
         """Return the bucket for ``(drug_a, drug_b)``.
 
-        The directed pair is matched first; ``(drug_b, drug_a)`` is
-        tried as a fallback because the annotation table is built
-        from canonical ordering and downstream prediction tables may
-        re-emit either direction.
+        Try the directed pair, then its reverse: annotations use canonical
+        ordering, but predictions may use either direction.
         """
         a, b = str(drug_a_id), str(drug_b_id)
         if (a, b) in self.pair_to_bucket:
@@ -73,11 +63,9 @@ class BucketLookup:
     ) -> dict[str, int]:
         """Per-bucket counts for a pair iterable.
 
-        Useful before running L6 to verify the annotation table covers
-        enough of the prediction set — ``BUCKET_OTHER`` rows pass
-        silently into per-bucket aggregates only via the positive-only
-        ALL bucket, so a high ``Other`` count indicates the annotation
-        is incomplete and the headline A-B gap may be misleading.
+        ``BUCKET_OTHER`` pairs contribute only to the positive-only ``ALL``
+        aggregate. A high ``Other`` count warns of incomplete annotation
+        coverage and a potentially misleading A-B gap.
         """
         out: dict[str, int] = {b: 0 for b in BUCKET_NAMES if b != "ALL"}
         out[BUCKET_OTHER] = 0
@@ -88,16 +76,14 @@ class BucketLookup:
 
 
 def build_bucket_lookup(ab_table: pd.DataFrame | str | Path) -> BucketLookup:
-    """Materialise a :class:`BucketLookup` from the AB annotation table.
+    """Build a :class:`BucketLookup` from AB annotations.
 
     Parameters
     ----------
     ab_table
-        Either a loaded DataFrame **or** a path to a parquet/csv
-        whose columns include ``drug_a_id``, ``drug_b_id``,
-        ``pk_pd_label`` (``"PK"`` / ``"PD"``), and ``has_key_entity``
-        (bool).  Both ``annotations/ab_sample.parquet`` and the full
-        ``ab.parquet`` use this schema.
+        DataFrame or parquet/CSV path with columns ``drug_a_id``,
+        ``drug_b_id``, ``pk_pd_label`` (``"PK"`` / ``"PD"``), and
+        ``has_key_entity`` (bool). Both annotation releases use this schema.
     """
     if isinstance(ab_table, (str, Path)):
         path = Path(ab_table)
@@ -120,7 +106,7 @@ def build_bucket_lookup(ab_table: pd.DataFrame | str | Path) -> BucketLookup:
         b = str(row.drug_b_id)
         pkpd = str(row.pk_pd_label).strip().upper()
         if pkpd not in ("PK", "PD"):
-            # Mixed / unknown — leave to BUCKET_OTHER at lookup time.
+            # Mixed or unknown mechanisms resolve to BUCKET_OTHER.
             continue
         a_b = "A" if bool(row.has_key_entity) else "B"
         pair_to_bucket[(a, b)] = f"{pkpd}-{a_b}"

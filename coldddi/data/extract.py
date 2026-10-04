@@ -1,7 +1,6 @@
 """Stage 1a — DrugBank XML → raw CSV tables.
 
-Stream-parses a DrugBank ``full database.xml`` into the seven raw tables
-required by the downstream cleaning and annotation stages:
+Parse DrugBank ``full database.xml`` into seven raw tables:
 
 * ``drugs.csv``
 * ``ddi_edges.csv``
@@ -11,21 +10,12 @@ required by the downstream cleaning and annotation stages:
 * ``drug_carriers.csv``
 * ``drug_pathways.csv``
 
-No filtering is applied here: the output mirrors the XML's full content
-(17,430 drugs in DrugBank 5.1.13). Filtering and the seven-step pipeline
-described in Appendix A.1 live in :mod:`coldddi.data.filter`.
+Drug-level filtering is handled by :mod:`coldddi.data.filter` (Appendix A.1).
 
 CLI
 ---
 ``python -m coldddi.data.extract --xml PATH --out DIR``
 
-Public surface
---------------
-- :class:`RawTables` — dataclass holding the seven DataFrames.
-- :func:`parse_drugbank_xml` — XML → :class:`RawTables`.
-- :func:`load_raw_tables` — read the seven CSV files back into a :class:`RawTables`.
-- :func:`write_raw_tables` — dump a :class:`RawTables` as CSVs.
-- :func:`main` — CLI entry point.
 """
 
 from __future__ import annotations
@@ -46,10 +36,9 @@ DRUGBANK_NS: str = "{http://www.drugbank.ca}"
 class RawTables:
     """The seven unfiltered XML-derived tables.
 
-    Each ``drug_*`` table uses ``drugbank_id`` as the foreign key linking
-    rows to :attr:`drugs`. The ``edges`` table is symmetric-deduped: each
-    undirected DDI pair appears once (with the original orientation
-    preserved so the description text can be normalized later).
+    Entity tables link to ``drugs`` by ``drugbank_id``. Each undirected DDI
+    pair appears once in ``edges``, preserving its first-seen orientation
+    for later description normalization.
     """
 
     drugs: pd.DataFrame
@@ -61,9 +50,7 @@ class RawTables:
     pathways: pd.DataFrame
 
 
-# ---------------------------------------------------------------------
-# Tiny helpers
-# ---------------------------------------------------------------------
+# XML helpers
 
 
 def _local_tag(elem: ET.Element) -> str:
@@ -130,11 +117,11 @@ def _polypeptide_entities(
     container_tag: str,
     item_tag: str,
 ) -> list[dict[str, str]]:
-    """Walk a polypeptide-style sub-tree (enzymes/targets/transporters/carriers).
+    """Read enzymes, targets, transporters, or carriers in XML document order.
 
-    Each item can have multiple ``<actions>/<action>`` entries; we emit
-    one row per action (no actions → one row with ``action=""``).
-    Schema: ``drugbank_id, <item>_id, <item>_name, organism, action``.
+    Emit one row per action, or one with ``action=""`` if none are listed.
+    Columns are ``<item>_id, <item>_name, organism, action``; the caller adds
+    ``drugbank_id``. Preserve entity order for A/B candidate ranking.
     """
     rows: list[dict[str, str]] = []
     container = drug.find(f"{DRUGBANK_NS}{container_tag}")
@@ -182,17 +169,13 @@ def _pathway_entities(drug: ET.Element) -> list[dict[str, str]]:
     return rows
 
 
-# ---------------------------------------------------------------------
 # Main parser
-# ---------------------------------------------------------------------
 
 
 def parse_drugbank_xml(xml_path: Path) -> RawTables:
     """Stream-parse the DrugBank XML into the seven raw tables (no filtering).
 
-    Memory is bounded: each top-level ``<drug>`` is fully consumed and
-    cleared before moving on, so a 1.6 GB XML uses on the order of tens
-    of megabytes of resident memory.
+    Clear each parsed drug element; retain output rows in memory.
     """
     drugs: list[dict] = []
     raw_edges: list[dict] = []
@@ -212,8 +195,7 @@ def parse_drugbank_xml(xml_path: Path) -> RawTables:
         if db_id is None:
             elem.clear()
             continue
-        # `type` is a *drug-element attribute* (e.g. <drug type="biotech">),
-        # not a child element.
+        # Drug type is an XML attribute, not a child element.
         dtype = elem.attrib.get("type", "")
         name = _findtext(elem, "name") or ""
         smiles = _smiles_of(elem)
@@ -293,9 +275,7 @@ def parse_drugbank_xml(xml_path: Path) -> RawTables:
     )
 
 
-# ---------------------------------------------------------------------
 # CSV I/O
-# ---------------------------------------------------------------------
 
 
 _TABLE_FILES: tuple[tuple[str, str], ...] = (
@@ -325,9 +305,7 @@ def load_raw_tables(in_dir: Path) -> RawTables:
     return RawTables(**kwargs)
 
 
-# ---------------------------------------------------------------------
 # CLI
-# ---------------------------------------------------------------------
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
-# One-command reproduction of paper §5.2 — overall S2 cold-start results.
+# Paper §5.2: overall S2 cold-start results for 8 baselines across 3 seeds.
 #
-# Trains all 8 baselines on 3 seeds against the chosen subset,
-# writes per-pair predictions CSVs (Step 1) and the aggregate
-# metrics JSON, then rolls up AUROC / AUPRC mean ± std per method
-# via `coldddi.eval.aggregate overall`.
+# Write per-pair prediction CSVs and metrics JSON, then aggregate
+# AUROC / AUPRC mean ± std per method.
 #
 # Usage:
 #   bash exps/sec5_overall.sh [SUBSET]
@@ -15,10 +13,7 @@
 #   runs/<method>/seed<N>/                       (per-(method,seed) artefacts)
 #   runs/sec5_overall.csv                        (final paper-table CSV)
 #
-# Indicators step (L6) is intentionally skipped here via
-# --no-indicators — sec5_kps.sh re-runs evaluate with indicators
-# enabled.  Splitting the two pipelines keeps the wall-clock
-# predictable: overall metrics are cheap; L6 is a separate sweep.
+# --no-indicators skips L6; use sec5_kps.sh for the indicator sweep.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

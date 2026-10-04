@@ -1,23 +1,8 @@
-"""L2 smoke test: LLMInferenceRunner end-to-end on a real paper LLM.
+"""Test CPU inference, P1/P4 prompts, and binary probabilities on Llama-3.2-1B.
 
-Verifies the inference path can:
-
-* load tokenizer + causal-LM
-* resolve ``" Yes"`` / ``" No"`` to single-token ids
-* render a batch of prompts (P1, P4) via build_binary_prompt
-* run a forward pass on CPU
-* return a per-row DataFrame with valid probability columns
-
-Uses ``meta-llama/Llama-3.2-1B`` — the smallest paper-grade model
-(Appendix B.x).  Its byte-level BPE tokenizer encodes ``" Yes"`` /
-``" No"`` as single tokens (unlike the old SentencePiece Llama-1
-tokenizer used by ``hf-internal-testing/tiny-random-LlamaForCausalLM``,
-which splits the leading space into ``▁`` + ``Yes`` and breaks the
-single-token guard in :mod:`coldddi.llm.inference`).
-
-Tests skip with a clear message if the model isn't locally cached
-(public CI / anonymous-review machines won't have it), so this file
-becomes a no-op rather than failing for environment reasons.
+This paper model (Appendix B.x) encodes leading-space Yes/No as single tokens;
+the tiny random Llama's SentencePiece tokenizer does not. Skip model tests
+when the required model is not cached locally.
 """
 
 from __future__ import annotations
@@ -61,7 +46,7 @@ pytestmark = pytest.mark.skipif(
 
 @pytest.fixture(scope="module")
 def loaded_runner():
-    """Load the tiny model once for all tests in this module."""
+    """Load the cached model once for this module."""
     from coldddi.llm.inference import LLMInferenceRunner, LLMRunnerConfig
 
     runner = LLMInferenceRunner(
@@ -80,7 +65,7 @@ def loaded_runner():
     return runner
 
 
-# ─── Sample fixtures (no toy dataset required) ─────────────────────────────
+# Sample fixtures (no toy dataset required)
 
 DRUG_A_ID, DRUG_B_ID = "DB001", "DB002"
 ID2NAME = {DRUG_A_ID: "Lepirudin", DRUG_B_ID: "Cetuximab"}
@@ -195,13 +180,9 @@ class TestLLMInferenceRunner:
 
 
 class TestInferenceFTPrefixInvariant:
-    """The inference-mode prompt (``assistant_content=""``) must equal
-    the FT-mode prompt with the trailing answer token stripped.
+    """Inference prompts equal FT prompts without the answer token.
 
-    If this invariant breaks, the FT collator (which finds the
-    assistant header in the FT prompt and masks everything up to it)
-    and the inference runner (which scores the next-token logit after
-    the same header) would be looking at different boundary positions.
+    This keeps the collator's mask boundary aligned with next-token scoring.
     """
 
     @pytest.mark.parametrize("model_name,family", [
@@ -247,7 +228,7 @@ class TestInferenceFTPrefixInvariant:
         )
 
 
-# ─── Optional: integration with PairDataset via score_pairs ────────────────
+# Optional: integration with PairDataset via score_pairs
 
 TOY_RELEASE = REPO_ROOT / "data" / "public" / "intermediate"
 

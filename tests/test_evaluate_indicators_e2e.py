@@ -1,17 +1,7 @@
-"""End-to-end: ``evaluate.py`` runs L6 indicators for every baseline.
+"""Test Appendix A.6.2's end-to-end indicator outputs by modality.
 
-Closes the paper A.6.2 "end-to-end" promise (Stage~4 of the
-walkthrough): a single ``python evaluate.py --method <baseline>``
-invocation now writes the per-pair predictions CSV AND the L6
-``indicators_test_s2_seed{N}.csv`` with KPS-F (always) plus
-KPS-mol / KPS-KG populated for mol+KG-separable baselines and NaN
-for single-modality baselines.
-
-Tests are parametrised over a representative subset (one of each
-modality class) instead of all 8 baselines to keep the e2e test
-budget manageable — the per-baseline correctness of
-``mask_channel`` and the diagnostics math are already covered by
-the dedicated baseline test files and L6 diagnostic tests.
+KPS-F is universal; channel indicators are populated only for separable mol+KG
+baselines. Representative models cover dispatch; dedicated tests cover math.
 """
 
 from __future__ import annotations
@@ -36,14 +26,10 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-# ─── Modality registration sanity ───────────────────────────────────
+# Modality registration sanity
 
 class TestModalityRegistration:
-    """All 8 baselines must declare a valid modality (the user-asked
-    keyword that drives L6 dispatch).  Catches regressions where a
-    new baseline forgets to set the attribute, since the default
-    ``"mol"`` would silently mis-route a mol+KG baseline through the
-    single-modality NaN path."""
+    """Each baseline declares its modality so channel dispatch cannot default incorrectly."""
 
     EXPECTED_MODALITY = {
         "deepddi":  "mol",
@@ -69,9 +55,7 @@ class TestModalityRegistration:
         )
 
     def test_register_rejects_unknown_modality(self):
-        """``@register`` must fail eagerly when a subclass declares
-        an unknown modality — prevents silent typos like ``"mol+KG"``
-        which would no-op through the dispatch."""
+        """Registration rejects unknown modalities, including case mismatches."""
         from coldddi.baselines.base import BaselineModel, register
 
         with pytest.raises(ValueError, match="modality="):
@@ -87,7 +71,7 @@ class TestModalityRegistration:
                 def load(cls, *a, **k): ...
 
 
-# ─── Modality → mask-channel dispatch table ─────────────────────────
+# Modality → mask-channel dispatch table
 
 class TestModalityMaskChannelDispatch:
     def test_only_mol_kg_separable_runs_masks(self):
@@ -100,11 +84,7 @@ class TestModalityMaskChannelDispatch:
         assert MODALITY_MASK_CHANNELS["mol+kg"] == ("mol", "kg")
 
     def test_dispatch_table_covers_every_modality(self):
-        """Codex IMPORTANT: ``MODALITIES`` lives in base.py and
-        ``MODALITY_MASK_CHANNELS`` in evaluate.py.  Without this pin,
-        a future modality added to base.py would silently fall through
-        to KeyError at L6 dispatch time.  This invariant catches the
-        drift at import-time test rather than at user-run-time."""
+        """The mask-channel dispatch table covers every registered modality."""
         from coldddi.baselines.base import MODALITIES
         from coldddi.evaluate import MODALITY_MASK_CHANNELS
 
@@ -115,13 +95,10 @@ class TestModalityMaskChannelDispatch:
         )
 
 
-# ─── Instance-level modality override ──────────────────────────────
+# Instance-level modality override
 
 class TestInstanceModalityOverride:
-    """TIGER's ``mol_only=True`` constructor flag drops the KG branch
-    entirely; its ``modality`` instance attribute must downgrade to
-    ``"mol"`` so the L6 dispatch doesn't try to request a kg/mol mask
-    pass and crash inside ``predict_proba``."""
+    """TIGER's mol_only instance reports mol to prevent unsupported channel-mask calls."""
 
     def test_tiger_mol_only_instance_downgrades_modality(self):
         pytest.importorskip("rdkit")
@@ -149,14 +126,11 @@ class TestInstanceModalityOverride:
         assert TIGERBaseline.modality == "mol+kg"
 
 
-# ─── AB-parquet discovery ───────────────────────────────────────────
+# AB-parquet discovery
 
 class TestResolveAbParquet:
     def test_auto_discovery_finds_toy_sample(self):
-        """The toy release fixture ships ``annotations/ab_sample.parquet``
-        — auto-discovery must find it without any --ab-parquet flag,
-        so plain ``python evaluate.py`` end-to-end works out of the
-        box on the toy."""
+        """Discover the toy annotations/ab_sample.parquet without --ab-parquet."""
         from coldddi.evaluate import _resolve_ab_parquet
 
         path = _resolve_ab_parquet(None, TOY_RELEASE)
@@ -180,10 +154,7 @@ class TestResolveAbParquet:
             _resolve_ab_parquet(tmp_path / "nope.parquet", TOY_RELEASE)
 
     def test_none_returned_when_nothing_found(self, tmp_path, monkeypatch):
-        """When neither data_dir nor repo root carries an AB parquet,
-        ``_resolve_ab_parquet`` returns ``None`` instead of raising —
-        so ``run_evaluation`` can degrade gracefully (skip L6, keep
-        training + predictions CSV intact)."""
+        """Missing AB parquet returns None so training and prediction output can continue."""
         from coldddi import evaluate
 
         # Monkeypatch __file__ so the repo-root candidate path also
@@ -200,7 +171,7 @@ class TestResolveAbParquet:
             monkeypatch.setattr(evaluate, "__file__", orig_file)
 
 
-# ─── E2E: single-modality baseline (DeepDDI = "mol") ────────────────
+# E2E: single-modality baseline (DeepDDI = "mol")
 
 class TestRunEvaluationDeepDDIWritesIndicators:
     """Single-modality smoke: KPS-F populated, KPS-mol / KPS-KG NaN."""
@@ -241,9 +212,7 @@ class TestRunEvaluationDeepDDIWritesIndicators:
             assert 0 <= v <= 1
 
     def test_channel_indicators_all_nan(self, out_dir):
-        """Single-modality contract: KPS-mol and KPS-KG come back as
-        NaN row blocks (the diagnostics dispatch handles this when no
-        mask predictions are supplied)."""
+        """Without channel masks, single-modality KPS-mol and KPS-KG rows are NaN."""
         df = pd.read_csv(out_dir / "indicators_test_s2_seed42.csv")
         for ind in ("KPS-mol", "KPS-KG"):
             sub = df.query(f"indicator == '{ind}'")
@@ -254,7 +223,7 @@ class TestRunEvaluationDeepDDIWritesIndicators:
             assert (sub["n"] == 0).all()
 
 
-# ─── E2E: mol+KG baseline (MKG-FENN) — three indicators populated ───
+# E2E: mol+KG baseline (MKG-FENN) — three indicators populated
 
 class TestRunEvaluationMKGFENNWritesIndicators:
     @pytest.fixture(scope="class")
@@ -264,14 +233,11 @@ class TestRunEvaluationMKGFENNWritesIndicators:
         from coldddi.evaluate import run_evaluation
 
         out = tmp_path_factory.mktemp("eval_mkgfenn_l6")
-        # Tiny hyperparams so the test stays under ~30s.  The actual
-        # numerical quality isn't asserted; only that the pipeline
-        # produces the right artefacts with finite values.
+        # Test finite output and artifacts with a tiny model, not prediction quality.
         from coldddi.baselines.base import _REGISTRY
         from coldddi.baselines import ensure_imported
 
         ensure_imported("mkg_fenn")
-        # Subclass with tiny defaults — keeps Step 2 e2e snappy.
         OrigCls = _REGISTRY["mkg_fenn"]
 
         class Tiny(OrigCls):
@@ -337,10 +303,8 @@ class TestRunEvaluationMKGFENNWritesIndicators:
             )
 
 
-# ─── E2E: text baseline (TextDDI) — KPS-F populated, channels NaN ───
-# (Optional smoke; mirrors the DeepDDI path for the "text" modality
-# leg so the dispatch is exercised on every single-modality label.
-# Skipped automatically if transformers/torch backbone unavailable.)
+# E2E: text baseline (TextDDI) — KPS-F populated, channels NaN
+# Optional text-modality coverage; skip if the backbone is unavailable.
 
 class TestRunEvaluationTextDDIWritesIndicators:
     @pytest.fixture(scope="class")
@@ -398,7 +362,7 @@ class TestRunEvaluationTextDDIWritesIndicators:
             assert sub["value"].isna().all()
 
 
-# ─── --no-indicators flag respected ────────────────────────────────
+# --no-indicators flag respected
 
 class TestNoIndicatorsFlagSkipsL6:
     def test_with_indicators_false_skips_csv(self, tmp_path):
@@ -415,19 +379,17 @@ class TestNoIndicatorsFlagSkipsL6:
             with_indicators=False,
             preset="smoke",   # CI: skip paper-spec DeepDDI training
         )
-        # Predictions CSV still written (Step 1 contract).
+        # Disabling indicators must not suppress predictions.
         assert (tmp_path / "predictions_test_s2_seed42.csv").is_file()
         # L6 CSV intentionally absent.
         assert not (tmp_path / "indicators_test_s2_seed42.csv").is_file()
 
 
-# ─── L6 silently skipped for S0/S1-only runs ────────────────────────
+# L6 silently skipped for S0/S1-only runs
 
 class TestSkipIndicatorsWhenNoS2Setting:
     def test_s0_s1_only_skips_indicators(self, tmp_path):
-        """KPS-F / KPS-mol / KPS-KG are defined on the S2 cold-start
-        anchor set; a run that doesn't evaluate S2 has nothing for L6
-        to do.  Pipeline must silently skip without erroring."""
+        """Skip L6 without S2, since these indicators require the S2 anchor set."""
         pytest.importorskip("torch")
         from coldddi.evaluate import run_evaluation
 

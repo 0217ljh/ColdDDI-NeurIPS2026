@@ -1,4 +1,4 @@
-"""Audit released clinical descriptions and optionally apply the historical masks."""
+"""Audit clinical descriptions and optionally mask entity names."""
 from __future__ import annotations
 
 import argparse
@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 MASK_TOKEN = "[MASKED_ENTITY]"
-# Original masking patterns, in their original order.
+# Apply masking patterns in experiment order.
 ENTITY_PATTERNS = (
     r"CYP\d[A-Z]?\d*", r"UGT\d[A-Z]?\d*", r"MAO(?:-?[AB])?",
     r"monoamine oxidase", r"P-?glycoprotein", r"\bP-?gp\b",
@@ -53,7 +53,7 @@ def load_text_map(path: Path) -> dict[str, str]:
 
 
 def mask_description(text: str, own_entities: list[str]) -> tuple[str, list[dict]]:
-    """Apply historical own-KG and short-form masks; record every substitution."""
+    """Mask per-drug KG names and short-form entities, recording substitutions."""
     replacements = []
     rules = [("own_kg", re.escape(term)) for term in
              sorted(set(own_entities), key=lambda term: (-len(term), term))]

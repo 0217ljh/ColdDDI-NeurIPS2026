@@ -1,21 +1,7 @@
-"""Paper-promised public-name aliases on coldddi/diagnostics/.
+"""Test diagnostics aliases specified in Appendix A.6.2, line 624.
 
-Paper Appendix A.6.2 line 624 promises:
-
-    coldddi/diagnostics/ exposes compute_kps_f, compute_kps_channel,
-    and compute_ksai, each taking a method's predicted-probability
-    function and a swap-table anchor set, and returning a per-bucket
-    pandas.DataFrame.
-
-These tests pin:
-1. The three names are importable from ``coldddi.diagnostics``.
-2. Each accepts either a prediction dict (current dict-based API)
-   or a callable ``predict_fn(pairs_df) -> np.ndarray`` (paper API).
-3. Each returns a per-bucket DataFrame restricted to its named
-   indicator (KPS-F / KPS-mol or KPS-kg / KSAI).
-4. The math is byte-equivalent to calling the underlying
-   ``compute_indicators`` / ``compute_baseline_channel_indicators``
-   and filtering the row block.
+compute_kps_f, compute_kps_channel, and compute_ksai accept prediction dicts
+or callables and return per-bucket DataFrames matching the underlying math.
 """
 
 from __future__ import annotations
@@ -32,7 +18,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-# ─── Importability ──────────────────────────────────────────────────
+# Importability
 
 class TestPaperAliasImports:
     def test_three_names_exposed_at_package_root(self):
@@ -43,7 +29,7 @@ class TestPaperAliasImports:
             assert callable(getattr(d, name))
 
 
-# ─── Fixtures (small synthetic swap + predictions) ──────────────────
+# Fixtures (small synthetic swap + predictions)
 
 def _tiny_swap_setup():
     from coldddi.diagnostics.kps_swap import SwapTriple
@@ -64,7 +50,7 @@ def _tiny_predictions_r0():
     }
 
 
-# ─── KPS-F: dict and callable interfaces equivalent ─────────────────
+# KPS-F: dict and callable interfaces equivalent
 
 class TestComputeKpsF:
     def test_dict_input_returns_only_kps_f_rows(self):
@@ -98,10 +84,7 @@ class TestComputeKpsF:
         )
 
     def test_matches_underlying_dict_api(self):
-        """``compute_kps_f`` must equal
-        ``compute_baseline_channel_indicators(...)`` filtered to
-        ``indicator == "KPS-F"`` — i.e., it's a strict pass-through
-        with no math of its own."""
+        """compute_kps_f matches the KPS-F rows of compute_baseline_channel_indicators."""
         from coldddi.diagnostics import (
             compute_baseline_channel_indicators,
             compute_kps_f,
@@ -117,7 +100,7 @@ class TestComputeKpsF:
         pd.testing.assert_frame_equal(alias, ref)
 
 
-# ─── KPS-Channel: only mol or kg accepted; output restricted ────────
+# KPS-Channel: only mol or kg accepted; output restricted
 
 class TestComputeKpsChannel:
     def setup_method(self):
@@ -146,10 +129,7 @@ class TestComputeKpsChannel:
             self.base, self.mask, self.swap,
             channel="kg", bucket_fn=self.bf,
         )
-        # Codex IMPORTANT: assert the output is non-empty FIRST.
-        # ``(empty_df["indicator"] == "KPS-KG").all()`` is vacuously
-        # True; without the length check the test would mask a
-        # silent KG → "KPS-kg" case-mismatch lookup bug.
+        # Check non-emptiness: all() on empty output would hide a case-mismatch bug.
         assert len(df) > 0, "KG channel produced empty result"
         assert (df["indicator"] == "KPS-KG").all()
 
@@ -185,7 +165,7 @@ class TestComputeKpsChannel:
         assert (df["indicator"] == "KPS-mol").all()
 
 
-# ─── KSAI: only LLM 4-condition setting populates non-NaN values ────
+# KSAI: only LLM 4-condition setting populates non-NaN values
 
 class TestComputeKsai:
     def test_four_condition_dicts_produce_ksai_rows(self):
@@ -223,7 +203,7 @@ class TestComputeKsai:
         pd.testing.assert_frame_equal(alias, ref)
 
 
-# ─── Coercion edge cases ────────────────────────────────────────────
+# Coercion edge cases
 
 class TestPredictionInputCoercion:
     def test_dict_passes_through_unchanged(self):
@@ -242,10 +222,7 @@ class TestPredictionInputCoercion:
             _coerce_predictions(42, swap)
 
     def test_callable_length_mismatch_raises(self):
-        """Codex IMPORTANT: a callable returning the wrong number of
-        scores must raise ValueError up front, NOT silently truncate
-        via ``zip`` and corrupt every downstream indicator with
-        missing per-pair predictions."""
+        """Reject wrong-length scores before zip can silently truncate predictions."""
         from coldddi.diagnostics.indicators import _coerce_predictions
 
         swap, _ = _tiny_swap_setup()

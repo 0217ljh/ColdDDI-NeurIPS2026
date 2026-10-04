@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-# One-command reproduction of paper §5.3 — stratified analysis
-# (per-bucket AUC: PK-A / PK-B / PD-A / PD-B).
+# Paper §5.3: per-bucket AUC for PK-A / PK-B / PD-A / PD-B.
 #
-# Reuses the per-pair predictions written by sec5_overall.sh.  If
-# you haven't run sec5_overall.sh yet, this script will run the
-# training for any (method, seed) whose predictions CSV is missing
-# (idempotent against re-runs).
+# Reuse sec5_overall.sh predictions; train only method/seed runs whose
+# prediction CSV is missing.
 #
 # Usage:
 #   bash exps/sec5_stratified.sh [SUBSET] [AB_PARQUET]
@@ -14,8 +11,7 @@
 #
 # Output:
 #   runs/<method>/seed<N>/predictions_test_s2_seed<N>.csv  (reused)
-#   runs/sec5_stratified.csv                                (final per-bucket
-#                                                            mean ± std)
+#   runs/sec5_stratified.csv  (per-bucket mean ± std across seeds)
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -32,7 +28,7 @@ else
     DATA_FLAG=(--subset "${SUBSET}")
 fi
 
-# Resolve AB parquet (auto-discover if user omitted).
+# Auto-discover the AB parquet when omitted.
 if [[ -z "${AB_PARQUET}" ]]; then
     if [[ -f "annotations/ab.parquet" ]]; then
         AB_PARQUET="annotations/ab.parquet"
@@ -45,8 +41,7 @@ if [[ -z "${AB_PARQUET}" ]]; then
 fi
 echo "[sec5_stratified] using AB parquet: ${AB_PARQUET}"
 
-# Backfill predictions for any missing (method, seed) — idempotent
-# w.r.t. sec5_overall.sh.
+# Backfill missing method/seed predictions.
 for METHOD in "${METHODS[@]}"; do
     for SEED in "${SEEDS[@]}"; do
         CSV="runs/${METHOD}/seed${SEED}/predictions_test_s2_seed${SEED}.csv"

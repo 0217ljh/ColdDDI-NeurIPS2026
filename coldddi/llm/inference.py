@@ -1,27 +1,9 @@
-"""LLM inference runner — port of
-``Version_1_1/LLMs/binary_cls.BinaryClsRunner``.
+"""Score binary DDI pairs with a causal LM and an optional LoRA adapter.
 
-The runner loads a base causal-LM, optionally attaches a LoRA adapter,
-and scores DDI drug-pair samples by extracting the next-token logit at
-the position that should emit ``" Yes"`` / ``" No"``. The output is a
-:class:`pandas.DataFrame` with per-pair ``p_yes`` / ``p_no`` / ``pred``,
-mirroring the column layout the original BinaryClsEvaluator consumes.
-
-Design notes
-------------
-* **Prompts are built with an empty label** (``sample["label"] = ""``)
-  so the assistant content collapses to ``" "`` — the prompt then ends
-  right at the position where the model is expected to emit the answer
-  token, and ``logits[:, -1, :]`` (without any shift) gives the correct
-  next-token distribution. This matches the original
-  ``InferenceCollator`` path of ``BinaryClsRunner.predict``.
-* **YES/NO tokens are required to be single tokens** for the chosen
-  tokenizer. The runner validates this on first load and raises a
-  ``ValueError`` otherwise (so callers can pass alternative spellings
-  like ``" Interaction"`` / ``" No Interaction"`` for tokenisers where
-  ``" Yes"`` would split into multiple subwords).
-* **LoRA adapter loading** delegates to :mod:`peft`; we only require
-  ``peft`` at adapter-loading time.
+Derived from ``BinaryClsRunner``. Prompts end before the answer token;
+next-token logits for ``" Yes"`` and ``" No"`` produce ``p_yes``, ``p_no``,
+and ``pred`` columns. Both answer strings must encode to single tokens.
+``peft`` is required only when loading an adapter.
 """
 
 from __future__ import annotations
@@ -58,8 +40,7 @@ class LLMRunnerConfig:
         Optional LoRA adapter directory; passed to
         :class:`peft.PeftModel.from_pretrained` when set.
     yes_token / no_token
-        The literal string forms of the answer tokens. Both must
-        encode to a single token id by the loaded tokenizer.
+        Answer strings; each must encode to one token in the loaded tokenizer.
     dtype
         ``"bfloat16"`` / ``"float16"`` / ``"float32"``.
     device
@@ -93,18 +74,7 @@ def _resolve_dtype(d: str) -> torch.dtype:
 
 
 class LLMInferenceRunner:
-    """Inference-only runner for the binary DDI task.
-
-    Usage
-    -----
-    >>> from coldddi.llm.inference import LLMInferenceRunner, LLMRunnerConfig
-    >>> runner = LLMInferenceRunner(LLMRunnerConfig(
-    ...     model_name="hf-internal-testing/tiny-random-LlamaForCausalLM",
-    ...     device="cpu",
-    ... ))
-    >>> runner.load()
-    >>> df = runner.score_samples(samples, PromptBuildConfig(method="Zero_Shot_Sequence", ...))
-    """
+    """Inference-only runner for the binary DDI task."""
 
     def __init__(self, cfg: LLMRunnerConfig) -> None:
         self.cfg = cfg
@@ -114,15 +84,12 @@ class LLMInferenceRunner:
         self.yes_id: int | None = None
         self.no_id: int | None = None
 
-    # ------------------------------------------------------------------
     # Model loading
-    # ------------------------------------------------------------------
 
     def load(self) -> None:
-        """Load tokenizer + model and resolve YES/NO token ids.
+        """Load the tokenizer and model, and resolve YES/NO token IDs.
 
-        Safe to call multiple times — subsequent invocations are no-ops
-        once ``self.model`` is populated.
+        Does nothing if ``self.model`` is already populated.
         """
         if self.model is not None:
             return
@@ -138,17 +105,13 @@ class LLMInferenceRunner:
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.cfg.model_name, **tok_kwargs
         )
-        # Truncate from the LEFT so the assistant header / answer slot
-        # at the end of the prompt is preserved when an over-long input
-        # gets clipped. Right-truncation would silently strip the very
-        # tokens we score on.
+        # Left truncation preserves the assistant header and answer slot.
         self.tokenizer.truncation_side = "left"
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
-        # Resolve YES/NO ids before model load (cheap and surfaces
-        # tokeniser-mismatch errors early).
+        # Check answer-token compatibility before loading the model.
         yes_ids = self.tokenizer.encode(
             self.cfg.yes_token, add_special_tokens=False
         )
@@ -166,9 +129,7 @@ class LLMInferenceRunner:
         self.yes_id = int(yes_ids[0])
         self.no_id = int(no_ids[0])
 
-        # CPU has no bfloat16 / float16 kernels for most LM ops; force
-        # float32 unless the caller has already passed a CPU-friendly
-        # explicit dtype.
+        # On CPU, replace bfloat16/float16 with float32 for kernel compatibility.
         effective_dtype = self.cfg.dtype
         if self.device == "cpu" and effective_dtype in ("bfloat16", "float16"):
             effective_dtype = "float32"
@@ -176,9 +137,8 @@ class LLMInferenceRunner:
             torch_dtype=_resolve_dtype(effective_dtype),
             trust_remote_code=self.cfg.trust_remote_code,
         )
-        # Only delegate device placement to `device_map="auto"` when the
-        # caller asked for auto-placement; an explicit "cuda:N" / "cpu"
-        # must respect the requested device exactly.
+        # Use device_map="auto" only for requested non-CPU auto-placement;
+        # explicit "cuda:N" / "cpu" requests must be respected.
         if self.cfg.device == "auto" and self.device != "cpu":
             model_kwargs["device_map"] = "auto"
         if self.cfg.cache_dir is not None:
@@ -205,9 +165,7 @@ class LLMInferenceRunner:
             )
             self.model.eval()
 
-    # ------------------------------------------------------------------
     # Scoring
-    # ------------------------------------------------------------------
 
     def _prepare_prompts(
         self,
@@ -220,15 +178,11 @@ class LLMInferenceRunner:
     ) -> list[str]:
         """Render every sample as an open-ended prompt (no answer token).
 
-        We override the assistant message content to the **empty
-        string** (not the default ``" "`` with leading space) so the
-        rendered prompt ends right at the assistant header / model
-        marker.  This is the configuration where ``logits[:, -1, :]``
-        directly scores the leading-space ``" Yes"`` / ``" No"`` tokens
-        — for Llama-3 / Qwen / Gemma tokenizers those literals encode
-        to single token ids that already carry the leading space, so a
-        trailing space in the prompt would corrupt the position
-        alignment.
+        Set assistant content to ``""``, not ``" "``, so the prompt ends
+        at the assistant header / model marker. ``logits[:, -1, :]`` then
+        scores ``" Yes"`` / ``" No"`` directly. For Llama-3 / Qwen / Gemma,
+        these single tokens already include the leading space; a trailing
+        prompt space would misalign them.
         """
         prompts: list[str] = []
         for s in samples:
@@ -260,24 +214,21 @@ class LLMInferenceRunner:
         """Score every sample and return a per-row DataFrame.
 
         Output columns:
-        ``drug_a_id, drug_b_id, p_no, p_yes, pred, prompt`` (the rendered
-        prompt is included for downstream diagnostics).
+        ``drug_a_id, drug_b_id, p_no, p_yes, pred, prompt``; ``prompt``
+        contains the rendered prompt for diagnostics.
 
         Resume
         ------
-        Pass ``resume_path`` to enable crash-safe inference for a long
-        run (e.g. test_s1 ≈ 450 k pairs).  The runner writes a
-        ``{resume_path}.partial`` parquet every ``save_every`` batches;
-        on a re-invocation with the same ``resume_path`` it reads back
-        whatever pairs already scored, skips them, and continues.  On
-        success the partial file is atomically renamed to the final
-        ``resume_path``.  Pass ``None`` to disable (default) — behaves
-        identically to pre-resume releases.
+        With ``resume_path``, write ``{resume_path}.partial`` parquet every
+        ``save_every`` batches and on the last batch, using atomic renames.
+        Reusing the path skips pairs already scored; an existing final file
+        is returned directly. On success, rename the partial file to
+        ``resume_path``. ``None`` (default) disables resume support.
         """
         if self.model is None:
             self.load()
 
-        # ── Resume bootstrap ──────────────────────────────────────────
+        # Restore resume state.
         rows: list[dict] = []
         already: set[tuple[str, str]] = set()
         partial_path: Path | None = None
@@ -285,7 +236,7 @@ class LLMInferenceRunner:
         if resume_path is not None:
             final_path = Path(resume_path)
             partial_path = final_path.with_suffix(final_path.suffix + ".partial")
-            # Final already complete → just read and return it.
+            # Return completed results without rescoring.
             if final_path.is_file():
                 return pd.read_parquet(final_path)
             if partial_path.is_file():
@@ -295,8 +246,7 @@ class LLMInferenceRunner:
                     (str(r["drug_a_id"]), str(r["drug_b_id"])) for r in rows
                 }
 
-        # Filter out already-scored samples so we don't re-spend GPU
-        # time on duplicates.
+        # Skip pairs already scored.
         if already:
             todo_samples = [
                 s for s in samples
@@ -329,9 +279,7 @@ class LLMInferenceRunner:
                 truncation=True,
                 max_length=self.cfg.max_length,
             )
-            # `device_map="auto"` may shard the model; use the input
-            # embedding's device so we don't accidentally land on a
-            # non-input shard.
+            # For sharded models, send inputs to the input embedding's device.
             dev = self.model.get_input_embeddings().weight.device
             enc = {k: v.to(dev) for k, v in enc.items()}
             out = self.model(**enc)
@@ -357,9 +305,8 @@ class LLMInferenceRunner:
                     }
                 )
 
-            # Incremental save — every save_every batches OR on the
-            # last batch. Atomic-via-rename so a crash mid-write can't
-            # leave a corrupt partial file.
+            # Save every save_every batches and on the last batch.
+            # Atomic rename protects the partial file from interrupted writes.
             if (partial_path is not None
                 and ((batch_idx + 1) % max(1, save_every) == 0
                      or start + bs >= len(prompts))):
@@ -369,15 +316,13 @@ class LLMInferenceRunner:
                 pd.DataFrame(rows).to_parquet(tmp_path)
                 tmp_path.replace(partial_path)
 
-        # On success rename partial → final.
+        # Rename partial results to the final path on success.
         if partial_path is not None and final_path is not None:
             if partial_path.is_file():
                 partial_path.replace(final_path)
         return pd.DataFrame(rows)
 
-    # ------------------------------------------------------------------
-    # Convenience: score directly from PairDataset rows
-    # ------------------------------------------------------------------
+    # Score PairDataset rows.
 
     def score_pairs(
         self,
@@ -392,9 +337,8 @@ class LLMInferenceRunner:
     ) -> pd.DataFrame:
         """Score a DataFrame of ``(drug_a_id, drug_b_id)`` rows.
 
-        Internally builds samples via
-        :func:`coldddi.llm.retrieval.llm_view.to_llm_samples` then
-        delegates to :meth:`score_samples`.
+        Build samples with :func:`coldddi.llm.retrieval.llm_view.to_llm_samples`
+        and delegate to :meth:`score_samples`.
         """
         from coldddi.llm.retrieval.llm_view import to_llm_samples
 
@@ -405,7 +349,7 @@ class LLMInferenceRunner:
             subgraph_map=subgraph_map,
             fewshot_map=fewshot_map,
         )
-        # Look up smiles/name maps off the dataset once.
+        # Build SMILES and name maps once.
         drug_id2name: dict[str, str] = {}
         drug_id2smiles: dict[str, str] = {}
         if ds.drugs is not None:

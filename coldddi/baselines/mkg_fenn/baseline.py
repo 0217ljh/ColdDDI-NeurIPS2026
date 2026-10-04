@@ -1,11 +1,7 @@
-"""MKG-FENN thin adapter — implementation of :class:`BaselineModel`.
+"""MKG-FENN adapter for four KG-GNN channels and a two-class fusion head.
 
-Wraps the four-channel KG-GNN (:class:`coldddi.baselines.mkg_fenn.model.MKGFENN`)
-plus :mod:`coldddi.baselines.mkg_fenn.kg_builder` (KG construction from
-the modern release schema). The four KGs are built from
-:class:`PairDataset.kg`, the drug SMILES table, and the training positive
-edges; the FusionLayer outputs 2 logits and we report ``softmax[:, 1]``
-as the binary score, mirroring the upstream training recipe.
+Builds graphs from ``PairDataset.kg``, SMILES, and training-positive DDI
+pairs. The binary score is ``softmax[:, 1]``.
 """
 
 from __future__ import annotations
@@ -46,8 +42,8 @@ def _drug_smiles_dict(train: "PairDataset") -> dict[str, str]:
 
 #: Paper-spec hyperparameters from Appendix C.1 Table 8 (MKG-FENN row).
 PAPER_HYPERPARAMS: dict[str, object] = {
-    "embedding_num":         128,        # paper "embedding=128"
-    "neighbor_sample_size":  6,          # paper "neighbor sample=6"
+    "embedding_num":         128,
+    "neighbor_sample_size":  6,
     "dropout":               0.3,
     "learning_rate":         1e-2,
     "weight_decay":          1e-8,
@@ -62,14 +58,11 @@ class MKGFENNBaseline(BaselineModel):
 
     Modality: ``"mol+kg"`` — channels GNN1/GNN3 carry KG (entity,
     DDI topology); GNN2/GNN4 carry mol (Morgan FP, property).
-    Channel mask exposed via ``predict_proba(pairs, mask_channel=
-    "mol"|"kg")``. L6 dispatch produces KPS-F + KPS-mol + KPS-KG,
-    all three populated.
+    ``predict_proba(..., mask_channel="mol"|"kg")`` supports L6's KPS-F,
+    KPS-mol, and KPS-KG indicators.
 
-    Paper-grade hyperparameters live in :data:`PAPER_HYPERPARAMS`
-    (App C.1 Table 8) and are auto-applied by
-    ``evaluate.py --preset paper`` (default).  Class ``__init__``
-    defaults below are smoke-test values for fast CI.
+    ``evaluate.py --preset paper`` applies :data:`PAPER_HYPERPARAMS`
+    (Appendix C.1 Table 8); constructor defaults are for smoke tests.
     """
 
     VERSION = "1.0"
@@ -111,8 +104,7 @@ class MKGFENNBaseline(BaselineModel):
         return d
 
     def _build_dict1(self, train: "PairDataset") -> dict[str, int]:
-        # Drug vocab covers every drug appearing in any split + every drug
-        # in the drugs table — keeps cold-start drugs reachable at predict time.
+        # Include all split and table drug IDs, including cold-start drugs.
         drug_ids: set[str] = set()
         for _name, df in train.splits.items():
             drug_ids.update(df["drug_a_id"].astype(str))
@@ -141,9 +133,7 @@ class MKGFENNBaseline(BaselineModel):
         mask[np.asarray(keep_idx)] = True
         return idx_tensor, mask
 
-    # ------------------------------------------------------------------
     # ABC surface
-    # ------------------------------------------------------------------
 
     def fit(
         self,
@@ -209,8 +199,7 @@ class MKGFENNBaseline(BaselineModel):
                 idx_tensor, mask = self._pair_indices(batch)
                 if idx_tensor is None:
                     continue
-                # FusionLayer's BatchNorm1d cannot consume a size-1 batch
-                # in training mode. Skip rather than crash.
+                # FusionLayer's BatchNorm1d requires at least two training pairs.
                 if idx_tensor.size(0) < 2:
                     continue
                 idx_tensor = idx_tensor.to(self.device)
@@ -259,11 +248,8 @@ class MKGFENNBaseline(BaselineModel):
         Parameters
         ----------
         mask_channel
-            Paper-spec channel ablation knob, forwarded to
-            :meth:`MKGFENN.forward`.  ``"kg"`` zeros GNN1+GNN3 for
-            both drugs in each pair at fusion time (KPS-KG indicator);
-            ``"mol"`` zeros GNN2+GNN4 (KPS-mol); ``None`` (default)
-            produces the unmasked base prediction.
+            ``"kg"`` zeros GNN1+GNN3 for both drugs at fusion (KPS-KG);
+            ``"mol"`` zeros GNN2+GNN4 (KPS-mol). ``None`` leaves all channels.
         """
         if self._model is None or self._dict1 is None:
             raise RuntimeError(

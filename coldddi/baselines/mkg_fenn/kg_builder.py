@@ -1,7 +1,7 @@
 """Build the four MKG-FENN KGs from a :class:`PairDataset`.
 
-Mirrors :file:`coldddi/baselines/mkg_fenn/_legacy/train_custom_bundle.py`
-``build_kg1..4`` but operates on the modern release schema:
+Adapted from ``build_kg1..4`` in
+:file:`coldddi/baselines/mkg_fenn/_legacy/train_custom_bundle.py` for release tables:
 
 * KG1 — drug → chemical entity (enzymes / targets / transporters /
   carriers / pathways) from :class:`coldddi.data.kg.KnowledgeGraph`
@@ -19,7 +19,7 @@ from typing import Iterable
 import numpy as np
 import pandas as pd
 
-# RDKit is imported lazily inside KG2/KG4 (some installs are slow to load).
+# Import RDKit only when building KG2 or KG4.
 
 
 _KG1_RELATIONS = ("enzymes", "targets", "transporters", "carriers", "pathways")
@@ -50,8 +50,7 @@ def build_kg1(kg, dict1: dict[str, int]) -> tuple[dict[int, list], int, int]:
         df = getattr(kg, rel_name, None)
         if df is None or not isinstance(df, pd.DataFrame) or df.empty:
             continue
-        # Find the drug-id and entity columns: drug col is one of
-        # {drugbank_id, drug_id, d1}; entity col is the first remaining column.
+        # Accept three drug-ID column names; use the first remaining entity column.
         drug_col = next(
             (c for c in ("drugbank_id", "drug_id", "d1") if c in df.columns), None
         )
@@ -117,9 +116,10 @@ def build_kg2(
 def build_kg3(
     train_pos_df: pd.DataFrame, dict1: dict[str, int]
 ) -> tuple[dict[int, list], int, int]:
-    """Drug → drug (training-positive DDI pairs, bidirectional). Cold-start
-    drugs with zero DDI neighbours get a self-reference so the no-ghost
-    GNN3 forward path doesn't trip on empty rows."""
+    """Build bidirectional training-positive DDI edges.
+
+    Give drugs without DDI neighbors a self-reference; GNN3 requires nonempty rows.
+    """
     table = defaultdict(list)
     rel_ddi = 0
     a_col = "drug_a_id" if "drug_a_id" in train_pos_df.columns else "d1"
@@ -212,7 +212,7 @@ def build_all_kgs(
     fp_nbits: int = 512,
     n_bins: int = 10,
 ) -> tuple[dict, dict, dict]:
-    """Wrapper that returns ``(kgs, tail_len, relation_len)`` ready for
+    """Return ``(kgs, tail_len, relation_len)`` for
     :class:`coldddi.baselines.mkg_fenn.model.MKGFENN`."""
     kg1, t1, r1 = build_kg1(kg, dict1)
     kg2, t2, r2 = build_kg2(drug_id2smiles, dict1, radius=fp_radius, nbits=fp_nbits)

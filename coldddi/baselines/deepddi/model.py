@@ -1,11 +1,7 @@
-"""
-DeepDDI model — Ryu et al. PNAS 2018 (binary adaptation).
+"""DeepDDI model — Ryu et al. PNAS 2018 (binary adaptation).
 
 Original: concat(SSP_A, SSP_B) -> 9 FC layers (2048 hidden) -> softmax over 86 DDI types.
-Our adaptation: same backbone with a single-logit head for binary DDI classification.
-
-Hidden size 2048 × 9 layers is large but tractable for ~50-dim SSP input and ~54K training
-samples per seed; matches the paper's default.
+This adaptation uses a single-logit head for binary DDI classification.
 """
 from __future__ import annotations
 
@@ -16,7 +12,7 @@ import torch.nn as nn
 
 
 class DeepDDIModel(nn.Module):
-    """Simple MLP on concat(SSP_A, SSP_B) -> binary logit."""
+    """MLP on concat(SSP_A, SSP_B) -> binary logit."""
 
     def __init__(
         self,

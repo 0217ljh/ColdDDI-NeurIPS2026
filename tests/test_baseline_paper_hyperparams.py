@@ -1,20 +1,7 @@
-"""Pin each baseline's ``PAPER_HYPERPARAMS`` to Appendix C.1 Table 8.
+"""Pin baseline presets to Appendix C.1 Table 8 and LoRA to D.2 Table 9.
 
-Each value here is copy-paste of the row in paper Appendix C.1
-Table 8 (baseline hyperparameters quick-reference).  Any silent
-drift in a baseline's ``PAPER_HYPERPARAMS`` dict will fail
-loudly here so the paper-grade preset stays in sync with the
-published table.
-
-Also verifies:
-* All 8 baselines expose ``PAPER_HYPERPARAMS`` from their package root.
-* ``evaluate.py --preset paper`` is the default (paper App C.1
-  line 105 contract: "wired in as the script defaults").
-* ``get_paper_hyperparams(name)`` returns the same dict for every
-  registered method.
-* ``run_evaluation(preset="paper")`` actually materialises the
-  paper kwargs onto the baseline constructor (verified via a
-  monkeypatched fake class that records its construction kwargs).
+Check package exports, lookup, CLI defaults, and constructor dispatch with
+recorder classes so preset tests do not train models.
 """
 
 from __future__ import annotations
@@ -31,7 +18,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-# ─── Paper Appendix C.1 Table 8 — copy-paste pin per baseline ─────
+# Paper Appendix C.1 Table 8 — copy-paste pin per baseline
 
 
 #: Maps method name → expected (paper-claimed) hyperparameter dict.
@@ -119,13 +106,11 @@ EXPECTED_PAPER_HYPERPARAMS: dict[str, dict[str, object]] = {
 }
 
 
-# ─── Per-baseline PAPER_HYPERPARAMS dict matches Table 8 ──────────
+# Per-baseline PAPER_HYPERPARAMS dict matches Table 8
 
 
 class TestPaperHyperparamsMatchTableC1:
-    """Strongest reproducibility guarantee for App C.1 Table 8:
-    every value in :data:`PAPER_HYPERPARAMS` must equal the paper
-    row exactly.  Any drift fails loudly here."""
+    """Every PAPER_HYPERPARAMS value matches Appendix C.1 Table 8."""
 
     @pytest.mark.parametrize(
         "method,expected",
@@ -152,9 +137,7 @@ class TestPaperHyperparamsMatchTableC1:
         list(EXPECTED_PAPER_HYPERPARAMS.items()),
     )
     def test_no_extra_keys_beyond_paper(self, method, expected):
-        """Defensive: if a baseline's PAPER_HYPERPARAMS gains an
-        extra key not in the paper Table, fail.  The audit needs to
-        cover everything that gets materialised at run time."""
+        """Reject hyperparameter keys absent from the paper table."""
         from coldddi.baselines import ensure_imported
         from coldddi.baselines.base import get_paper_hyperparams
 
@@ -168,15 +151,13 @@ class TestPaperHyperparamsMatchTableC1:
         )
 
 
-# ─── Package-root re-export pinned for every baseline ────────────
+# Package-root re-export pinned for every baseline
 
 
 class TestPaperHyperparamsAreReExported:
     @pytest.mark.parametrize("method", list(EXPECTED_PAPER_HYPERPARAMS))
     def test_importable_from_package_root(self, method):
-        """``from coldddi.baselines.<method> import PAPER_HYPERPARAMS``
-        must work — downstream tooling (paper-table renderers,
-        sweep scripts) shouldn't need to dig into the submodule."""
+        """Each baseline package exports PAPER_HYPERPARAMS for downstream tools."""
         from coldddi.baselines import ensure_imported
 
         ensure_imported(method)
@@ -189,7 +170,7 @@ class TestPaperHyperparamsAreReExported:
         assert "PAPER_HYPERPARAMS" in mod.__all__
 
 
-# ─── evaluate.py --preset paper is the default ───────────────────
+# evaluate.py --preset paper is the default
 
 
 class TestPaperPresetIsDefault:
@@ -200,10 +181,7 @@ class TestPaperPresetIsDefault:
         assert set(PRESETS) == {"paper", "smoke"}
 
     def test_cli_default_is_paper(self):
-        """Plain ``python evaluate.py --method <m> ...`` (no --preset
-        flag) must take the paper preset — paper App C.1 line 105
-        promise that defaults are paper values is realised through
-        the CLI default, not the class __init__ default."""
+        """Appendix C.1's paper default belongs to the CLI, not class constructors."""
         from coldddi.evaluate import _build_parser
 
         parser = _build_parser()
@@ -227,13 +205,11 @@ class TestPaperPresetIsDefault:
             ])
 
 
-# ─── run_evaluation(preset="paper") materialises the dict ────────
+# run_evaluation(preset="paper") materialises the dict
 
 
 class TestPaperPresetMaterialisesHyperparams:
-    """Verify the dispatcher actually layers PAPER_HYPERPARAMS onto
-    the constructor.  Uses a monkeypatched fake class that records
-    its construction kwargs, so we don't have to train a real model."""
+    """Record constructor kwargs to verify paper-preset dispatch without training."""
 
     @pytest.mark.skipif(
         not (TOY_RELEASE / "filtered" / "drugs.csv").is_file(),
@@ -252,8 +228,7 @@ class TestPaperPresetMaterialisesHyperparams:
 
         captured: dict[str, object] = {}
 
-        # Fake class that ACCEPTS the paper kwargs (so inspect.signature
-        # sees them) and records what evaluate.py passed.
+        # Record the kwargs passed by evaluate.py.
         sig = inspect.signature(OrigCls)
         param_names = [p for p in sig.parameters if p != "self"]
 
@@ -265,13 +240,10 @@ class TestPaperPresetMaterialisesHyperparams:
 
             def __init__(self, **kw):
                 captured_box["init_kwargs"] = dict(kw)
-                # Raise here so evaluate.py aborts before trying to
-                # actually train (we don't need a real model).
+                # Stop before training; only constructor kwargs matter here.
                 raise RuntimeError("FakeBaseline: capture-only")
 
-        # Copy the param names onto FakeBaseline.__init__'s signature
-        # so evaluate.py's `inspect.signature(cls).parameters` filter
-        # sees the same surface as the real class.
+        # Preserve the real signature for evaluate.py's parameter filter.
         import inspect as _inspect
         new_params = [
             _inspect.Parameter("self", _inspect.Parameter.POSITIONAL_OR_KEYWORD),
@@ -299,13 +271,8 @@ class TestPaperPresetMaterialisesHyperparams:
         finally:
             _REGISTRY[method] = OrigCls
 
-        # Paper hyperparams the FakeBaseline saw must intersect with
-        # the expected PAPER_HYPERPARAMS for this method.  The exact
-        # set depends on which knobs the real class exposes (evaluate.py
-        # filters to sig_params); confirm at least one paper kwarg
-        # made it through and all that DID make it match the paper.
-        # NOTE: this test will skip if the data_dir resolution
-        # raises before the train step is reached.
+        # Require at least one forwarded paper kwarg, with the paper value.
+        # Data-resolution failures before training skip this test.
         if "init_kwargs" not in captured_box:
             pytest.skip(
                 f"{method}: data_dir resolution raised before "
@@ -313,8 +280,7 @@ class TestPaperPresetMaterialisesHyperparams:
             )
         observed_kwargs = captured_box["init_kwargs"]
         expected = EXPECTED_PAPER_HYPERPARAMS[method]
-        # Every paper kwarg that the real class accepts must have been
-        # forwarded with the paper value.
+        # Forward every paper kwarg accepted by the real class.
         for k, v in expected.items():
             if k in param_names and k in observed_kwargs:
                 assert observed_kwargs[k] == v, (
@@ -323,7 +289,7 @@ class TestPaperPresetMaterialisesHyperparams:
                 )
 
 
-# ─── preset="smoke" leaves class defaults intact ─────────────────
+# preset="smoke" leaves class defaults intact
 
 
 class TestSmokePresetUsesClassDefaults:
@@ -334,9 +300,7 @@ class TestSmokePresetUsesClassDefaults:
     def test_smoke_preset_does_not_load_paper_dict(
         self, tmp_path, monkeypatch,
     ):
-        """``preset='smoke'`` constructs the baseline with NO paper
-        kwargs (class __init__ defaults flow through, including the
-        smoke n_epochs / batch_size that keep CI fast)."""
+        """The smoke preset retains constructor defaults without paper kwargs."""
         from coldddi import evaluate
         from coldddi.baselines import ensure_imported
         from coldddi.baselines.base import _REGISTRY
@@ -382,8 +346,7 @@ class TestSmokePresetUsesClassDefaults:
         if "init_kwargs" not in captured_box:
             pytest.skip("FakeBaseline.__init__ not reached")
         observed = captured_box["init_kwargs"]
-        # Smoke preset must NOT forward n_epochs, batch_size etc.
-        # from PAPER_HYPERPARAMS.  Only `device` (added unconditionally).
+        # Only device is forwarded; paper training parameters stay unset.
         assert "n_epochs" not in observed, (
             "preset='smoke' leaked paper n_epochs onto the constructor"
         )
@@ -391,7 +354,7 @@ class TestSmokePresetUsesClassDefaults:
         assert observed.get("device") == "cpu"
 
 
-# ─── Invalid preset raises ───────────────────────────────────────
+# Invalid preset raises
 
 
 class TestInvalidPresetRaises:
@@ -409,13 +372,11 @@ class TestInvalidPresetRaises:
             )
 
 
-# ─── LoRA paper preset (Appendix D.2 Table 9) ────────────────────
+# LoRA paper preset (Appendix D.2 Table 9)
 
 
 class TestPaperLoRAHyperparams:
-    """Pin :data:`coldddi.llm.trainer.PAPER_LORA_HYPERPARAMS` to
-    paper Appendix D.2 Table 9 (the "every fine-tuned LLM"
-    quick-reference table)."""
+    """Pin PAPER_LORA_HYPERPARAMS to Appendix D.2 Table 9."""
 
     def test_lora_adapter_block_pinned(self):
         from coldddi.llm.trainer import PAPER_LORA_HYPERPARAMS
@@ -504,18 +465,11 @@ class TestPaperLoRAHyperparams:
         assert cfg.learning_rate == 5e-4
 
 
-# ─── Signature dispatch policy (codex follow-up) ────────────────
+# Signature dispatch policy.
 
 
 class TestSignatureDispatchPolicy:
-    """Codex follow-up: the dispatcher's signature filter must
-    forward paper kwargs unfiltered when the class accepts
-    ``**kwargs`` (so future real wrappers don't silently drop
-    paper hyperparams) AND must filter to named params for
-    strict-signature classes (so a paper field a future refactor
-    removed doesn't crash construction).
-
-    Tests below exercise both branches via fake recorder classes.
+    """Forward all paper kwargs to wrappers, but only named params to strict classes.
     """
 
     @pytest.mark.skipif(
@@ -568,10 +522,7 @@ class TestSignatureDispatchPolicy:
         reason="Toy fixture missing",
     )
     def test_strict_signature_class_filters_unknown_paper_kwargs(self, tmp_path):
-        """A strict-signature class that only accepts ``n_epochs`` and
-        ``device`` must NOT receive ``batch_size``, ``learning_rate``
-        etc. — those are filtered to avoid crashing construction
-        when a paper field outlives a class refactor."""
+        """Strict constructors receive only supported parameters: n_epochs and device."""
         import inspect as _inspect
 
         from coldddi import evaluate
@@ -622,8 +573,7 @@ class TestSignatureDispatchPolicy:
         # Filtered: only n_epochs (a paper kwarg) and device made it.
         assert observed.get("n_epochs") == 100
         assert observed.get("device") == "cpu"
-        # batch_size, learning_rate etc. NOT forwarded — they would
-        # have crashed StrictBaseline's strict signature.
+        # Unsupported parameters would fail strict construction.
         assert "batch_size" not in observed
         assert "learning_rate" not in observed
         assert "hidden_dim" not in observed

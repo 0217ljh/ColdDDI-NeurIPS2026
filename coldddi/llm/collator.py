@@ -1,25 +1,8 @@
-"""Fine-tuning collator for the binary DDI task.
+"""Collate binary DDI prompts for answer-token fine-tuning.
 
-Port of ``Version_1_1/dataloader/collators/finetune.ChatDataCollator``.
-Takes a list of dicts ``{"text": str, "cls_labels": int}`` and emits a
-batch tensor dict with:
-
-* ``input_ids``      — tokenized prompts (padded on the LEFT)
-* ``attention_mask`` — 1/0 mask
-* ``labels``         — same as ``input_ids`` but every position up to
-                       and including the assistant header (template)
-                       is set to ``-100`` so the cross-entropy loss is
-                       computed only on the answer token(s)
-* ``cls_labels``     — per-row binary label (0/1) used by the custom
-                       :meth:`compute_loss` to do BCE on
-                       ``[no_id, yes_id]`` logits
-
-The assistant template string is family-specific:
-
-* ``llama``:   ``<|start_header_id|>assistant<|end_header_id|>``
-* ``qwen``:    ``<|im_start|>assistant``
-* ``gemma``:   ``<start_of_turn>model``
-* ``mistral``: ``[INST]assistant\\n``
+Inputs contain ``text`` and binary ``cls_labels``. Outputs include token IDs,
+attention masks and labels masked with ``-100`` through the assistant header.
+The trainer uses ``cls_labels`` to score the Yes/No logits.
 """
 
 from __future__ import annotations
@@ -30,9 +13,7 @@ from typing import Any
 import torch
 
 
-#: Family-specific assistant header strings. The collator searches for
-#: these token sub-sequences to find the boundary between user prompt
-#: and the assistant's first generated token.
+#: Assistant headers used to locate the answer-token boundary.
 ASSISTANT_TEMPLATES: dict[str, str] = {
     "llama":   "<|start_header_id|>assistant<|end_header_id|>",
     "qwen":    "<|im_start|>assistant",
@@ -43,17 +24,10 @@ ASSISTANT_TEMPLATES: dict[str, str] = {
 
 @dataclass
 class BinaryFTCollator:
-    """Tokenize FT prompts and mask everything before the answer slot.
+    """Tokenize prompts and mask tokens before the answer.
 
-    Parameters
-    ----------
-    tokenizer
-        A loaded HuggingFace tokenizer.
-    model_family
-        One of :data:`ASSISTANT_TEMPLATES`. Use the value returned by
-        :func:`coldddi.llm.prompts.binary_cls.infer_model_family`.
-    max_length
-        Tokenizer ``max_length`` cap.
+    ``model_family`` must be a key in :data:`ASSISTANT_TEMPLATES`;
+    ``max_length`` sets the tokenizer's truncation limit.
     """
 
     tokenizer: Any
@@ -66,7 +40,6 @@ class BinaryFTCollator:
                 f"Unknown model_family {self.model_family!r}; "
                 f"must be one of {sorted(ASSISTANT_TEMPLATES)}"
             )
-        # Cache the encoded template ids once.
         self._template_str = ASSISTANT_TEMPLATES[self.model_family]
         self._template_ids = self.tokenizer.encode(
             self._template_str, add_special_tokens=False
@@ -76,8 +49,6 @@ class BinaryFTCollator:
                 f"Tokenizer produced empty ids for assistant template "
                 f"{self._template_str!r}. The mask boundary cannot be located."
             )
-
-    # ------------------------------------------------------------------
 
     def __call__(self, features: list[dict]) -> dict[str, torch.Tensor]:
         texts = [f["text"] for f in features]
@@ -104,27 +75,16 @@ class BinaryFTCollator:
             ids = batch["input_ids"][i].tolist()
             start_pos = self._find_template_end(ids, tlen)
             if start_pos == -1:
-                # Header not found (truncation killed it or template
-                # tokenises differently inside the rendered prompt).
-                # Fall back to the very last token, matching upstream.
+                # If truncation or tokenization hides the header, use the last token.
                 start_pos = len(ids) - 1
             batch["labels"][i, :start_pos] = -100
 
         return batch
 
-    # ------------------------------------------------------------------
-
     def _find_template_end(self, ids: list[int], tlen: int) -> int:
-        """Return ``j + tlen`` where ``ids[j : j+tlen] == self._template_ids``.
+        """Return the position after the last assistant header, or ``-1``.
 
-        Scans **from the right** so an accidental copy of the assistant
-        header inside user-supplied content (for example a few-shot
-        example that quoted the chat template) cannot shift the mask
-        boundary forward into the user prompt.  The legitimate header
-        is always the **last** occurrence — it directly precedes the
-        answer token.
-
-        Returns ``-1`` if the template is not found.
+        Searching from the right skips headers quoted within the user prompt.
         """
         n = len(ids)
         if tlen == 0 or tlen > n:

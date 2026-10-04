@@ -1,16 +1,6 @@
-"""Paper-named module shims: kps.py / ksai.py / masking.py.
+"""Test kps.py, ksai.py, and masking.py shims from Appendix A.6.2, line 503.
 
-Paper Appendix A.6.2 line 503 lists three diagnostics modules by
-the paper-name:
-
-    coldddi/diagnostics/{kps,ksai,masking}.py
-        — KPS-F / KSAI + R0-R7 masking runner
-
-The implementation organises code differently
-(buckets.py / indicators.py / kps_swap.py) so this shim package
-re-exports the relevant entry points under the paper-named files.
-These tests pin the paper-promised import surface so a future
-reorganisation can't break the documented paths.
+The documented paths must re-export the implementation's entry points.
 """
 
 from __future__ import annotations
@@ -27,8 +17,7 @@ if str(REPO_ROOT) not in sys.path:
 
 
 class TestPaperFileNamesImport:
-    """Each of the 3 paper-named modules must import cleanly and
-    expose the documented entry points."""
+    """Paper-named modules expose the documented entry points."""
 
     def test_kps_module_exposes_kps_entry_points(self):
         mod = importlib.import_module("coldddi.diagnostics.kps")
@@ -58,9 +47,7 @@ class TestPaperFileNamesImport:
 
 
 class TestShimsReExportSameObjects:
-    """The shims must re-export the SAME function objects as the real
-    implementation modules — a fresh re-implementation in the shim
-    would silently diverge from the byte-exact diagnostics math."""
+    """Shims re-export the original function objects, not separate implementations."""
 
     def test_kps_compute_kps_f_is_indicators_function(self):
         from coldddi.diagnostics import indicators as impl
@@ -89,11 +76,7 @@ class TestShimsReExportSameObjects:
         assert shim.compute_indicators is impl.compute_indicators
 
     def test_kps_compute_kps_channel_is_indicators_function(self):
-        """Codex follow-up: round out the identity checks so EVERY
-        re-exported symbol is pinned to its implementation source.
-        Without this, a future shim rewrite that re-implements
-        ``compute_kps_channel`` in-place would slip past the test
-        suite even though the math could silently drift."""
+        """Every re-exported symbol retains identity with its implementation source."""
         from coldddi.diagnostics import indicators as impl
         from coldddi.diagnostics import kps as shim
 
@@ -108,9 +91,7 @@ class TestShimsReExportSameObjects:
 
 
 class TestShimsFunctionalEndToEnd:
-    """A KPS-F computation via the paper-named ``kps`` module must
-    produce the same numerical result as the same computation via
-    the implementation module."""
+    """KPS-F results match through the shim and implementation modules."""
 
     def test_kps_shim_matches_indicators(self):
         import pandas as pd

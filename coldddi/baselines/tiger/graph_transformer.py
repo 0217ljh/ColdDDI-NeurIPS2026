@@ -1,5 +1,4 @@
-"""TIGER GraphTransformer encoder (verbatim from the upstream repo,
-import paths and the inner ``BASEDIR/sys.path`` hack stripped).
+"""TIGER GraphTransformer encoder.
 
 Source: ``Code-Released/baseline/TIGER/model/GraphTransformer.py``.
 """

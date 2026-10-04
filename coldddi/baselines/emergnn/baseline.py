@@ -1,22 +1,7 @@
-"""EmerGNN thin adapter — implementation of :class:`BaselineModel`.
+"""EmerGNN adapter using PyTorch message passing and Morgan features.
 
-Wraps the verbatim research-repo modules
-:mod:`coldddi.baselines.emergnn.model` (the pure-PyTorch reimplementation
-of EmerGNN — no torchdrug / torch_scatter required),
-:mod:`coldddi.baselines.emergnn.kg_builder` (KG → triplet table), and
-:mod:`coldddi.baselines.emergnn.morgan_features` (Morgan-FP entity feats).
-
-The adapter is responsible for two bridges:
-
-* :class:`coldddi.data.kg.KnowledgeGraph` → the legacy ``my_X_list``
-  dict the source kg_builder consumes.
-* :class:`coldddi.data.dataset.PairDataset` train/val/test rows → the
-  per-pair head/tail entity indices the EmerGNN forward pass expects.
-
-Like :class:`coldddi.baselines.deepddi.DeepDDIBaseline`, this module is
-the **template** for any KG-aware baseline: cast the KG once at fit
-time, keep entity-id → index lookup as state, batch over
-``DataFrame[drug_a_id, drug_b_id]`` for predict.
+Converts KG tables to the legacy ``my_X_list`` schema and dataset pairs to
+entity indices. No torchdrug or torch_scatter dependency is required.
 """
 
 from __future__ import annotations
@@ -52,8 +37,7 @@ if TYPE_CHECKING:
 
 
 def _kg_to_kb_dict(kg: "KnowledgeGraphProtocol") -> dict[str, pd.DataFrame]:
-    """Convert a :class:`KnowledgeGraph`-shaped object to the legacy
-    ``my_X_list`` schema that :func:`build_kg_from_kb` expects."""
+    """Convert KG tables to the ``my_X_list`` schema for :func:`build_kg_from_kb`."""
     required = ("enzymes", "targets", "transporters", "carriers", "pathways")
     missing = [a for a in required if not hasattr(kg, a)]
     if missing:
@@ -84,8 +68,7 @@ def _drug_smiles_dict(train: "PairDataset") -> dict[str, str]:
 
 
 #: Paper-spec hyperparameters from Appendix C.1 Table 8 (EmerGNN row).
-#: Paper also lists weight_decay=1e-8 but EmerGNNBaseline's __init__
-#: doesn't expose that knob (Adam default is 0); document for audit.
+#: The paper lists weight_decay=1e-8; this adapter uses Adam's default of 0.
 PAPER_HYPERPARAMS: dict[str, object] = {
     "n_dim":          64,
     "length":         3,
@@ -100,17 +83,11 @@ PAPER_HYPERPARAMS: dict[str, object] = {
 class EmerGNNBaseline(BaselineModel):
     """EmerGNN: bidirectional attention message-passing on the DrugBank KG.
 
-    Modality: ``"mol+kg-fused"`` — consumes both mol-derived node
-    features AND KG topology, but the two are fused inside the
-    message-passing layer with no separable channel mask interface.
-    L6 dispatch produces KPS-F only; KPS-mol / KPS-KG come back as
-    NaN rows because there is no architectural channel to ablate
-    independently.
+    Modality: ``"mol+kg-fused"`` — node features and KG topology have no
+    separate channel masks. L6 produces KPS-F; KPS-mol / KPS-KG are NaN.
 
-    Paper-grade hyperparameters live in :data:`PAPER_HYPERPARAMS`
-    (App C.1 Table 8) and are auto-applied by
-    ``evaluate.py --preset paper`` (default).  Class ``__init__``
-    defaults below are smoke-test values for fast CI.
+    ``evaluate.py --preset paper`` applies :data:`PAPER_HYPERPARAMS`
+    (Appendix C.1 Table 8); constructor defaults use fewer epochs.
     """
 
     VERSION = "1.0"
@@ -147,9 +124,7 @@ class EmerGNNBaseline(BaselineModel):
             return "cuda" if torch.cuda.is_available() else "cpu"
         return d
 
-    # ------------------------------------------------------------------
-    # KG / feature setup (called by fit/load)
-    # ------------------------------------------------------------------
+    # KG and feature setup
 
     def _setup_graph(
         self,
@@ -159,8 +134,7 @@ class EmerGNNBaseline(BaselineModel):
         """Build entity vocab + edge tensors from a KG. Returns (morgan_matrix, drug_ids)."""
         kb = _kg_to_kb_dict(kg)
 
-        # The EmerGNN entity vocab must list every drug that appears in any
-        # split. We collect them from train + val/test splits.
+        # Include drug IDs from every split in the entity vocabulary.
         drug_ids: set[str] = set()
         for _name, df in train.splits.items():
             drug_ids.update(df["drug_a_id"].astype(str))
@@ -221,9 +195,7 @@ class EmerGNNBaseline(BaselineModel):
             self._edge_rel.to(self.device),
         )
 
-    # ------------------------------------------------------------------
     # ABC surface
-    # ------------------------------------------------------------------
 
     def fit(
         self,

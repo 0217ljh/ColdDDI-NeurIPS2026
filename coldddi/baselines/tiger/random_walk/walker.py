@@ -2,8 +2,6 @@ from __future__ import print_function
 import random
 import numpy as np
 import multiprocessing
-#np.random.seed(42)
-#random.seed(42)
 def deepwalk_walk_wrapper(class_instance, walk_length, start_node):
     class_instance.deepwalk_walk(walk_length, start_node)
 
@@ -15,9 +13,7 @@ class BasicWalker:
         self.start_nodes = start_nodes
 
     def deepwalk_walk(self, walk_length, start_node):
-        '''
-        Simulate a random walk starting from start node.
-        '''
+        '''Return a uniform random walk from start_node, stopping at dead ends.'''
         G = self.G
 
         walk = [start_node]
@@ -33,17 +29,11 @@ class BasicWalker:
         return walk
 
     def simulate_walks(self, num_walks, walk_length):
-        '''
-        Repeatedly simulate random walks from each node.
-        '''
+        '''Return unique nodes visited by repeated walks from self.start_nodes.'''
         walks = []
 
-        #print('Walk iteration:')
         for walk_iter in range(num_walks):
-            #pool = multiprocessing.Pool(processes = )
-            #print(str(walk_iter+1), '/', str(num_walks))
             for node in self.start_nodes:
-                # walks.append(pool.apply_async(deepwalk_walk_wrapper, (self, walk_length, node, )))
                 walks.extend(self.deepwalk_walk(
                     walk_length=walk_length, start_node=node))
 
@@ -59,9 +49,7 @@ class Walker:
         self.look_up_dict = G.look_up_dict
 
     def node2vec_walk(self, walk_length, start_node):
-        '''
-        Simulate a random walk starting from start node.
-        '''
+        '''Return a node2vec walk from start_node, stopping at dead ends.'''
         G = self.G
         alias_nodes = self.alias_nodes
         alias_edges = self.alias_edges
@@ -89,9 +77,7 @@ class Walker:
         return walk
 
     def simulate_walks(self, num_walks, walk_length):
-        '''
-        Repeatedly simulate random walks from each node.
-        '''
+        '''Return num_walks node2vec walks from each graph node.'''
         G = self.G
         walks = []
         nodes = list(G.nodes())
@@ -106,9 +92,7 @@ class Walker:
         return walks
 
     def get_alias_edge(self, src, dst):
-        '''
-        Get the alias edge setup lists for a given edge.
-        '''
+        '''Build alias tables for transitions after traversing (src, dst).'''
         G = self.G
         p = self.p
         q = self.q
@@ -128,9 +112,7 @@ class Walker:
         return alias_setup(normalized_probs)
 
     def preprocess_transition_probs(self):
-        '''
-        Preprocessing of transition probabilities for guiding the random walks.
-        '''
+        '''Cache node and edge alias tables for random-walk sampling.'''
         G = self.G
 
         alias_nodes = {}
@@ -157,10 +139,9 @@ class Walker:
 
 
 def alias_setup(probs):
-    '''
-    Compute utility lists for non-uniform sampling from discrete distributions.
-    Refer to https://hips.seas.harvard.edu/blog/2013/03/03/the-alias-method-efficient-sampling-with-many-discrete-outcomes/
-    for details
+    '''Build alias tables for a discrete probability distribution.
+
+    Reference: https://hips.seas.harvard.edu/blog/2013/03/03/the-alias-method-efficient-sampling-with-many-discrete-outcomes/
     '''
     K = len(probs)
     q = np.zeros(K, dtype=np.float32)
@@ -190,9 +171,7 @@ def alias_setup(probs):
 
 
 def alias_draw(J, q):
-    '''
-    Draw sample from a non-uniform discrete distribution using alias sampling.
-    '''
+    '''Draw one index from the distribution encoded by alias tables J and q.'''
     K = len(J)
 
     kk = int(np.floor(np.random.rand()*K))

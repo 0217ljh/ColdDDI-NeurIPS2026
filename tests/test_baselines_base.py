@@ -1,8 +1,4 @@
-"""Layer-1 contract tests for the BaselineModel ABC + registry.
-
-Uses a tiny in-test ``MockBaseline`` to lock the public surface
-(register / save / load_baseline dispatcher / list_baselines) without
-depending on any real PyTorch/RDKit baseline implementation.
+"""Test the BaselineModel ABC and registry with a mock, without PyTorch or RDKit.
 """
 
 from __future__ import annotations
@@ -24,15 +20,11 @@ if TYPE_CHECKING:
     from coldddi.data.dataset import PairDataset
 
 
-# -------------------------------------------------------------------
-# Tiny mock baseline (registered into a private name to avoid clashing
-# with real baselines once they land).
-# -------------------------------------------------------------------
+# A private registry name avoids collisions with real baselines.
 
 
 def _make_mock_class():
-    """Build the mock once, lazily, so importing the test module does
-    not have any side effects on the global registry."""
+    """Build the mock lazily to avoid registration at module import."""
     from coldddi.baselines.base import BaselineModel, register, write_manifest
 
     @register("__mock_baseline__")
@@ -78,16 +70,13 @@ def _make_mock_class():
 def MockBaseline():
     cls = _make_mock_class()
     yield cls
-    # Clean up: avoid leaking the mock into the global registry, which
-    # would make later assertions on `list_baselines()` order-dependent.
+    # Remove the mock to keep registry assertions independent of test order.
     from coldddi.baselines.base import _REGISTRY
 
     _REGISTRY.pop("__mock_baseline__", None)
 
 
-# -------------------------------------------------------------------
 # Registry
-# -------------------------------------------------------------------
 
 
 class TestRegistry:
@@ -113,9 +102,7 @@ class TestRegistry:
                 def load(cls, path): ...
 
 
-# -------------------------------------------------------------------
 # Save / load round-trip
-# -------------------------------------------------------------------
 
 
 class TestSaveLoadDispatch:
@@ -174,9 +161,7 @@ class TestSaveLoadDispatch:
             load_baseline(bad)
 
 
-# -------------------------------------------------------------------
 # predict_proba contract
-# -------------------------------------------------------------------
 
 
 class TestPredictContract:
@@ -190,9 +175,7 @@ class TestPredictContract:
         assert out.shape == (3,)
 
 
-# -------------------------------------------------------------------
 # evaluate.py CLI surface
-# -------------------------------------------------------------------
 
 
 class TestEvaluateCLI:

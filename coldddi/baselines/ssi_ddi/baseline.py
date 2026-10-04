@@ -1,15 +1,8 @@
-"""SSI-DDI thin adapter — implementation of :class:`BaselineModel`.
+"""SSI-DDI adapter with molecular GAT, co-attention, and RESCAL scoring.
 
-Wraps :class:`coldddi.baselines.ssi_ddi.models.SSI_DDI` (verbatim GAT
-blocks + co-attention + RESCAL) and
-:mod:`coldddi.baselines.ssi_ddi.mol_features` (per-drug PyG graphs).
-
-The original SSI-DDI scores triples ``(h, t, r)`` over many DDI relation
-types and trains with a margin loss + corruption-based negatives. To
-plug into ColdDDI's binary cold-start contract we collapse to a single
-"interaction" relation (``rel_total=1``, all ``rels=0``) and train with
-binary cross-entropy on ``train + train_negatives``, mirroring how
-DeepDDI / EmerGNN are wired.
+Adapts multi-relation triples to one interaction relation (``rel_total=1``,
+all ``rels=0``), replacing margin loss with binary cross-entropy on the
+dataset's positive and negative pairs.
 """
 
 from __future__ import annotations
@@ -54,9 +47,8 @@ def _drug_smiles_dict(train: "PairDataset") -> dict[str, str]:
 
 
 #: Paper-spec hyperparameters from Appendix C.1 Table 8 (SSI-DDI row).
-#: Materialised at run time by ``evaluate.py --preset paper`` (default).
-#: Note: paper arch constraint ``head_out_feats * n_heads == kge_dim``
-#: per block — 32 * 2 = 64 matches the kge_dim=64 default.
+#: Applied by ``evaluate.py --preset paper``. Every block requires
+#: ``head_out_feats * n_heads == kge_dim`` (32 * 2 = 64 here).
 PAPER_HYPERPARAMS: dict[str, object] = {
     "in_features":            55,
     "hidd_dim":               64,
@@ -77,10 +69,8 @@ class SSIDDIBaseline(BaselineModel):
     Modality: ``"mol"`` — molecular substructure GAT only, no KG
     channel. L6 dispatch produces KPS-F; KPS-mol / KPS-KG are NaN.
 
-    Paper-grade hyperparameters live in :data:`PAPER_HYPERPARAMS`
-    (App C.1 Table 8) and are auto-applied by
-    ``evaluate.py --preset paper`` (default).  Class ``__init__``
-    defaults below are smoke-test values for fast CI.
+    ``evaluate.py --preset paper`` applies :data:`PAPER_HYPERPARAMS`
+    (Appendix C.1 Table 8); constructor defaults are for smoke tests.
     """
 
     VERSION = "1.0"
@@ -105,9 +95,7 @@ class SSIDDIBaseline(BaselineModel):
                 "heads_out_feat_params and blocks_params must have the same "
                 f"length (got {len(heads_out_feat_params)} vs {len(blocks_params)})."
             )
-        # SSI-DDI's RESCAL + co-attention assume per-block embeddings live in
-        # `kge_dim` space, but each block produces `head_out_feats * n_heads`
-        # features. The two must match for every block.
+        # Each block's head_out_feats * n_heads must match RESCAL's kge_dim.
         for h, n in zip(heads_out_feat_params, blocks_params):
             if h * n != kge_dim:
                 raise ValueError(
@@ -135,9 +123,7 @@ class SSIDDIBaseline(BaselineModel):
             return "cuda" if torch.cuda.is_available() else "cpu"
         return d
 
-    # ------------------------------------------------------------------
     # Featurisation
-    # ------------------------------------------------------------------
 
     def _build_graphs(self, train: "PairDataset") -> None:
         smiles = _drug_smiles_dict(train)
@@ -159,9 +145,8 @@ class SSIDDIBaseline(BaselineModel):
     ) -> tuple["Batch", "Batch", "torch.Tensor", np.ndarray]:
         """Build (h_batch, t_batch, rels, kept_mask) for ``pairs``.
 
-        Pairs whose head or tail drug has no graph (missing/unparseable
-        SMILES) are dropped and reported via ``kept_mask`` so the caller
-        can align labels / outputs.
+        Skip pairs with missing graphs; ``kept_mask`` aligns labels and outputs.
+        If none remain, return three ``None`` values and an all-false mask.
         """
         keep_idx: list[int] = []
         h_list: list = []
@@ -186,9 +171,7 @@ class SSIDDIBaseline(BaselineModel):
         mask[np.asarray(keep_idx)] = True
         return h_batch, t_batch, rels, mask
 
-    # ------------------------------------------------------------------
     # ABC surface
-    # ------------------------------------------------------------------
 
     def fit(
         self,
@@ -283,9 +266,7 @@ class SSIDDIBaseline(BaselineModel):
                 "SSIDDIBaseline must be fitted (or loaded) before prediction."
             )
         self._model.eval()
-        # Default: 0.5 for any pair whose drug has no graph (cold-start of
-        # the featurizer, not the splitter — preserves the eval contract
-        # of returning one score per input row).
+        # Missing graphs get 0.5 so every input pair still has a score.
         out = np.full(len(pairs), 0.5, dtype=np.float32)
         for start in range(0, len(pairs), self.batch_size):
             batch = pairs.iloc[start : start + self.batch_size]

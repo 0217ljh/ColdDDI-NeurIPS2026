@@ -1,12 +1,8 @@
 """Atom-level featurizer for SSI-DDI's molecular GAT.
 
-Refactored from ``Code-Released/baseline/SSI-DDI/data_preprocessing.py``
-to drop the source's module-level globals (``df_drugs_smiles``,
-``MOL_EDGE_LIST_FEAT_MTX``, ``ATOM_MAX_NUM`` …) so the same code can
-build features from any SMILES dict — e.g. one keyed by DrugBank IDs.
-
-The atom feature layout is exactly the source's ``atom_features`` (with
-``explicit_H=True``), giving 70 dims per atom:
+Adapted from ``Code-Released/baseline/SSI-DDI/data_preprocessing.py``
+to accept a drug-ID-to-SMILES mapping. The feature layout follows upstream
+``atom_features`` with ``explicit_H=True``, giving 55 dims per atom:
 
 * 44 one-hot atom symbol (with 'Unknown' fallback)
 *  4 numeric (degree/10, implicit valence, formal charge, num radical)
@@ -27,7 +23,7 @@ from torch_geometric.data import Data
 if TYPE_CHECKING:
     pass
 
-# Silence rdkit's noisy parse warnings for malformed SMILES.
+# Suppress RDKit logs, including parse warnings for malformed SMILES.
 RDLogger.DisableLog("rdApp.*")
 
 
@@ -45,8 +41,7 @@ _HYBRIDIZATIONS = [
     Chem.rdchem.HybridizationType.SP3D2,
 ]
 
-#: Total dimension produced by :func:`atom_features`. Useful for tests
-#: and for the baseline's ``in_features`` config.
+#: Feature dimension used by the baseline's ``in_features`` config.
 ATOM_FEATURE_DIM: int = (
     len(_ATOM_SYMBOLS)  # one-hot symbol
     + 4                 # numeric (degree/10, valence, formal charge, radical)
@@ -82,8 +77,7 @@ def atom_features(atom) -> torch.Tensor:
 def mol_to_graph(mol) -> Data | None:
     """Convert an RDKit molecule to a PyG :class:`Data` (no labels).
 
-    Returns ``None`` for empty molecules (zero atoms) — the caller is
-    responsible for skipping these drugs at training time.
+    Return ``None`` for missing or zero-atom molecules; callers must skip them.
     """
     if mol is None or mol.GetNumAtoms() == 0:
         return None
@@ -111,10 +105,7 @@ def build_drug_graphs(
 ) -> tuple[dict[str, Data], list[str]]:
     """Parse SMILES strings → ``{drug_id: pyg.Data}``.
 
-    Drugs whose SMILES fail to parse (or have zero atoms) are skipped
-    and reported as the second return value, matching how the upstream
-    SSI-DDI ``DrugDataset`` filters its triple list against
-    ``MOL_EDGE_LIST_FEAT_MTX``.
+    Skip missing, invalid, or zero-atom SMILES and return their IDs separately.
     """
     graphs: dict[str, Data] = {}
     missing: list[str] = []

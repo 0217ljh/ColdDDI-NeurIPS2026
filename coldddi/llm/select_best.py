@@ -1,36 +1,9 @@
-"""Per-split LoRA checkpoint selection.
+"""Select LoRA checkpoints separately for S0, S1, and S2.
 
-Port of ``Version_1_1/exps/sec5-3/0_select_lora/`` (the two scripts
-``parse_trainer_state.py`` + ``select_best.py``).  Refactored so the
-caller picks the **best checkpoint per validation split** (S0, S1,
-S2) rather than only S2 — useful when paper experiments need a
-per-setting ranking, or when you want to keep separate "best ckpt for
-S0" / "best ckpt for S1" diagnostics alongside the cold-start (S2)
-champion.
-
-Why per-split
--------------
-HuggingFace Trainer's ``metric_for_best_model`` defaults to
-``eval_loss``, which under the multi-eval DataLoader registration
-becomes ``eval_S0_loss`` — so the trainer's "best checkpoint"
-optimises the wrong split for cold-start. Even with our
-``primary_val_split = "S2"`` patch, that only gives ONE best ckpt
-per training run.  L5's job is to expose the per-split rankings so
-downstream experiments can pick whichever split is appropriate.
-
-Three-step pipeline
--------------------
-1. :func:`parse_candidate_ckpts` — read the latest
-   ``checkpoint-*/trainer_state.json``, return a
-   ``{split_name: [CandidateCkpt, ...]}`` dict.  Each split's
-   candidate list = top-K lowest ``eval_{split}_loss`` checkpoints
-   plus the "latest" checkpoint.
-2. :func:`score_candidate_ckpts` — for each (split, candidate),
-   load the LoRA adapter through
-   :class:`coldddi.llm.inference.LLMInferenceRunner`, score the
-   matching ``val_<split>`` dataset, compute ROC-AUC.
-3. :func:`select_best` — per split, pick the highest-AUC candidate;
-   tie-break = earlier step (less over-fit).
+Derived from ``parse_trainer_state.py`` and ``select_best.py`` in
+``Version_1_1/exps/sec5-3/0_select_lora/``. For each split, score the
+lowest-loss candidates and the latest checkpoint on its validation set,
+then select the highest ROC-AUC, breaking ties by earlier step.
 """
 
 from __future__ import annotations
@@ -54,7 +27,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class CandidateCkpt:
-    """One candidate LoRA checkpoint identified by the parser."""
+    """A candidate LoRA checkpoint."""
 
     step: int
     ckpt_path: str
@@ -66,7 +39,7 @@ class CandidateCkpt:
 
 @dataclass
 class ScoredCandidate:
-    """A :class:`CandidateCkpt` after its val_s2 AUC has been computed."""
+    """A :class:`CandidateCkpt` with its validation AUC and sample counts."""
 
     candidate: CandidateCkpt
     val_auc: float
@@ -74,17 +47,14 @@ class ScoredCandidate:
     n_neg: int
 
 
-# ─── Step 1: candidate parser ──────────────────────────────────────────────
+# Candidate parsing
 
 def _find_trainer_state(run_dir: Path) -> Path:
     """Find the most recent ``trainer_state.json`` under ``run_dir``.
 
-    HF Trainer writes one inside every ``checkpoint-*`` dir; the latest
-    checkpoint's trainer_state has the full log history (it accumulates).
-    We **prefer** the latest checkpoint's copy over any top-level
-    ``trainer_state.json`` because a stale top-level file (left over
-    from an earlier run that resumed and was interrupted) would
-    otherwise produce the wrong candidate pool.
+    Prefer the latest checkpoint's cumulative log history over the
+    top-level file, which may be stale after an interrupted resumed run.
+    Use the top-level file only if no checkpoint copy exists.
     """
     candidates = sorted(
         run_dir.glob("checkpoint-*/trainer_state.json"),
@@ -111,9 +81,8 @@ def _on_disk_ckpt_steps(run_dir: Path) -> set[int]:
     return out
 
 
-#: Default validation splits we surface in :func:`parse_candidate_ckpts`.
-#: Only ``"S2"`` is materialised by default — paper Table 5/6 / Table 8
-#: report cold-start S2; S0 and S1 are diagnostic and opt-in.
+#: :func:`parse_candidate_ckpts` defaults to cold-start S2, as reported in
+#: paper Tables 5, 6, and 8. S0/S1 diagnostics are opt-in.
 DEFAULT_VAL_SPLITS: tuple[str, ...] = ("S2",)
 
 
@@ -124,7 +93,7 @@ def _candidates_for_one_key(
     eval_metric_key: str,
     topk: int,
 ) -> list[CandidateCkpt]:
-    """Top-K (lowest eval_metric_key) + latest, ordered ascending."""
+    """Return top-K by lowest eval_metric_key plus latest, sorted by loss/step."""
     rows: list[CandidateCkpt] = []
     for step, d in by_step.items():
         if step not in on_disk:
@@ -142,7 +111,7 @@ def _candidates_for_one_key(
             )
         )
 
-    # Stable sort: ascending (eval_loss, step) — ties go to earlier step.
+    # Sort by ascending (eval_loss, step); ties favor the earlier step.
     rows.sort(key=lambda r: (
         r.eval_loss if r.eval_loss is not None else float("inf"),
         r.step,
@@ -151,7 +120,7 @@ def _candidates_for_one_key(
     for i, r in enumerate(top):
         r.tag = f"min_{eval_metric_key}_{i + 1}"
 
-    # Always include the "latest" checkpoint.
+    # Always include the latest checkpoint.
     latest_step = max(on_disk)
     latest_match = next((r for r in top if r.step == latest_step), None)
     if latest_match is None:
@@ -181,44 +150,35 @@ def parse_candidate_ckpts(
     splits: tuple[str, ...] = DEFAULT_VAL_SPLITS,
     topk: int = 1,
 ) -> dict[str, list[CandidateCkpt]]:
-    """Identify top-K lowest-eval-loss + latest ckpts **per validation split**.
+    """Return top-K lowest-loss checkpoints plus latest for each validation split.
 
     Parameters
     ----------
     run_dir
-        Training-run output directory (the one passed as
-        ``output_dir`` to :class:`coldddi.llm.trainer.LoRATrainer`).
-        Must contain ``checkpoint-<step>/`` subdirs.
+        :class:`coldddi.llm.trainer.LoRATrainer`'s ``output_dir``,
+        containing ``checkpoint-<step>/`` subdirectories.
     splits
-        Which validation splits to rank by.  Default ``("S2",)`` —
-        the cold-start setting paper Table 8 evaluates on.  Pass
-        ``("S0", "S1", "S2")`` to materialise all three rankings
-        (diagnostic).  Each entry in this tuple is looked up as
-        ``eval_<split>_loss`` in the trainer log history.
+        Validation splits to rank, defaulting to ``("S2",)`` for the
+        cold-start setting in paper Table 8. ``("S0", "S1", "S2")``
+        includes all diagnostic rankings. Each split uses its
+        ``eval_<split>_loss`` key in the trainer log history.
     topk
-        How many lowest-loss checkpoints to keep per split.  Default
-        ``1`` — matches the upstream ``Code-Released`` convention
-        (one ckpt per setting) and means L5 effectively does
-        AUC-validation of HF Trainer's per-split loss winner.  Pass
-        ``topk > 1`` to scan extra candidates as a loss-vs-AUC
-        ranking hedge.
+        Lowest-loss checkpoints to keep per split. Default ``1`` matches
+        upstream ``Code-Released`` (one per setting), validating the loss
+        winner by AUC. ``topk > 1`` tests more candidates when loss and AUC
+        rankings differ.
 
     Returns
     -------
-    Dict mapping each requested split name to a sorted list of
-    :class:`CandidateCkpt` (ascending eval loss then step).  Splits
-    whose log key never appears in the history (e.g. you only
-    trained with S2 eval but asked for S0) are still in the dict but
-    map to a one-element list containing only the latest checkpoint
-    (with ``eval_loss=None``).  Splits whose checkpoint dirs were
-    pruned by ``save_total_limit`` are filtered out.
+    Dict mapping each split to :class:`CandidateCkpt` entries sorted by
+    ascending eval loss, then step. A split with no logged eval key maps
+    to only the latest checkpoint with ``eval_loss=None``. Checkpoints
+    pruned by ``save_total_limit`` are excluded.
 
     Notes
     -----
-    If ``run_dir`` has no on-disk ``checkpoint-*`` directories, every
-    requested split maps to an empty list and the caller is expected
-    to detect the empty result downstream (this lets a smoke test on a
-    pruned run inspect the empty manifest without crashing).
+    With no on-disk ``checkpoint-*`` directories, each split maps to an
+    empty list; callers must handle that result.
     """
     run_dir = Path(run_dir)
     on_disk = _on_disk_ckpt_steps(run_dir)
@@ -233,7 +193,7 @@ def parse_candidate_ckpts(
     except FileNotFoundError:
         log = []
 
-    # Pivot log_history into a per-step dict of eval metrics.
+    # Group evaluation metrics by step.
     by_step: dict[int, dict] = defaultdict(dict)
     for row in log:
         step = row.get("step")
@@ -252,9 +212,7 @@ def parse_candidate_ckpts(
                 run_dir, on_disk, by_step, key, topk
             )
         else:
-            # Split's eval key is missing from every log row.  We can
-            # still return the latest ckpt so a downstream "best
-            # available" path keeps working.
+            # Without this split's eval key, use the latest checkpoint.
             out[split] = [
                 CandidateCkpt(
                     step=latest_step,
@@ -267,16 +225,12 @@ def parse_candidate_ckpts(
     return out
 
 
-# ─── Step 2: per-candidate val_S2 scoring ──────────────────────────────────
+# Per-split candidate scoring
 
 def _val_split_name(split: str) -> str:
-    """``"S2"`` → ``"val_s2"``.
+    """Map eval-log split names to :attr:`PairDataset.splits` names.
 
-    :attr:`PairDataset.splits` exposes the validation splits as
-    ``val_s0`` / ``val_s1`` / ``val_s2`` (lowercase, snake-cased).
-    L5's per-split key (passed in via the ``splits=`` argument) is the
-    short form ``S0`` / ``S1`` / ``S2``, matching the eval log key
-    convention.  This helper bridges the two.
+    ``S0`` / ``S1`` / ``S2`` become ``val_s0`` / ``val_s1`` / ``val_s2``.
     """
     return f"val_{split.lower()}"
 
@@ -302,14 +256,10 @@ def _build_eval_samples(
             f"{[k for k, df in dataset.splits.items() if not df.empty]}"
         )
     pos_df = pos_df[["drug_a_id", "drug_b_id"]].copy()
-    # Prefer cached static negatives over the regeneration path so the
-    # eval pair list lines up exactly with the cached set that
-    # ``build_fewshot_smiles_map`` / ``build_fewshot_2hop_map`` indexed.
-    # If a dataset has no cached negatives for this split, fall back to
-    # the sampler — but then the few-shot map will also have lacked
-    # those rows, so the P2/P5 prompt would degenerate to zero-shot for
-    # the regenerated negatives; this is at most a contract mismatch
-    # for fixtures that explicitly skipped pre-sampling.
+    # Cached negatives match the pairs indexed by build_fewshot_smiles_map
+    # and build_fewshot_2hop_map. If absent, use the sampler; regenerated
+    # negatives lack few-shot entries, so their P2/P5 prompts become zero-shot.
+    # This can affect fixtures that skip pre-sampling.
     cached_negs = getattr(dataset, "negatives_by_split", {}) or {}
     cached_neg_df = cached_negs.get(val_split)
     if cached_neg_df is not None and len(cached_neg_df):
@@ -365,7 +315,7 @@ def score_candidate_ckpts(
     no_token: str = " No",
     shuffle_seed: int = 20260511,
 ) -> dict[str, list[ScoredCandidate]]:
-    """Score every candidate against ITS OWN val split.
+    """Score each candidate on its own validation split.
 
     Parameters
     ----------
@@ -373,16 +323,14 @@ def score_candidate_ckpts(
         Output of :func:`parse_candidate_ckpts` —
         ``{"S0": [...], "S1": [...], "S2": [...]}``.
     base_model_name
-        Base causal-LM identifier; the LoRA adapter is layered on top.
+        Base causal-LM identifier for the LoRA adapters.
     dataset
-        Loaded :class:`PairDataset` carrying every needed validation
-        split.  For each split key ``"Sx"`` in ``candidates_by_split``,
-        the dataset must have ``splits.val_sx`` populated.
+        :class:`PairDataset` with ``splits.val_sx`` populated for each
+        ``"Sx"`` key in ``candidates_by_split``.
     prompt_cfg, subgraph_map, fewshot_map
         Forwarded to :func:`to_llm_samples` and the inference runner.
-        Must match what the LoRA was trained against — pass the same
-        ``prompt_cfg`` you handed to :meth:`LoRATrainer.fit` (or
-        :func:`read_fit_info` it back from the run dir).
+        Must match training: use the ``prompt_cfg`` passed to
+        :meth:`LoRATrainer.fit` or recover it with :func:`read_fit_info`.
     key_entity_map
         Optional ``{(drug_a_id, drug_b_id): {key_entity_name, ...}}``.
         Required for the ``OHS_Mask_Entity`` / ``OHS_Mask_Name_Entity``
@@ -391,18 +339,13 @@ def score_candidate_ckpts(
     n_neg_per_pos
         Negatives per positive in the eval pair list.
     yes_token, no_token
-        Answer-token strings the LoRA was trained against.  Must match
-        ``LLMTrainerConfig.yes_token`` / ``no_token``; the easiest way
-        to ensure that is to read them from the run dir's
-        ``fit_info.json`` via :func:`read_fit_info`.  Defaults match
-        the trainer defaults (`` Yes`` / `` No``).
+        Must match ``LLMTrainerConfig.yes_token`` / ``no_token`` used in
+        training. Recover them from ``fit_info.json`` with :func:`read_fit_info`.
+        Defaults match the trainer (`` Yes`` / `` No``).
     shuffle_seed
-        Seed reapplied to NumPy's global RNG before scoring **each**
-        candidate.  This pins few-shot example ordering across
-        candidates so per-checkpoint AUC comparisons stay valid for
-        P2 / P5 prompts (their ``_fewshot_*_block`` helpers shuffle
-        in-place).  Pass ``None`` to disable the reseed (back-compat
-        with non-fewshot methods that are insensitive to this).
+        Reseed NumPy's global RNG before each candidate to keep few-shot
+        order fixed for AUC comparisons. ``None`` disables reseeding;
+        non-fewshot methods are unaffected.
 
     Returns
     -------
@@ -420,9 +363,7 @@ def score_candidate_ckpts(
 
     drug_id2name, drug_id2smiles = _drug_lookup_tables(dataset)
 
-    # Pre-build per-split eval pair lists (samples + y_true) ONCE so
-    # the (potentially expensive) to_llm_samples call doesn't repeat
-    # per candidate.
+    # Build each split's samples and labels once for all candidates.
     eval_packs: dict[str, tuple] = {}
     for split in candidates_by_split:
         eval_packs[split] = _build_eval_samples(
@@ -433,20 +374,11 @@ def score_candidate_ckpts(
             fewshot_map=fewshot_map,
         )
 
-    # ── Base + ALL adapters resident; swap via set_adapter ─────────
-    # Pattern mirrored from upstream Code-Released ``train_t48.py``:
-    #   1. Load base ONCE via LLMInferenceRunner (no adapter).
-    #   2. Pre-register EVERY unique candidate ckpt as a named adapter
-    #      on the same PeftModel. Each LoRA is <50 MB on disk; 9 of
-    #      them ≈ 0.5 GB of GPU memory — negligible next to the
-    #      multi-GB base.
-    #   3. At scoring time just call ``peft_model.set_adapter(name)``
-    #      which is a ~O(num_lora_modules) attribute flip (no disk
-    #      IO, no weight copy). This is the key to keeping per-cand
-    #      cost near "forward only" rather than "reload-everything".
+    # As in upstream train_t48.py, load the base once, keep adapters resident,
+    # and switch with set_adapter(name).
     base_runner = LLMInferenceRunner(LLMRunnerConfig(
         model_name=base_model_name,
-        adapter_path=None,            # base only here
+        adapter_path=None,            # base model only
         dtype=dtype,
         device=device,
         batch_size=batch_size,
@@ -456,13 +388,11 @@ def score_candidate_ckpts(
         no_token=no_token,
     ))
     base_runner.load()
-    base_model = base_runner.model    # clean causal-LM with no adapter
+    base_model = base_runner.model    # no adapter
 
     from peft import PeftModel
 
-    # Step 2: collect unique (split, cand.ckpt_path) pairs and
-    # register all adapters up front. Adapter names encode their
-    # source so the per-candidate set_adapter is deterministic.
+    # Name adapters by source split and step for deterministic selection.
     def _adapter_name(split: str, step: int) -> str:
         return f"{split}__step{step}"
 
@@ -472,10 +402,7 @@ def score_candidate_ckpts(
         for cand in candidates:
             if not os.path.isdir(cand.ckpt_path):
                 continue
-            # Reuse an existing adapter_name if the same ckpt_path
-            # appears in multiple splits' top-K (rare but possible
-            # when training picks the same step as the per-split
-            # winner).
+            # Reuse adapters shared by multiple splits' top-K lists.
             if cand.ckpt_path in registered:
                 continue
             name = _adapter_name(split, cand.step)
@@ -492,7 +419,7 @@ def score_candidate_ckpts(
                     )
                 registered[cand.ckpt_path] = name
             except Exception as e:
-                # Bad on-disk adapter — surface via NaN AUC below.
+                # Record failed adapter loads as NaN AUC below.
                 print(
                     f"[L5 score_candidate_ckpts] load_adapter failed for "
                     f"{cand.ckpt_path}: {type(e).__name__}: {e}"
@@ -516,16 +443,10 @@ def score_candidate_ckpts(
                 df = None
                 try:
                     peft_model.set_adapter(registered[cand.ckpt_path])
-                    # Reseed NumPy's global RNG so every candidate sees
-                    # the same few-shot shuffle order — otherwise
-                    # per-ckpt AUC gets confounded by prompt-rendering
-                    # noise (P2 / P5).
+                    # Fix the P2/P5 few-shot shuffle order across candidates.
                     if shuffle_seed is not None:
                         np.random.seed(int(shuffle_seed))
-                    # Score via a shim runner that reuses tokenizer +
-                    # yes/no ids from base_runner and routes forward
-                    # through the LoRA-wrapped model (active adapter
-                    # = the one we just selected).
+                    # Reuse the base tokenizer and answer IDs with the active adapter.
                     active_runner = _make_scratch_runner(
                         base_runner, peft_model,
                     )
@@ -566,14 +487,10 @@ def score_candidate_ckpts(
 
 
 def _make_scratch_runner(base_runner: "LLMInferenceRunner", peft_model):
-    """Build a runner-like object that scores via ``peft_model`` while
-    reusing tokenizer / yes-no token ids from ``base_runner``.
+    """Score via ``peft_model`` with ``base_runner``'s tokenizer and answer IDs.
 
-    We don't subclass or instantiate ``LLMInferenceRunner`` afresh —
-    instead we hand back a shim whose ``score_samples`` matches the
-    base runner's signature but routes the forward through the
-    LoRA-wrapped model.  Keeps ``LLMInferenceRunner``'s public API
-    untouched.
+    The shim keeps ``LLMInferenceRunner.score_samples``'s signature and
+    routes forward passes through the LoRA-wrapped model without reloading.
     """
     from coldddi.llm.inference import LLMInferenceRunner
 
@@ -587,7 +504,7 @@ def _make_scratch_runner(base_runner: "LLMInferenceRunner", peft_model):
     return shim
 
 
-# ─── Step 3: pick best + emit manifest ─────────────────────────────────────
+# Best-checkpoint selection and manifest
 
 def _select_best_one_split(
     split: str,
@@ -645,9 +562,8 @@ def select_best(
     Raises
     ------
     ValueError
-        If any split has no valid (non-NaN) candidate — surface the
-        failure rather than silently dropping a split, so callers
-        always get a complete manifest.
+        If any split has no valid (non-NaN) candidate; splits are never
+        silently dropped.
     """
     out: dict[str, dict] = {}
     for split, scored in scored_by_split.items():
@@ -668,22 +584,20 @@ def _is_nan(x: float) -> bool:
     return isinstance(x, float) and x != x
 
 
-# ─── fit_info.json read-back ────────────────────────────────────────────────
+# Training contract
 
 def read_fit_info(run_dir: str | Path) -> dict:
     """Read ``fit_info.json`` from a :class:`LoRATrainer` output dir.
 
-    Returns the persisted training contract (yes/no token, base
-    model name, prompt method etc.) so downstream stages can
-    reconstruct the inference configuration without having to
-    re-pass it manually.
+    Returns the training contract (answer tokens, base model, prompt method,
+    etc.) needed to reconstruct the inference configuration.
 
     Raises
     ------
     FileNotFoundError
-        If ``run_dir/fit_info.json`` doesn't exist (the trainer
-        always writes it on :meth:`LoRATrainer.fit` completion;
-        absence means the run never finished or was wiped).
+        If ``run_dir/fit_info.json`` is missing. :meth:`LoRATrainer.fit`
+        writes it on completion; a missing file indicates an unfinished
+        or deleted run.
     """
     p = Path(run_dir) / "fit_info.json"
     if not p.is_file():
@@ -701,23 +615,17 @@ def assert_prompt_cfg_matches_fit_info(
     *,
     strict: bool = False,
 ) -> None:
-    """Warn (or raise) when a val/test ``prompt_cfg`` diverges from
-    the contract the LoRA was actually trained under.
+    """Warn or raise when val/test ``prompt_cfg`` differs from training.
 
-    Compares three fields recorded in :func:`LoRATrainer.fit`'s
-    ``fit_info.json``:
+    Compare three fields in :func:`LoRATrainer.fit`'s ``fit_info.json``:
 
-    * ``method`` — canonicalised via :func:`canon_method` so aliases
-      (``"One_Hop_Subgraph_Sequence"`` / ``"ohs"`` / etc.) don't
-      false-alarm.
-    * ``task_name`` — drives the system/instruction header text;
-      mismatch = different task framing.
-    * ``model_name`` — drives the chat-template family
-      (Llama / Qwen / Gemma); mismatch = different prompt structure
-      even at the same method/task.
+    * ``method``: canonicalise with :func:`canon_method` so aliases such as
+      ``"One_Hop_Subgraph_Sequence"`` / ``"ohs"`` compare equal.
+    * ``task_name``: determines the system/instruction header.
+    * ``model_name``: compare chat-template families (Llama / Qwen / Gemma),
+      which determine prompt structure even for the same method and task.
 
-    Pass ``strict=True`` to raise instead of warning — useful in CI
-    runs where a divergence indicates a config bug.
+    ``strict=True`` raises instead of warning.
     """
     import warnings
 
@@ -725,11 +633,11 @@ def assert_prompt_cfg_matches_fit_info(
 
     fit_prompt = fit_info.get("prompt_cfg") or {}
     if not fit_prompt:
-        return  # train run didn't record a prompt_cfg — nothing to compare.
+        return  # No recorded prompt_cfg to compare.
 
     diffs: list[str] = []
 
-    # Method — canonicalise before comparing so alias forms agree.
+    # Canonicalize methods so aliases compare equal.
     fit_method = fit_prompt.get("method")
     cur_method = getattr(prompt_cfg, "method", None)
     if fit_method is not None and cur_method is not None:
@@ -741,23 +649,19 @@ def assert_prompt_cfg_matches_fit_info(
                     f"vs {canon_method(cur_method)!r})"
                 )
         except Exception:
-            # canon_method shouldn't raise on a registered alias;
-            # fall back to a raw equality check so we never lose the
-            # signal silently.
+            # If canonicalization fails, compare raw values.
             if cur_method != fit_method:
                 diffs.append(
                     f"method: train={fit_method!r} vs val={cur_method!r}"
                 )
 
-    # Task name — affects the system header text.
+    # Task name determines the system header.
     fit_task = fit_prompt.get("task_name")
     cur_task = getattr(prompt_cfg, "task_name", None)
     if fit_task is not None and cur_task is not None and fit_task != cur_task:
         diffs.append(f"task_name: train={fit_task!r} vs val={cur_task!r}")
 
-    # Model name — affects the chat-template family. Compare family
-    # rather than raw model id so "...-1B" vs "...-3B" of the same
-    # family doesn't false-alarm.
+    # Compare chat-template families, allowing size variants such as 1B and 3B.
     fit_model = fit_prompt.get("model_name")
     cur_model = getattr(prompt_cfg, "model_name", None)
     if fit_model is not None and cur_model is not None:

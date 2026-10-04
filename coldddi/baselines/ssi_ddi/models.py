@@ -1,5 +1,4 @@
-"""SSI-DDI molecular GAT blocks (verbatim from the upstream research
-repo, import paths fixed for in-tree use).
+"""SSI-DDI molecular GAT blocks.
 
 Source: ``Code-Released/baseline/SSI-DDI/models.py``.
 """

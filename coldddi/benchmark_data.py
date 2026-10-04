@@ -48,8 +48,8 @@ def pair_keys(frame: pd.DataFrame, name: str) -> list[tuple[str, str]]:
 def validate_dataset(root: Path, ab_path: Path, seed: int) -> tuple[PairDataset, pd.DataFrame, dict]:
     """Load and validate IDs, labels, partitions, annotations and used input files.
 
-    Negative pairs may recur across epochs/evaluation folds in the existing
-    sampler. Such overlap is reported, not silently removed or re-sampled.
+    Repeated negative pairs across epochs or evaluation folds are reported,
+    not removed or resampled.
     Positive folds must be disjoint; no negative may be a known positive.
     """
     from coldddi.data.dataset import PairDataset
@@ -132,7 +132,7 @@ def validate_dataset(root: Path, ab_path: Path, seed: int) -> tuple[PairDataset,
         negative_sets[name] = neg
         counts[name] = {"positive": len(keys), "negative": len(neg)}
 
-    # Validate the KG tables actually preferred by the existing loader.
+    # Validate the KG tables selected by the dataset loader.
     for plural, entity in (("enzymes", "enzyme"), ("targets", "target"),
                            ("transporters", "transporter"), ("carriers", "carrier"),
                            ("pathways", "pathway")):

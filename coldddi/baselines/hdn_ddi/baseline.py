@@ -1,14 +1,7 @@
-"""HDN-DDI thin adapter — implementation of :class:`BaselineModel`.
+"""HDN-DDI adapter with intra/inter-graph GAT and super-node readout (``y == 2``).
 
-Wraps :class:`coldddi.baselines.hdn_ddi.models.HDN_DDI` (verbatim
-hierarchical drug-graph network: per-block intra/inter GAT, super-node
-readout via ``y == 2``) and uses
-:mod:`coldddi.baselines.hdn_ddi.mol_features` for the 55-dim atom
-features + super-node molecular graph.
-
-As with the other GNN baselines, multi-relation training is collapsed
-to a single "interaction" relation (``rel_total=1``) and trained with
-binary cross-entropy on ``train + train_negatives``.
+Uses 55-dim atom features and one interaction relation (``rel_total=1``),
+trained with binary cross-entropy on positive and negative pairs.
 """
 
 from __future__ import annotations
@@ -62,8 +55,7 @@ def _bipartite_edge_index(n_s: int, n_t: int) -> torch.Tensor:
 
 
 #: Paper-spec hyperparameters from Appendix C.1 Table 8 (HDN-DDI row).
-#: Same arch dims as DSN-DDI per paper (both are dual-view GAT with
-#: the same 128-dim hierarchical encoder).
+#: Uses the same 128-dim dual-view attention output as DSN-DDI.
 PAPER_HYPERPARAMS: dict[str, object] = {
     "in_features":            55,
     "hidd_dim":               128,
@@ -85,10 +77,8 @@ class HDNDDIBaseline(BaselineModel):
     no KG channel. L6 dispatch produces KPS-F; KPS-mol / KPS-KG
     are NaN.
 
-    Paper-grade hyperparameters live in :data:`PAPER_HYPERPARAMS`
-    (App C.1 Table 8) and are auto-applied by
-    ``evaluate.py --preset paper`` (default).  Class ``__init__``
-    defaults below are smoke-test values for fast CI.
+    ``evaluate.py --preset paper`` applies :data:`PAPER_HYPERPARAMS`
+    (Appendix C.1 Table 8); constructor defaults are for smoke tests.
     """
 
     VERSION = "1.0"
@@ -112,9 +102,8 @@ class HDNDDIBaseline(BaselineModel):
             raise ValueError(
                 "heads_out_feat_params and blocks_params must have the same length."
             )
-        # Same architectural invariant as DSN-DDI: intra/inter attention
-        # outputs are hardcoded to 32*2=64 dims each, so concat = 128 and
-        # `n_heads * head_out_feats == 128 == kge_dim` is required.
+        # Intra/inter attention each output 64 dims; their concatenation
+        # requires n_heads * head_out_feats == kge_dim == 128.
         for h, n in zip(heads_out_feat_params, blocks_params):
             if h * n != 128:
                 raise ValueError(
@@ -190,9 +179,7 @@ class HDNDDIBaseline(BaselineModel):
         mask[np.asarray(keep_idx)] = True
         return h_batch, t_batch, rels, b_batch, mask
 
-    # ------------------------------------------------------------------
     # ABC surface
-    # ------------------------------------------------------------------
 
     def fit(
         self,

@@ -35,9 +35,8 @@ _IMPL_VAL = list(range(11))       # 0..10
 _BOND_TYPES = ["SINGLE", "DOUBLE", "TRIPLE", "AROMATIC"]
 _BOND_TYPE_IDX = {bt: i for i, bt in enumerate(_BOND_TYPES)}
 
-#: 44 + 11 + 11 + 1 = 67 dims per atom (matches upstream
-#: ``atom_features``). The upstream default ``num_features_drug=78`` is
-#: legacy; we use the actual emitted dim.
+#: 44 + 11 + 11 + 1 = 67 dims, matching upstream atom_features rather than
+#: its legacy num_features_drug=78 default.
 ATOM_FEATURE_DIM: int = (
     len(_ATOM_SYMBOLS) + len(_NUM_HS) + len(_IMPL_VAL) + 1
 )
@@ -68,9 +67,11 @@ def _atom_feature_vector(atom) -> np.ndarray:
 
 
 def _shortest_path_pairs(edge_index_np: np.ndarray) -> np.ndarray:
-    """Return ``[[i, j, len_ij], …]`` for every (i,j) reachable in the
-    molecular graph (including i==i with length 0). Mirrors upstream's
-    ``calculate_shortest_path``."""
+    """Return ``[[i, j, len_ij], …]`` for nodes present in the edge list.
+
+    Include reachable pairs and length-zero self-pairs, as in upstream
+    ``calculate_shortest_path``. Isolated atoms absent from the edges are omitted.
+    """
     g = nx.DiGraph()
     g.add_edges_from(edge_index_np.tolist())
     rows = []

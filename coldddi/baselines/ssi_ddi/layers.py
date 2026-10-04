@@ -1,6 +1,4 @@
-"""SSI-DDI co-attention + RESCAL scoring head (verbatim from the
-upstream research repo; import-only module so the model code does not
-depend on :mod:`coldddi.baselines.ssi_ddi.baseline`).
+"""SSI-DDI co-attention and RESCAL scoring head.
 
 Source: ``Code-Released/baseline/SSI-DDI/layers.py``.
 """

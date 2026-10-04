@@ -1,26 +1,18 @@
-"""Cross-method / cross-seed aggregators for ``runs/`` artefacts.
+"""Aggregate ``runs/`` results across methods and seeds.
 
-Backs the four paper-promised reproducibility helpers
-(``exps/sec5_{overall,stratified,kps,masking}.sh``) by walking the
-``runs/<method>/seed<N>/`` directory tree that ``evaluate.py``
-populates and rolling the per-pair predictions / per-bucket
-indicators up into the final paper-table shape.
+Used by ``exps/sec5_{overall,stratified,kps,masking}.sh`` to summarize
+``evaluate.py`` outputs under ``runs/<method>/seed<N>/``.
 
-Three aggregation modes, mirroring paper §5:
+Modes (paper §5):
 
-* :func:`aggregate_overall`     — overall S2 AUC / AUPRC per method,
-                                  mean ± std across 3 seeds. Paper
-                                  Table for §5.2 (Cold-start results).
-* :func:`aggregate_stratified` — per-bucket (PK-A/PK-B/PD-A/PD-B)
-                                  AUC per method, mean ± std across
-                                  seeds. Paper §5.3 (Stratified
-                                  analysis).
-* :func:`aggregate_kps`         — KPS-F / KPS-mol / KPS-KG per
-                                  (method, bucket), mean ± std across
-                                  seeds. Paper §5.4 (KPS table).
+* :func:`aggregate_overall` — S2 AUC/AUPRC per method (§5.2).
+* :func:`aggregate_stratified` — AUC per method and PK-A/PK-B/PD-A/PD-B
+  bucket (§5.3).
+* :func:`aggregate_kps` — KPS-F/KPS-mol/KPS-KG and KSAI per method and
+  bucket (§5.4).
 
-All three return a long-form ``pandas.DataFrame`` and also write
-a CSV under ``runs/sec5_<mode>.csv`` for downstream tooling.
+Each returns a long-form ``pandas.DataFrame`` with mean ± std across
+seeds (three in the paper). The CLI writes ``runs/sec5_<mode>.csv``.
 """
 
 from __future__ import annotations
@@ -44,18 +36,12 @@ def _iter_method_seed_dirs(
     *,
     flat_method: str | None = None,
 ) -> Iterable[tuple[str, int, Path]]:
-    """Yield ``(method, seed, dir)`` for every seed dir under ``runs_root``.
+    """Yield ``(method, seed, dir)`` for seed directories under ``runs_root``.
 
-    Two layouts supported:
-
-    * **nested** (default): ``runs_root/<method>/seed<N>/``.  Used by
-      the baseline path (``runs/<method>/seed<N>/``).
-    * **flat** (``flat_method`` set): ``runs_root/seed<N>/`` directly.
-      Used by the LLM path where the model + prompt cell already
-      identifies the method, so ``runs_root`` is the cell directory
-      itself (e.g. ``runs/llama-1b/P4``).  The ``flat_method`` arg
-      gives the synthetic method label to emit (e.g.
-      ``"llama-1b_P4"``) so downstream aggregation keeps cell identity.
+    * Nested (default): ``runs_root/<method>/seed<N>/`` for baselines.
+    * Flat (``flat_method`` set): ``runs_root/seed<N>/`` for an LLM
+      model/prompt cell, e.g. ``runs/llama-1b/P4``. Emit ``flat_method``
+      (e.g. ``"llama-1b_P4"``) as the label to preserve cell identity.
     """
     if not runs_root.is_dir():
         return
@@ -85,14 +71,10 @@ def _iter_method_seed_dirs(
             yield method, int(m.group(1)), seed_dir
 
 
-# ─── Overall AUC ────────────────────────────────────────────────────
-
 def _safe_auc(y_true: np.ndarray, y_score: np.ndarray) -> float:
-    """ROC-AUC with graceful fallback when only one class present.
+    """Return ROC-AUC, or NaN for single-class folds or scoring errors.
 
-    Single-class folds happen on tiny smoke fixtures — return NaN so
-    the downstream aggregation skips them rather than crashing the
-    whole table.
+    Downstream aggregation excludes NaN folds.
     """
     try:
         from sklearn.metrics import roc_auc_score
@@ -122,12 +104,11 @@ def aggregate_overall(
     methods: Iterable[str] | None = None,
     flat_method: str | None = None,
 ) -> pd.DataFrame:
-    """Roll up per-method overall AUC / AUPRC across seeds.
+    """Aggregate per-method AUC/AUPRC across seeds.
 
-    Reads ``predictions_<setting>_seed{N}.csv`` from every seed
-    directory under each method.  Computes AUC + AUPRC per seed,
-    aggregates mean ± std across seeds.  Returns long-form
-    DataFrame ``[method, metric, mean, std, n_seeds, seeds]``.
+    Read ``predictions_<setting>_seed{N}.csv`` per seed and compute
+    mean ± std of per-seed AUC/AUPRC. Return long-form DataFrame
+    ``[method, metric, mean, std, n_seeds, seeds]``.
     """
     rows: list[dict] = []
     for method, seed, seed_dir in _iter_method_seed_dirs(
@@ -160,9 +141,7 @@ def aggregate_overall(
         vals = non_nan["value"].to_numpy()
         if len(vals) == 0:
             continue
-        # ``seeds`` lists only the seeds whose AUROC/AUPRC was
-        # actually finite — single-class splits drop out of the
-        # mean AND the seed list so the audit string matches n_seeds.
+        # Exclude NaN metrics from the mean, n_seeds, and seed list alike.
         out_rows.append({
             "method": m,
             "metric": met,
@@ -174,8 +153,6 @@ def aggregate_overall(
     return pd.DataFrame(out_rows)
 
 
-# ─── Stratified AUC ─────────────────────────────────────────────────
-
 def aggregate_stratified(
     runs_root: Path,
     *,
@@ -184,12 +161,11 @@ def aggregate_stratified(
     methods: Iterable[str] | None = None,
     flat_method: str | None = None,
 ) -> pd.DataFrame:
-    """Roll up per-bucket AUC per method, mean ± std across seeds.
+    """Aggregate per-bucket AUC per method, mean ± std across seeds.
 
-    Reads ``predictions_<setting>_seed{N}.csv`` and joins each pair
-    against ``ab_parquet`` (via :func:`coldddi.diagnostics.build_bucket_lookup`)
-    to assign PK-A / PK-B / PD-A / PD-B labels.  Computes AUC per
-    (method, seed, bucket) then aggregates across seeds.
+    Assign PK-A/PK-B/PD-A/PD-B to ``predictions_<setting>_seed{N}.csv``
+    using ``ab_parquet`` and :func:`coldddi.diagnostics.build_bucket_lookup`.
+    Compute AUC per (method, seed, bucket), then aggregate across seeds.
     """
     from coldddi.diagnostics import build_bucket_lookup
 
@@ -241,20 +217,16 @@ def aggregate_stratified(
     return pd.DataFrame(out_rows)
 
 
-# ─── KPS aggregation ────────────────────────────────────────────────
-
 def aggregate_kps(
     runs_root: Path,
     *,
     methods: Iterable[str] | None = None,
     flat_method: str | None = None,
 ) -> pd.DataFrame:
-    """Roll up per-(method, indicator, bucket) KPS / KSAI values
-    across seeds.
+    """Aggregate KPS/KSAI per (method, indicator, bucket) across seeds.
 
-    Reads ``indicators_test_s2_seed{N}.csv`` (written by
-    :func:`coldddi.evaluate._run_indicators_for_test_s2`).  Aggregates
-    mean ± std per (method, indicator, bucket).
+    Read ``indicators_test_s2_seed{N}.csv`` from
+    :func:`coldddi.evaluate._run_indicators_for_test_s2` and compute mean ± std.
     """
     rows: list[dict] = []
     for method, seed, seed_dir in _iter_method_seed_dirs(
@@ -280,13 +252,9 @@ def aggregate_kps(
         non_nan = g.dropna(subset=["value"])
         vals = non_nan["value"].to_numpy()
         if len(vals) == 0:
-            # All-NaN block (single-modality baseline KPS-mol/KPS-KG)
-            # — propagate one NaN row per (method, indicator, bucket)
-            # so the paper table prints "—" cells consistently.  The
-            # ``seeds`` field still lists every seed that contributed
-            # the NaN row (useful for audit: "all 3 seeds were NaN,
-            # not just one") — for non-NaN rows ``seeds`` only lists
-            # the contributing seeds.
+            # Keep all-NaN blocks (e.g. single-modality KPS-mol/KPS-KG)
+            # as NaN rows so tables show "—". Here seeds lists all inputs
+            # despite n_seeds=0; elsewhere it lists only non-NaN inputs.
             out_rows.append({
                 "method": m, "indicator": ind, "bucket": bk,
                 "mean": float("nan"), "std": float("nan"),
@@ -303,8 +271,6 @@ def aggregate_kps(
         })
     return pd.DataFrame(out_rows)
 
-
-# ─── CLI dispatcher ─────────────────────────────────────────────────
 
 def main(argv: Sequence[str] | None = None) -> int:
     """``python -m coldddi.eval.aggregate {overall,stratified,kps} ...``"""
@@ -353,10 +319,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    # --methods (plural, restrict to a subset of registered methods)
-    # is irrelevant in --method (singular, flat-mode) since the latter
-    # forces a synthetic single label.  Reject the combination so a
-    # user that meant one doesn't silently get the other.
+    # A flat-mode label (--method) cannot also filter nested dirs (--methods).
     if args.method is not None and args.methods is not None:
         parser.error(
             "--method and --methods are mutually exclusive: --method "
@@ -385,7 +348,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     out = args.out if args.out is not None else args.runs / f"sec5_{args.mode}.csv"
     df.to_csv(out, index=False)
     print(f"[aggregate] {args.mode} → {out} ({len(df)} rows)", file=sys.stderr)
-    # Also pretty-print to stdout for quick inspection.
     if not df.empty:
         with pd.option_context("display.max_rows", 200, "display.width", 140):
             print(df.to_string(index=False))

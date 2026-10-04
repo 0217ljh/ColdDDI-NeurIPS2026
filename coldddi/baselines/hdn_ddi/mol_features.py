@@ -1,6 +1,6 @@
 """HDN-DDI super-node molecular featurizer (55-dim atom features).
 
-Refactored from the upstream
+Adapted from
 ``Code-Released/baseline/HDN-DDI-NEW/drugbank_test/data_preprocessing.py``
 ``_mol_to_data`` helper. Produces a PyG :class:`Data` per drug with:
 
@@ -12,9 +12,8 @@ Refactored from the upstream
 * ``edge_attr``  — ``[2*n_bonds + 2*n_atoms]`` long bond-type ids
 * ``y``       — ``[n_atoms+1]`` long, atoms = 1, super-node = 2
 
-The super-node ``y == 2`` marker is required by
-:func:`coldddi.baselines.hdn_ddi.models.get_node`, which slices the
-molecular-level embedding from each block's output.
+:func:`coldddi.baselines.hdn_ddi.models.get_node` uses ``y == 2`` to
+select each block's molecular embedding.
 """
 
 from __future__ import annotations
@@ -47,8 +46,7 @@ _BOND_TYPE = {
     rdchem.BondType.AROMATIC: 3,
 }
 
-#: Total dimension of the per-atom feature vector. Matches the upstream
-#: 44+4+5+1+1 = 55 design.
+#: Per-atom feature dimension: 44+4+5+1+1 = 55.
 ATOM_FEATURE_DIM: int = (
     len(_ATOM_SYMBOLS) + 4 + len(_HYBRIDS) + 1 + 1
 )

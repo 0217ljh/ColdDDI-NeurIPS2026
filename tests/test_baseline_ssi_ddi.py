@@ -1,8 +1,4 @@
-"""End-to-end smoke test: SSI-DDI on the toy fixture.
-
-Mirrors :mod:`tests.test_baseline_emergnn` — one tiny ``fit`` on the
-toy 86-drug subset, then verify ``predict_proba`` and the save/load
-round-trip preserve outputs and route through ``load_baseline``.
+"""Test SSI-DDI fitting, predictions, and save/load dispatch on the toy fixture.
 """
 
 from __future__ import annotations

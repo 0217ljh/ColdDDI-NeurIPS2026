@@ -1,16 +1,7 @@
-"""L5 smoke tests: per-split LoRA checkpoint selection pipeline.
+"""Test per-split LoRA checkpoint parsing, selection, and manifests.
 
-Three layers:
-
-* :class:`TestParseCandidateCkpts` — synthetic ``trainer_state.json``
-  + fake ``checkpoint-*`` dirs. Verifies the parser groups
-  candidates per split (S0 / S1 / S2), each ranked independently.
-* :class:`TestSelectBestSyntheticAUCs` — bypasses model scoring with
-  hand-crafted :class:`ScoredCandidate` lists. Verifies per-split
-  manifest assembly + tie-break + NaN handling.
-* :class:`TestEndToEnd` — full L3 → L5 pipeline on the tiny random
-  Llama. Confirms parse → score → select → manifest reconstructs a
-  usable ckpt path per split.
+Synthetic scores cover ties and NaNs; a tiny Llama exercises training through
+scoring and selection to a usable checkpoint path.
 """
 
 from __future__ import annotations
@@ -30,11 +21,9 @@ TINY_MODEL = "hf-internal-testing/tiny-random-LlamaForCausalLM"
 
 
 def _fabricate_run(tmp_path: Path, ckpts: list[tuple[int, dict]]) -> Path:
-    """Create a fake training-run directory.
+    """Create checkpoints from (step, {eval_<split>_loss: value}) entries.
 
-    Each entry of ``ckpts`` is ``(step, {eval_S0_loss: ..., eval_S1_loss: ...,
-    eval_S2_loss: ...})``.  The trainer_state.json is placed inside the
-    LATEST checkpoint dir (L5 prefers the most recent ckpt's copy).
+    Put trainer_state.json in the latest checkpoint, which L5 prefers.
     """
     run_dir = tmp_path / "run"
     run_dir.mkdir()
@@ -56,7 +45,7 @@ def _fabricate_run(tmp_path: Path, ckpts: list[tuple[int, dict]]) -> Path:
     return run_dir
 
 
-# ─── Parser tests ─────────────────────────────────────────────────────────
+# Parser tests
 
 class TestParseCandidateCkpts:
     def test_default_returns_only_s2(self, tmp_path):
@@ -137,7 +126,7 @@ class TestParseCandidateCkpts:
         assert "min_eval_S2_loss" in tag_30
 
 
-# ─── select_best with hand-crafted scores ─────────────────────────────────
+# select_best with hand-crafted scores
 
 class TestSelectBestSyntheticAUCs:
     def _mk(self, step, auc, tag="t"):
@@ -199,16 +188,14 @@ class TestSelectBestSyntheticAUCs:
         assert loaded["S2"]["best_step"] == 10
 
 
-# ─── L3 contract changes ──────────────────────────────────────────────────
+# L3 validation contract.
 
 pytest.importorskip("transformers", reason="transformers required for L5 end-to-end")
 pytest.importorskip("peft", reason="peft required for L5 end-to-end")
 
 
 class TestL3ValSplitContract:
-    """The user's contract: training must accept val_samples, default
-    primary_val_split='S2', S0/S1 are opt-in but ≥1 required when
-    eval_strategy != 'no'."""
+    """Training defaults to S2 validation; evaluation requires at least one split."""
 
     def _build_train_samples(self, n=4):
         from coldddi.llm.prompts.binary_cls import (
@@ -288,7 +275,7 @@ class TestL3ValSplitContract:
         assert s2_losses, "trainer did not produce eval_S2_loss entries"
 
     def test_fit_allows_no_eval_when_strategy_no(self, tmp_path):
-        """Backdoor: setting eval_strategy='no' bypasses the val_samples requirement."""
+        """eval_strategy='no' bypasses the val_samples requirement."""
         from coldddi.llm.trainer import LoRATrainer
 
         cfg = self._trainer_cfg(tmp_path, eval_strategy="no")
@@ -296,7 +283,7 @@ class TestL3ValSplitContract:
         trainer.fit(self._build_train_samples(), val_samples=None)
 
 
-# ─── End-to-end per-split L3 → L5 ─────────────────────────────────────────
+# End-to-end per-split L3 → L5
 
 class TestEndToEnd:
     def test_parse_score_select_per_split(self, tmp_path):
@@ -368,7 +355,6 @@ class TestEndToEnd:
             return val_s2_neg if split == "val_s2" else empty
         ds.get_negatives = _get_negatives  # type: ignore[method-assign]
 
-        # Train with S2 eval
         cfg = LLMTrainerConfig(
             model_name=TINY_MODEL,
             output_dir=str(tmp_path / "ckpts"),
@@ -415,7 +401,6 @@ class TestEndToEnd:
             val_samples={"S2": val_samples},
         )
 
-        # parse → score → select per-split
         cands = parse_candidate_ckpts(cfg.output_dir, splits=("S2",), topk=3)
         assert "S2" in cands and cands["S2"]
         scored = score_candidate_ckpts(

@@ -1,8 +1,4 @@
-"""End-to-end test: EmerGNN on the toy fixture (KG-aware baseline).
-
-Verifies the BaselineModel ABC supports KG-driven baselines:
-fit consumes ``PairDataset.kg``, predict scores arbitrary pairs,
-save/load round-trip preserves predictions.
+"""Test EmerGNN's KG-based fitting, pair scoring, and save/load parity.
 """
 
 from __future__ import annotations
@@ -122,7 +118,7 @@ class TestEmerGNNFailures:
             _kg_to_kb_dict(FakeKG())
 
     def test_dataset_without_drugs_raises(self, tmp_path):
-        """Codex-style fail-fast: missing drugs table → clear ValueError."""
+        """A missing drugs table raises ValueError."""
         from coldddi.baselines.emergnn import EmerGNNBaseline
         from coldddi.data.dataset import PairDataset
         from coldddi.data.kg import KnowledgeGraph

@@ -1,38 +1,19 @@
-"""
-MKG-FENN — refactored for GPU efficiency (NEW version, 1900-drug scalable).
+"""MKG-FENN with precomputed neighbor sampling.
 
-Differences vs the original `MKG-FENN/Code and Datasets/code/modeltask1.py`:
+Adapted from ``MKG-FENN/Code and Datasets/code/modeltask1.py``. Call
+``precompute_adj()`` before forward, once per epoch to resample or once at
+initialization for fixed neighbors. Unlike upstream ``arrge()``, forward
+does not resample. ``drug_name``, ``adj_tail``, and ``adj_relation`` are
+buffers that move with ``model.to(device)``.
 
-  1. **`arrge()` is no longer called inside `forward()`.**
-     The original code resampled all `n_drug` neighbors via Python np.random.choice
-     in every forward call — at 1900 drugs × 4 GNNs × ~5,000 batches/epoch, this
-     became the dominant cost (~38M Python iterations/epoch).
+W1 and W2 have shape (n_drug, emb, emb). Each GNN returns
+(n_drug, embedding_num); FusionLayer gathers the requested pairs.
+GNN1 supplies ghost neighbors for empty rows; GNN3 patches missing KG keys.
 
-     The new version:
-       - exposes `precompute_adj()` on each GNN module, called by the train loop
-         once per epoch (or once at init for fully deterministic neighbor sets);
-       - stores the resulting `adj_tail` / `adj_relation` as registered buffers,
-         so they live on the same device as the model and are visible in forward.
-
-     Semantic change: neighbor sampling cadence changes from per-batch to per-epoch.
-     This is a common simplification in KG-GNN training; the loss/gradient
-     pipeline is otherwise identical to the original.
-
-  2. **All inputs to forward are pre-positioned on GPU** via `register_buffer`.
-     The original `torch.LongTensor(...)` calls inside forward created CPU tensors
-     every batch; here `drug_name`, `adj_tail`, `adj_relation` are buffers and
-     ride the model to the device on `model.to(device)`.
-
-  3. **Architecture, parameter shapes, init, output shape are all unchanged.**
-     - W1, W2 still per-drug `(n_drug, emb, emb)` matrices.
-     - Output of each GNN is still `(n_drug, embedding_num)` — the FusionLayer
-       gathers the batch's drug pairs from this full tensor (unchanged).
-     - Ghost node handling for empty-neighborhood drugs is preserved.
-
-Usage in train script:
+Usage:
     gnn1 = GNN1(...).to(device)
     gnn1.precompute_adj()            # call once per epoch, before forward
-    out, idx = gnn1(idx_batch)       # forward is now pure GPU bmm
+    out, idx = gnn1(idx_batch)
 """
 from __future__ import annotations
 
@@ -41,9 +22,7 @@ import torch
 import torch.nn as nn
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Helper: deterministic, GPU-stationary adjacency precomputation
-# ──────────────────────────────────────────────────────────────────────────────
+# Adjacency sampling
 def _sample_adj(
     kg: dict,
     drug_name_id: dict,
@@ -53,13 +32,11 @@ def _sample_adj(
     ghost_rel_id: int,
     rng: np.random.RandomState,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Replicates the per-drug neighbor sampling of the original `arrge()`.
+    """Sample per-drug neighbors as in upstream ``arrge()``.
 
-    For each drug index i in `drug_name_id`:
-      - if drug i has no neighbors in kg, fill row i with ghost_ent_id / ghost_rel_id
-      - else np.random.choice(n_neighbor, neighbor_sample_size, replace=as_needed)
-
-    Returns adj_tail, adj_relation as int64 arrays of shape (n_drug, neighbor_sample_size).
+    Use replacement when neighbors are scarce and ghost IDs for empty rows.
+    Return adj_tail and adj_relation, int64 arrays of shape
+    (n_drug, neighbor_sample_size).
     """
     adj_tail = np.zeros((n_drug, neighbor_sample_size), dtype=np.int64)
     adj_relation = np.zeros((n_drug, neighbor_sample_size), dtype=np.int64)
@@ -86,7 +63,7 @@ def _sample_adj_no_ghost(
     n_drug: int,
     rng: np.random.RandomState,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Variant for GNN2/GNN4 (original code did not ghost-handle empty neighborhoods)."""
+    """Sample neighbors without ghosts; every drug must have a nonempty row."""
     adj_tail = np.zeros((n_drug, neighbor_sample_size), dtype=np.int64)
     adj_relation = np.zeros((n_drug, neighbor_sample_size), dtype=np.int64)
     for i in drug_name_id:
@@ -100,23 +77,19 @@ def _sample_adj_no_ghost(
     return adj_tail, adj_relation
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# GNN1 — drug-target / drug-substructure / drug-DDI / drug-property channel #1
-# ──────────────────────────────────────────────────────────────────────────────
+# GNN1: drug-entity channel
 class GNN1(nn.Module):
-    """Identical architecture to the original GNN1; only the forward pipeline
-    is rewired so neighbor sampling and tensor-creation happen offline."""
+    """Drug-entity attention using precomputed neighbors and ghost IDs."""
 
     def __init__(self, dataset, tail_len, relation_len, args, dict1, drug_name, **kwargs):
         super().__init__(**kwargs)
         self.kg = dataset["dataset1"]
         self.dict1 = dict1
-        self.drug_name_list = drug_name      # list of drug indices used by original
+        self.drug_name_list = drug_name      # Drug indices.
         self.args = args
         self.n_drug = len(dict1)
         self.neighbor_sample_size = args.neighbor_sample_size
 
-        # Embeddings (identical to original)
         self.drug_embed = nn.Embedding(num_embeddings=self.n_drug,
                                         embedding_dim=args.embedding_num)
         self.ghost_ent_id = tail_len["dataset1"]
@@ -129,7 +102,7 @@ class GNN1(nn.Module):
             self.ent_embed.weight[self.ghost_ent_id].zero_()
             self.rela_embed.weight[self.ghost_rel_id].zero_()
 
-        # Per-drug attention parameters (unchanged shapes)
+        # Per-drug attention parameters.
         self.W1 = nn.Parameter(torch.randn(self.n_drug, args.embedding_num, args.embedding_num))
         self.b1 = nn.Parameter(torch.randn(args.neighbor_sample_size, args.embedding_num))
         self.W2 = nn.Parameter(torch.randn(self.n_drug, args.embedding_num, args.embedding_num))
@@ -151,7 +124,7 @@ class GNN1(nn.Module):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
 
-        # Pre-positioned buffers (resampled by precompute_adj, moved with model.to(device))
+        # Buffers move with the model; precompute_adj resamples adjacency.
         self.register_buffer("drug_name", torch.LongTensor(drug_name))
         self.register_buffer(
             "adj_tail",
@@ -166,9 +139,7 @@ class GNN1(nn.Module):
     def precompute_adj(self, rng: np.random.RandomState | None = None) -> None:
         """Resample per-drug neighbors.
 
-        If `rng` is None, falls back to numpy's GLOBAL RandomState
-        (which is seeded by the train script's `setup_seed`),
-        NOT a fresh OS-entropy state — this preserves run-level reproducibility.
+        ``rng=None`` uses NumPy's global state, seeded by ``setup_seed``.
         """
         if rng is None:
             rng = np.random
@@ -176,7 +147,7 @@ class GNN1(nn.Module):
             self.kg, self.dict1, self.neighbor_sample_size, self.n_drug,
             self.ghost_ent_id, self.ghost_rel_id, rng,
         )
-        # `copy_` handles cross-device transfer itself; skip the redundant .to()
+        # copy_ transfers the CPU arrays to the buffers' device.
         self.adj_tail.copy_(torch.from_numpy(adj_tail), non_blocking=True)
         self.adj_relation.copy_(torch.from_numpy(adj_relation), non_blocking=True)
 
@@ -203,9 +174,7 @@ class GNN1(nn.Module):
         return drug_f, idx
 
 
-# ──────────────────────────────────────────────────────────────────────────────
 # GNN2
-# ──────────────────────────────────────────────────────────────────────────────
 class GNN2(nn.Module):
     def __init__(self, dataset, tail_len, relation_len, args, dict1, drug_name, **kwargs):
         super().__init__(**kwargs)
@@ -246,8 +215,7 @@ class GNN2(nn.Module):
 
     @torch.no_grad()
     def precompute_adj(self, rng: np.random.RandomState | None = None) -> None:
-        """Resample per-drug neighbors. If rng is None, use numpy global state
-        (seeded by setup_seed) — preserves run-level reproducibility."""
+        """Resample neighbors; ``rng=None`` uses NumPy's seeded global state."""
         if rng is None:
             rng = np.random
         adj_tail, adj_relation = _sample_adj_no_ghost(
@@ -277,9 +245,7 @@ class GNN2(nn.Module):
         return drug_f, gnn1_embedding, idx
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# GNN3 — has the special "fill missing drugs with ghost node" prep step
-# ──────────────────────────────────────────────────────────────────────────────
+# GNN3: drug-DDI channel
 class GNN3(nn.Module):
     def __init__(self, dataset, tail_len, relation_len, args, dict1, drug_name, **kwargs):
         super().__init__(**kwargs)
@@ -292,7 +258,7 @@ class GNN3(nn.Module):
 
         self.drug_embed = nn.Embedding(num_embeddings=self.n_drug, embedding_dim=args.embedding_num)
         self.rela_embed = nn.Embedding(num_embeddings=relation_len["dataset3"], embedding_dim=args.embedding_num)
-        # Original: ent_embed uses len(self.dict1) for num_embeddings (drug-drug KG)
+        # Tail entities are drugs in this KG.
         self.ent_embed = nn.Embedding(num_embeddings=self.n_drug, embedding_dim=args.embedding_num)
         self.W1 = nn.Parameter(torch.randn(self.n_drug, args.embedding_num, args.embedding_num))
         self.b1 = nn.Parameter(torch.randn(args.neighbor_sample_size, args.embedding_num))
@@ -318,12 +284,11 @@ class GNN3(nn.Module):
         self.register_buffer("adj_tail", torch.zeros(self.n_drug, self.neighbor_sample_size, dtype=torch.long))
         self.register_buffer("adj_relation", torch.zeros(self.n_drug, self.neighbor_sample_size, dtype=torch.long))
 
-        # GNN3 originally appends a ghost neighbor (tails_num+1, relations_num+1) for drugs
-        # missing from kg. Replicate that here exactly once at init (kg is mutated).
+        # Mutate the KG once to add ghost neighbors for missing drug keys.
         self._initial_kg_patch(tail_len["dataset3"], relation_len["dataset3"])
 
     def _initial_kg_patch(self, tails_num: int, relations_num: int) -> None:
-        """Replicates the in-place kg mutation from original GNN3.arrge()."""
+        """Add (tails_num+1, relations_num+1) for missing drugs, as in GNN3.arrge()."""
         drug_number = list(self.dict1.values())
         drug_list = list(self.kg.keys())
         surplus = set(drug_number).difference(set(drug_list))
@@ -332,8 +297,7 @@ class GNN3(nn.Module):
 
     @torch.no_grad()
     def precompute_adj(self, rng: np.random.RandomState | None = None) -> None:
-        """Resample per-drug neighbors. If rng is None, use numpy global state
-        (seeded by setup_seed) — preserves run-level reproducibility."""
+        """Resample neighbors; ``rng=None`` uses NumPy's seeded global state."""
         if rng is None:
             rng = np.random
         adj_tail, adj_relation = _sample_adj_no_ghost(
@@ -363,9 +327,7 @@ class GNN3(nn.Module):
         return drug_f, gnn2_embedding, gnn1_embedding, idx
 
 
-# ──────────────────────────────────────────────────────────────────────────────
 # GNN4
-# ──────────────────────────────────────────────────────────────────────────────
 class GNN4(nn.Module):
     def __init__(self, dataset, tail_len, relation_len, args, dict1, drug_name, **kwargs):
         super().__init__(**kwargs)
@@ -405,8 +367,7 @@ class GNN4(nn.Module):
 
     @torch.no_grad()
     def precompute_adj(self, rng: np.random.RandomState | None = None) -> None:
-        """Resample per-drug neighbors. If rng is None, use numpy global state
-        (seeded by setup_seed) — preserves run-level reproducibility."""
+        """Resample neighbors; ``rng=None`` uses NumPy's seeded global state."""
         if rng is None:
             rng = np.random
         adj_tail, adj_relation = _sample_adj_no_ghost(
@@ -436,9 +397,7 @@ class GNN4(nn.Module):
         return drug_f, gnn3_embedding, gnn2_embedding, gnn1_embedding, idx
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# FusionLayer — unchanged from original (verified by hand vs source)
-# ──────────────────────────────────────────────────────────────────────────────
+# Pair fusion
 class FusionLayer(nn.Module):
     def __init__(self, args):
         super().__init__()
@@ -464,9 +423,7 @@ class FusionLayer(nn.Module):
     def forward(self, arguments):
         gnn4_embedding, gnn3_embedding, gnn2_embedding, gnn1_embedding, idx = arguments
 
-        # idx is a tensor of shape (batch, 2) on the same device as the embeddings.
-        # The original code did `idx = idx.numpy().tolist()` then list-built drugA/drugB —
-        # we keep the behaviour but stay on-device with index_select.
+        # Keep pair indices (batch, 2) on the embeddings' device.
         if not isinstance(idx, torch.Tensor):
             idx = torch.as_tensor(idx, dtype=torch.long, device=gnn1_embedding.device)
         elif idx.device != gnn1_embedding.device:

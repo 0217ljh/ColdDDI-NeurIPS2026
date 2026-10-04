@@ -1,4 +1,4 @@
-"""DSN-DDI molecular dual-view GAT (verbatim, import paths fixed).
+"""DSN-DDI molecular dual-view GAT.
 
 Source: ``Code-Released/baseline/DSN-DDI/drugbank_test/models.py``.
 """
@@ -119,11 +119,10 @@ class MVN_DDI_Block(nn.Module):
 
 
 class BipartiteData:
-    """Marker class for the (x_s, x_t, edge_index) bipartite graph used
-    by :class:`InterGraphAttention`. Inherits :class:`torch_geometric.data.Data`
-    behaviour by delegation in :func:`make_bipartite_data` so we can
-    keep the surface area minimal — the actual override below ensures
-    PyG batches the bipartite edge_index with the right offsets."""
+    """Marker for (x_s, x_t, edge_index) graphs used by InterGraphAttention.
+
+    :func:`make_bipartite_data` creates the PyG Data with separate node offsets.
+    """
 
 
 def make_bipartite_data(x_s, x_t, edge_index):

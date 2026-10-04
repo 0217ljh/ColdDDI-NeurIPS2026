@@ -1,29 +1,9 @@
-"""Tests for the dual-protocol ``coldddi/data/splits.py``.
+"""Test fair and legacy splitting against paper Table B.1.
 
-After the audit caught that the release was using the legacy
-``cold_start_split_{0,1,2}_step`` protocol while paper Table B.1
-was computed under ``cold_start_split_fair_step``, the splitter
-was refactored to support both protocols with the paper-faithful
-``"fair"`` one as the default.
-
-These tests pin:
-
-1. **Default protocol is "fair"** — protects against the default
-   silently reverting.
-2. **Fair protocol matches paper Table B.1 byte-exactly** — on the
-   real DrugBank ddi_edges (when available), seed 42/43/44 produce
-   the per-bucket counts listed in App B.1.  Skipped if the full
-   dataset isn't reconstructed.
-3. **G1 partition uses ``int(N * g1_ratio)`` not ``N // drug_ratio``**
-   — checks the partition formula directly so the test still has
-   teeth on the toy fixture.
-4. **S0 train/val/test split is 90/5/5** of the G1xG1 pool.
-5. **S1/S2 val/test split is 50/50** of their respective pools.
-6. **Legacy back-compat**: passing ``drug_ratio=X`` auto-routes to
-   ``"legacy"``; pre-audit test fixtures keep working.
-7. **Manifest round-trip** preserves ``protocol`` + ``g1_ratio``.
-8. **Manifest without ``protocol`` field reads as "legacy"** (pre-
-   audit split bundles use this convention).
+Fair is the default: G1 has int(N * g1_ratio) drugs, S0 uses 90/5/5,
+and S1/S2 use 50/50. Explicit drug_ratio selects legacy semantics.
+Manifests preserve protocol/ratio; missing protocol fields mean legacy.
+Full-data counts are checked when reconstructed DrugBank data is available.
 """
 
 from __future__ import annotations
@@ -43,7 +23,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-# ─── Default protocol is "fair" ────────────────────────────────────
+# Default protocol is "fair"
 
 
 class TestDefaultProtocolIsFair:
@@ -77,7 +57,7 @@ class TestDefaultProtocolIsFair:
         assert len(s.g2_drugs) == 4
 
 
-# ─── Fair protocol matches paper Table B.1 byte-exactly ─────────────
+# Fair protocol matches paper Table B.1 byte-exactly
 
 
 @pytest.mark.skipif(
@@ -85,9 +65,7 @@ class TestDefaultProtocolIsFair:
     reason="Full DrugBank ddi_edges.csv not present — run reconstruct.py first.",
 )
 class TestFairProtocolMatchesPaperTableB1:
-    """Paper Table B.1 (Appendix B.1 line 41-52) per-seed positive
-    edge counts on the 1,900-drug full benchmark.  Pinned here so
-    any future regression in the fair protocol fails loudly."""
+    """Match Table B.1's per-seed positive counts on the 1,900-drug benchmark."""
 
     PAPER_SEED_COUNTS: dict[int, dict[str, int]] = {
         42: {
@@ -143,7 +121,7 @@ class TestFairProtocolMatchesPaperTableB1:
         assert s.total_pairs() == 565_731
 
 
-# ─── G1 partition formula ─────────────────────────────────────────
+# G1 partition formula
 
 
 class TestPartitionFormula:
@@ -180,7 +158,7 @@ class TestPartitionFormula:
         assert s.g1_ratio == 0.7
 
 
-# ─── S0/S1/S2 within-pool ratios under fair protocol ───────────────
+# S0/S1/S2 within-pool ratios under fair protocol
 
 
 @pytest.mark.skipif(
@@ -223,14 +201,12 @@ class TestFairProtocolPoolRatios:
         assert len(s.test_s2) / s2_total == pytest.approx(0.5, abs=1e-3)
 
 
-# ─── Back-compat: explicit drug_ratio routes to legacy ─────────────
+# Back-compat: explicit drug_ratio routes to legacy
 
 
 class TestLegacyBackCompat:
     def test_explicit_drug_ratio_routes_to_legacy(self):
-        """Pre-audit test fixtures pass ``drug_ratio=1.5``; the
-        dispatcher must auto-route them to ``"legacy"`` so they get
-        the old behavior without explicit ``protocol="legacy"``."""
+        """Explicit drug_ratio selects legacy behavior when protocol is omitted."""
         from coldddi.data.splits import build_splits
 
         edges = pd.DataFrame(
@@ -265,15 +241,11 @@ class TestLegacyBackCompat:
             build_splits(edges, seed=42, protocol="bogus")
 
 
-# ─── Conflict detection (codex follow-up) ──────────────────────────
+# Protocol conflicts.
 
 
 class TestKnobConflictDetection:
-    """Codex caught: prior implementation silently routed
-    ``protocol='fair'`` + ``drug_ratio=X`` to legacy because the
-    dispatcher couldn't distinguish 'caller omitted protocol' from
-    'caller explicitly passed protocol=fair'.  Now both kwargs are
-    sentinel-backed and incompatible combinations raise."""
+    """Distinguish omitted protocol from explicit fair and reject conflicting kwargs."""
 
     @pytest.fixture
     def edges(self):
@@ -283,8 +255,7 @@ class TestKnobConflictDetection:
         )
 
     def test_explicit_fair_plus_drug_ratio_raises(self, edges):
-        """``protocol='fair', drug_ratio=1.5`` is the codex bug case —
-        used to silently take legacy semantics; now must raise."""
+        """Explicit fair with drug_ratio raises instead of selecting legacy."""
         from coldddi.data.splits import build_splits
 
         with pytest.raises(ValueError, match="legacy kwargs"):
@@ -325,7 +296,7 @@ class TestKnobConflictDetection:
         assert s.val_ratio == 0.1
 
 
-# ─── Manifest round-trip ───────────────────────────────────────────
+# Manifest round-trip
 
 
 class TestManifestRoundTrip:
@@ -366,11 +337,7 @@ class TestManifestRoundTrip:
     def test_pre_audit_manifest_without_protocol_field_reads_as_legacy(
         self, tmp_path,
     ):
-        """Pre-audit split bundles (e.g. ``data/private/intermediate/
-        splits/seed42/``) have no ``protocol`` field in manifest.json
-        — they were generated under the legacy protocol.  Reload must
-        treat them as ``"legacy"`` so any downstream consumer that
-        inspects ``splits.protocol`` makes the right call."""
+        """Manifests without a protocol field load as legacy bundles."""
         from coldddi.data.splits import SPLIT_NAMES, SplitFolds
 
         # Build a minimal manifest that lacks 'protocol' field.
@@ -393,7 +360,7 @@ class TestManifestRoundTrip:
         assert s.protocol == "legacy"
 
 
-# ─── Fair-protocol structural invariants ───────────────────────────
+# Fair-protocol structural invariants
 
 
 @pytest.mark.skipif(

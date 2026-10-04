@@ -1,20 +1,7 @@
-"""End-to-end smoke tests for the ColdDDI release pipeline.
+"""Test every public pipeline stage on data/public/drugbank_toy.xml.
 
-Runs the toy XML at ``data/public/drugbank_toy.xml`` through every
-public stage and asserts the headline numbers that match the paper's
-Appendix A.1 / A.3 expectations on this fixed 100-drug fixture.
-
-These tests are the "lockfile" for the pipeline: any future code change
-that drifts away from the toy fixture's expected counts will fail here.
-
-Layout
-------
-- ``toy_raw_dir``         — Stage 1a output (extract)
-- ``toy_filter_report``   — Stage 1b in-memory result (filter)
-- ``toy_filtered_dir``    — Stage 1b on-disk csvs
-- ``toy_pkpd_labels``     — Stage 2a result
-- ``toy_ab_result``       — Stage 2b (per_pair, per_type) DataFrames
-- ``toy_type_a_tables``   — Stage 2c (mediating_entities, action_pairs)
+Expected counts use the fixed 100-drug fixture and Appendix A.1/A.3 criteria.
+Module-scoped fixtures share extraction, filtering, and annotation outputs.
 """
 
 from __future__ import annotations
@@ -38,9 +25,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-# -------------------------------------------------------------------
 # Fixtures (module-scoped — each pipeline stage runs once for all tests)
-# -------------------------------------------------------------------
 
 
 @pytest.fixture(scope="module")
@@ -113,9 +98,7 @@ def toy_type_a_tables(toy_ab_result):
     return derive_type_a_tables(per_pair)
 
 
-# -------------------------------------------------------------------
 # Stage 1a — extract
-# -------------------------------------------------------------------
 
 
 class TestExtract:
@@ -168,7 +151,7 @@ class TestExtract:
 
 
 def test_parse_empty_xml_has_fixed_schema(tmp_path):
-    """Critical-#3 regression: empty XML produces tables with proper columns."""
+    """Empty XML produces tables with the required columns."""
     from coldddi.data.extract import parse_drugbank_xml
 
     empty_xml = tmp_path / "empty.xml"
@@ -183,9 +166,7 @@ def test_parse_empty_xml_has_fixed_schema(tmp_path):
     assert len(raw.edges) == 0
 
 
-# -------------------------------------------------------------------
 # Stage 1b — filter
-# -------------------------------------------------------------------
 
 
 class TestFilter:
@@ -209,7 +190,7 @@ class TestFilter:
             )
 
     def test_filtered_dir_writes_type_to_text_json(self, toy_filtered_dir):
-        # Major-#10 regression: write_filter_report must persist type_to_text
+        # Persist type_to_text with the filter report.
         assert (toy_filtered_dir / "type_to_text.json").is_file()
 
     def test_filtered_dir_writes_seven_csvs_and_stats(self, toy_filtered_dir):
@@ -218,9 +199,7 @@ class TestFilter:
         assert (toy_filtered_dir / "stats.json").is_file()
 
 
-# -------------------------------------------------------------------
 # Stage 2a — pkpd_keywords
-# -------------------------------------------------------------------
 
 
 class TestPKPD:
@@ -231,7 +210,6 @@ class TestPKPD:
         assert counts.get("PK") == 7
 
     def test_empty_input_returns_fixed_schema(self):
-        # Major-#7 regression
         from coldddi.annotations.pkpd_keywords import label_ddi_types
 
         df = label_ddi_types([])
@@ -241,9 +219,7 @@ class TestPKPD:
         assert len(df) == 0
 
 
-# -------------------------------------------------------------------
 # Stage 2b — ab_subdivision
-# -------------------------------------------------------------------
 
 
 class TestABSubdivision:
@@ -273,7 +249,7 @@ class TestABSubdivision:
     def test_required_csv_missing_raises_fast(
         self, tmp_path, toy_filtered_dir, toy_pkpd_labels
     ):
-        """Critical-#4 regression: missing required entity CSV must fail fast."""
+        """Missing required entity CSVs fail early."""
         from coldddi.annotations.ab_subdivision import run_ab_subdivision
 
         edges = pd.read_csv(toy_filtered_dir / "ddi_edges.csv")
@@ -292,9 +268,7 @@ class TestABSubdivision:
             )
 
 
-# -------------------------------------------------------------------
 # Stage 2c — derive_type_a_tables
-# -------------------------------------------------------------------
 
 
 class TestDeriveTypeA:
@@ -322,7 +296,7 @@ class TestDeriveTypeA:
         ]
 
     def test_string_bool_round_trip(self):
-        """Major-#6 regression: csv-roundtripped 'False' must not be truthy."""
+        """CSV-roundtripped 'False' must not be truthy."""
         from coldddi.annotations.derive_type_a_tables import derive_type_a_tables
 
         df = pd.DataFrame(
@@ -343,11 +317,9 @@ class TestDeriveTypeA:
             }
         )
         mediating, action = derive_type_a_tables(df)
-        # The "False" row must be dropped — the buggy `astype(bool)` would
-        # have kept it (any non-empty string is truthy).
+        # astype(bool) would wrongly retain the non-empty string "False".
         assert len(mediating) == 2
         assert len(action) == 2
-        # Sanity: only the True rows survive.
         assert set(mediating["drug_a_id"]) == {"A1", "C1"}
 
     def test_string_bool_unknown_value_raises(self):
@@ -374,13 +346,11 @@ class TestDeriveTypeA:
             derive_type_a_tables(df)
 
 
-# -------------------------------------------------------------------
 # build_xml_subset — root-tag regression
-# -------------------------------------------------------------------
 
 
 class TestBuildXMLSubset:
-    """Critical-#1 regression: subset XML root must be `<drugbank>`."""
+    """Subset XML retains the <drugbank> root."""
 
     def test_toy_root_tag_is_drugbank(self):
         import xml.etree.ElementTree as ET
@@ -397,9 +367,7 @@ class TestBuildXMLSubset:
         assert root.tag.startswith("{http://www.drugbank.ca}")
 
 
-# -------------------------------------------------------------------
 # Stage 3 — release_parquet
-# -------------------------------------------------------------------
 
 
 @pytest.fixture(scope="module")
@@ -460,8 +428,7 @@ class TestReleaseParquet:
             enriched_dir=toy_enriched_dir, out_dir=out, mode="sample"
         )
         df = pd.read_parquet(written["pkpd"])
-        # toy yields 24 retained types; Stage 3 takes pkpd from
-        # `enriched_dir` directly, so on the toy fixture the count is 24.
+        # Stage 3 takes the toy's 24 retained PK/PD types from enriched_dir.
         assert len(df) == 24
         assert {"ddi_type", "pk_pd_label"}.issubset(df.columns)
 
@@ -476,7 +443,7 @@ class TestReleaseParquet:
         assert len(df) == 1383
 
     def test_ab_has_key_entity_is_real_bool(self, toy_enriched_dir, tmp_path):
-        """Major-#6 corollary: Parquet preserves bool dtype, no string coercion."""
+        """Parquet preserves bool dtype without string coercion."""
         from coldddi.data.release_parquet import dump_release_parquets
 
         out = tmp_path / "rel"

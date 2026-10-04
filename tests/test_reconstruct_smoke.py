@@ -60,7 +60,6 @@ class TestReconstructEndToEnd:
         filtered = toy_recon_root / "intermediate" / "filtered"
         assert (filtered / "drugs.csv").is_file()
         assert (filtered / "stats.json").is_file()
-        # toy lock-in
         drugs = pd.read_csv(filtered / "drugs.csv")
         edges = pd.read_csv(filtered / "ddi_edges.csv")
         assert len(drugs) == 86
@@ -73,7 +72,6 @@ class TestReconstructEndToEnd:
         assert (enriched / "ddi_key_entities_type_summary.csv").is_file()
         assert (enriched / "mediating_entities.parquet").is_file()
         assert (enriched / "action_pairs.parquet").is_file()
-        # toy lock-in
         labels = pd.read_csv(enriched / "ddi_pk_pd_labels.csv")
         ke = pd.read_csv(enriched / "ddi_key_entities.csv")
         assert len(labels) == 24
@@ -107,8 +105,7 @@ class TestReconstructEndToEnd:
                 assert (seed_dir / "train_negatives" / f"epoch_{i}.parquet").is_file()
 
     def test_stage4_no_data_leakage(self, toy_recon_root):
-        """Lock the codex-driven invariant: train must be disjoint from
-        every val/test split for every seed."""
+        """Training pairs are disjoint from every val/test split for every seed."""
         from coldddi.data.splits import SplitFolds
 
         for seed in (42, 43):
@@ -176,8 +173,6 @@ class TestReconstructCLI:
     def test_toy_shortcut_accepted(self, tmp_path, monkeypatch):
         from coldddi.reconstruct import main
 
-        # `--toy` mode requires running from the repo root so the
-        # default toy XML resolves correctly.
         monkeypatch.chdir(REPO_ROOT)
         rc = main(
             [
@@ -200,7 +195,7 @@ class TestReconstructCLI:
             parser.parse_args(["--toy", "--drugbank", "x.xml", "--output", str(tmp_path)])
 
     def test_neither_drugbank_nor_toy_fails(self, tmp_path):
-        """codex m1: argparse must reject runs that pass neither source."""
+        """argparse rejects runs without a data source."""
         from coldddi.reconstruct import _build_parser
 
         parser = _build_parser()
@@ -208,7 +203,7 @@ class TestReconstructCLI:
             parser.parse_args(["--output", str(tmp_path)])
 
     def test_toy_path_is_repo_relative(self, tmp_path, monkeypatch):
-        """codex M2: --toy must work from any cwd, not just repo root."""
+        """--toy works from any working directory."""
         from coldddi.reconstruct import main
 
         # Run from an arbitrary unrelated cwd
@@ -224,8 +219,7 @@ class TestReconstructCLI:
         assert (tmp_path / "out" / "intermediate" / "filtered" / "drugs.csv").is_file()
 
     def test_toy_default_release_mode_is_sample(self, tmp_path, monkeypatch):
-        """codex M1: omitting --release-mode under --toy must pick sample,
-        not let toy artifacts land under outputs_full/."""
+        """--toy defaults to sample mode, keeping toy artifacts out of outputs_full/."""
         from coldddi.reconstruct import main
 
         monkeypatch.chdir(REPO_ROOT)
@@ -242,7 +236,7 @@ class TestReconstructCLI:
         assert not (tmp_path / "outputs_full" / "annotations").exists()
 
     def test_negative_train_epochs_rejected(self, tmp_path):
-        """codex m2: --n-train-negative-epochs cannot be negative."""
+        """--n-train-negative-epochs cannot be negative."""
         from coldddi.reconstruct import run_reconstruction
 
         with pytest.raises(ValueError, match="must be >= 0"):
@@ -256,8 +250,7 @@ class TestReconstructCLI:
 
 
 class TestReconstructPreflight:
-    """codex M3: skipping a stage whose downstream artifacts are missing
-    must raise a clear error before doing any work."""
+    """Reject skipped stages whose required outputs are missing before doing work."""
 
     def test_skip_producer_with_missing_output_raises(self, tmp_path):
         from coldddi.reconstruct import run_reconstruction
@@ -276,7 +269,7 @@ class TestReconstructPreflight:
 
 
 class TestReconstructFullMode:
-    """codex m5: lock the full-mode output layout."""
+    """Verify the full-mode output layout."""
 
     def test_full_mode_writes_outputs_full_annotations(self, tmp_path):
         from coldddi.reconstruct import run_reconstruction
@@ -302,8 +295,7 @@ class TestReconstructFullMode:
 
 
 class TestReconstructIdempotent:
-    """codex m5 + M6: rerunning with the same inputs must converge to
-    the same outputs (and not leave stale per-epoch parquet behind)."""
+    """Reruns preserve outputs and remove stale per-epoch parquets."""
 
     def test_rerun_with_fewer_epochs_cleans_old(self, tmp_path):
         from coldddi.reconstruct import run_reconstruction
@@ -344,7 +336,7 @@ class TestReconstructIdempotent:
 
 
 class TestReconstructLoggerStream:
-    """codex C1: reconstruct progress must go to stderr, not stdout."""
+    """Reconstruction progress goes to stderr, leaving stdout pipe-safe."""
 
     def test_logger_writes_to_stderr(self, tmp_path, capfd):
         from coldddi.reconstruct import run_reconstruction
@@ -356,13 +348,12 @@ class TestReconstructLoggerStream:
         )
         out, err = capfd.readouterr()
         assert "[reconstruct]" in err
-        # Stricter: stdout must stay empty so reconstruct can be piped.
-        # No `[reconstruct]` *and* no `[ab]` stage progress should leak there.
+        # Neither driver nor stage progress may leak to stdout.
         assert out == "", f"stdout should be empty for piping, got: {out!r}"
 
 
 class TestReconstructFullPkpdOverride:
-    """codex m5: --full-pkpd routes the pkpd source for sample mode."""
+    """--full-pkpd selects the PK/PD source in sample mode."""
 
     def test_full_pkpd_csv_takes_priority(self, tmp_path):
         from coldddi.reconstruct import run_reconstruction

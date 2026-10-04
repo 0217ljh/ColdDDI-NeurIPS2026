@@ -1,47 +1,14 @@
-"""Paper-grade LLM runner — single entry point for one model × one prompt
-× one dataset × one seed.
+"""Run LoRA training, checkpoint selection and S2 evaluation for one configuration.
 
-Chains L1 (prompt rendering) → L3 (LoRA FT, multi-split eval) → L5
-(per-split best-ckpt by val AUC) → L2 (test_s2 inference) → L6 (KPS /
-KSAI indicators, optional).
+Each run uses one model, prompt, dataset and seed, with optional KPS/KSAI
+analysis. Outputs include adapters, fit_info.json, manifest.json and
+test_predictions.parquet under the selected output directory.
 
-Designed to be the canonical "one-click" runner: every paper cell can
-be reproduced by varying CLI flags only.  Each invocation is a single
-(model, dataset, prompt, seed) cell — you intentionally CANNOT pass
-multiple models at once, because we want each run to be a self-
-contained, resumable, attributable artefact.  Sweep across cells by
-calling the script multiple times (e.g. in a shell loop).
+Example:
+  python scripts/run_llm.py --model qwen-0.5b --dataset 800-drug --prompt P4 --seed 42
 
-Usage examples
---------------
-
-  # Smallest valid paper-grade cell: Qwen 0.5B on 800-drug seed 42, P4.
-  python scripts/run_llm.py \\
-      --model qwen-0.5b --dataset 800-drug --prompt P4 --seed 42
-
-  # Llama-3.2-1B + P1 (zero-shot, no FT) on 1900-drug seed 43.
-  python scripts/run_llm.py \\
-      --model llama-1b --dataset 1900-drug --prompt P1 --seed 43 \\
-      --skip-ft
-
-  # Smoke-sized override (tiny train + capped test) for fast debug.
-  python scripts/run_llm.py --model qwen-0.5b --dataset 800-drug \\
-      --train-subset 400 --test-subset 1000
-
-Output
-------
-Every run writes a fresh ``runs/<run_id>/`` directory containing:
-  * ``ckpts/checkpoint-*/`` — LoRA adapter snapshots (HF Trainer)
-  * ``fit_info.json``        — training contract for L5/L2 reuse
-  * ``manifest.json``        — per-split best-ckpt + val AUC
-  * ``test_predictions.parquet`` — test_s2 per-row p_yes / pred / prompt
-  * ``run.log``              — combined stdout/stderr (you may also tee)
-
-If the run dies mid-way and you re-invoke with the same ``--run-id``
-(or the same default ``--output-dir`` and ``--model / --dataset /
---seed`` combination), L3 auto-resumes from the latest checkpoint
-and L2's test inference resumes from any partially-saved predictions
-parquet.
+Use --skip-ft for base-model inference, or --train-subset and --test-subset
+for a smaller run. P6/P7 also require --desc-json.
 """
 from __future__ import annotations
 
@@ -61,7 +28,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-# ─── Model + dataset shorthand resolvers ────────────────────────────
+# Model and dataset aliases
 
 MODEL_SHORTCUTS: dict[str, str] = {
     "qwen-0.5b": "Qwen/Qwen2.5-0.5B",
@@ -91,14 +58,11 @@ def _resolve_model(name: str) -> str:
 
 
 def _resolve_dataset(name: str, seed: int) -> tuple[Path | None, Path | None]:
-    """Return ``(data_root, legacy_pkl)``; exactly one is non-None.
+    """Resolve a dataset to ``(data_root, legacy_pkl)``; exactly one is non-None.
 
-    Shorthand mapping
-    -----------------
-    * ``toy``       → ``data/public/intermediate/``
-    * ``800-drug``  → ``data/private/outputs_full/splits_legacy/800drug/<seed>.pkl``
-    * ``1900-drug`` → ``data/private/intermediate/`` (new-format release)
-    * any path     → interpreted as a literal path
+    ``toy`` and ``1900-drug`` use the public and private intermediate directories.
+    ``800-drug`` prefers the reconstructed seed-specific subset, falling back
+    to a legacy pickle. Explicit directories and .pkl files are also accepted.
     """
     if name == "toy":
         return REPO_ROOT / "data" / "public" / "intermediate", None
@@ -125,16 +89,15 @@ def _resolve_dataset(name: str, seed: int) -> tuple[Path | None, Path | None]:
     )
 
 
-# ─── Auto batch size (shared with smoke_qwen05_real.py heuristic) ──
+# Batch-size estimate
 
 def auto_batch_size(
     model_name: str, max_length: int = 1024, cache_dir: str | None = None,
 ) -> tuple[int, int]:
-    """Empirical (train_bs, eval_bs) from VRAM + AutoConfig.
+    """Estimate train/eval batch sizes from VRAM and model dimensions.
 
-    Same formula as ``scripts/smoke_qwen05_real.py``:
-    activations dominated by SwiGLU MLP (L · I · N · d · 6) + logits
-    (L · V · d); safety factor 0.7.  Falls back to (4, 8) on CPU.
+    The estimate covers MLP, attention and logit memory with a 0.7 safety
+    factor; CPU or configuration failures return (4, 8).
     """
     try:
         import torch
@@ -167,7 +130,7 @@ def auto_batch_size(
         return (4, 8)
 
 
-# ─── CLI ────────────────────────────────────────────────────────────
+# Command-line options
 
 def make_cli() -> argparse.Namespace:
     p = argparse.ArgumentParser(
@@ -204,7 +167,7 @@ def make_cli() -> argparse.Namespace:
     p.add_argument("--learning-rate", type=float, default=2e-4)
     p.add_argument("--num-epochs", type=float, default=1.0)
 
-    # Sample caps (full = pass huge number; subset = pass small)
+    # Training and test sample limits
     p.add_argument("--train-subset", type=int, default=999_999_999,
                    help="Cap on (pos + neg) train pairs. Pass small "
                         "value for fast smoke; default = full split.")
@@ -228,7 +191,7 @@ def make_cli() -> argparse.Namespace:
     return p.parse_args()
 
 
-# ─── Run id + output dir ────────────────────────────────────────────
+# Output naming
 
 def _slug(s: str) -> str:
     return s.replace("/", "__").replace(".", "-").lower()
@@ -238,7 +201,7 @@ def _run_id(model_name: str, dataset_name: str, prompt: str, seed: int) -> str:
     return f"{_slug(model_name)}__{dataset_name}__{prompt}__seed{seed}"
 
 
-# ─── Stage helpers (modular; one entry point each) ──────────────────
+# Training and evaluation stages
 
 def _load_description_map(args: argparse.Namespace) -> dict[str, str]:
     """Load descriptions once for training, checkpoint scoring and inference."""
@@ -474,9 +437,7 @@ def run_test(args, manifest, fit_info, ds, sm, id2name, id2smi,
         auc = float(roc_auc_score(y_true, df["p_yes"].to_numpy()))
         print(f"[run_test] test_s2 AUROC: {auc:.4f}", flush=True)
     else:
-        # If resume read back a stale parquet with reordered rows, the
-        # AUC calc above wouldn't be valid. Print row counts so the
-        # caller can sanity-check.
+        # Report row counts to help detect stale prediction caches.
         print(f"[run_test] WARNING: df rows ({len(df)}) != y_true "
               f"len ({len(y_true)}); test_predictions.parquet may have "
               "drifted from the pair list.", flush=True)
@@ -484,7 +445,7 @@ def run_test(args, manifest, fit_info, ds, sm, id2name, id2smi,
     return df, auc
 
 
-# ─── Main ──────────────────────────────────────────────────────────
+# Pipeline
 
 def main() -> int:
     args = make_cli()
@@ -524,7 +485,7 @@ def main() -> int:
     if args.skip_ft:
         print("[main] --skip-ft set → zero-shot test inference path",
               flush=True)
-        # Skip L3/L5 entirely; build a stub fit_info from defaults.
+        # Build inference settings without training or checkpoint selection.
         fit_info = {
             "model_name": model_full,
             "max_length": args.max_length,
@@ -540,9 +501,7 @@ def main() -> int:
         }
         _, eval_bs = auto_batch_size(model_full, max_length=args.max_length)
         eval_bs = args.eval_bs if args.eval_bs is not None else eval_bs
-        # Zero-shot inference uses the base model directly (no adapter).
-        # Below: rewrite manifest's best_ckpt to None so the runner skips
-        # adapter load.
+        # A null checkpoint selects the base model without an adapter.
     else:
         train_feats, val_dict, cfg_prompt = build_ft_samples(
             args, ds, sm, id2name, id2smi, prompt_method,
@@ -557,7 +516,6 @@ def main() -> int:
         manifest, fit_info = run_select_best(
             args, cfg, ds, sm, cfg_prompt, val_dict, eval_bs,
         )
-        # Persist manifest so later analysis can reload without rerunning.
         with open(output_dir / "manifest.json", "w") as f:
             json.dump(manifest, f, indent=2)
 
@@ -569,7 +527,6 @@ def main() -> int:
         args, manifest, fit_info, ds, sm, id2name, id2smi,
         prompt_method, eval_bs, output_dir,
     )
-    # Persist final headline.
     with open(output_dir / "result.json", "w") as f:
         json.dump({
             "run_id": run_id,

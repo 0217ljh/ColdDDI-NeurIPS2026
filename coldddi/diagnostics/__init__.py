@@ -1,61 +1,37 @@
 """Diagnostic indicators for paper §4.3 / Table 6.
 
-This module is a byte-exact port of the upstream
-``Code-Released/exps/sec5-3/2_indicators/`` scripts.
-
-Indicator coverage per model
-============================
+Based on ``Code-Released/exps/sec5-3/2_indicators/``.
 
 LLM (Llama / Qwen / Gemma) — 4-condition prompt masking:
 
 * ``KPS-F``               — drug replacement, R0 only
 * ``KPS-Name``            — ``|R0 - R1|``
 * ``KPS-KG``              — ``|R0 - R2|``
-* ``KPS-KG-Named``        — alias of ``KPS-KG`` (paper-script parity)
+* ``KPS-KG-Named``        — alias of ``KPS-KG``
 * ``KPS-KG-Masked``       — ``|R1 - R3|``
 * ``KPS-Name-KGMasked``   — ``|R2 - R3|``
 * ``KSAI``        — per-pair ``|R1-R3| - |R0-R2|``
 
-Baselines — coverage matrix (paper Table 6):
+Baselines (paper Table 6): MKG-FENN and TIGER support KPS-F, KPS-mol,
+and KPS-KG. DeepDDI, SSI-DDI, DSN-DDI, HDN-DDI, EmerGNN, and TextDDI
+support KPS-F only; inseparable channels return NaN rows per bucket.
+KPS-F uses base predictions alone.
 
-==============  ==========  ============  ===========
-Baseline        KPS-F       KPS-mol       KPS-KG
-==============  ==========  ============  ===========
-DeepDDI         ✓ (R0)      —             —
-SSI-DDI         ✓ (R0)      —             —
-DSN-DDI         ✓ (R0)      —             —
-HDN-DDI         ✓ (R0)      —             —
-EmerGNN         ✓ (R0)      —             —
-TextDDI         ✓ (R0)      —             —
-MKG-FENN        ✓ (base)    ✓             ✓
-TIGER           ✓ (base)    ✓             ✓
-==============  ==========  ============  ===========
+Buckets:
 
-The dash (``—``) means the baseline has only a single fused
-modality with no separable channel to mask — channel indicators
-return NaN rows per bucket.  ``KPS-F`` is always computable from the
-base predictions alone.
-
-Bucket axes
------------
 * Primary buckets (paper Table 6 columns): ``PK-A``, ``PK-B``,
   ``PD-A``, ``PD-B``, set by :mod:`coldddi.diagnostics.buckets`.
-* ``ALL`` bucket = aggregate over ``label_uv == 1`` rows only
-  (positive base pairs) — matches upstream ``_agg_buckets`` exactly.
-* Pairs whose annotation didn't yield a primary bucket are dropped
-  from per-bucket reports and excluded from the ALL aggregate by
-  the ``label_uv == 1`` filter (since unannotated pairs in upstream
-  are also typically negatives or "Mixed" mechanism).
-* The paper-headline A-B gap is computed by
-  :func:`compute_ab_gap` as ``(PK-A + PD-A)/2 - (PK-B + PD-B)/2``.
+* ``ALL`` aggregates only ``label_uv == 1`` rows (positive base pairs),
+  following upstream ``_agg_buckets``.
+* Pairs without a primary bucket are omitted from per-bucket reports;
+  they contribute to ``ALL`` only when ``label_uv == 1``.
+* :func:`compute_ab_gap` returns ``(PK-A + PD-A)/2 - (PK-B + PD-B)/2``.
 
-Submodules
-----------
+Submodules:
+
 * :mod:`coldddi.diagnostics.buckets`   — PK/PD × A/B bucket assignment.
 * :mod:`coldddi.diagnostics.kps_swap`  — build (u, v, u') swap triples.
-* :mod:`coldddi.diagnostics.indicators` — KPS-F / KPS-Name / KPS-KG /
-  KPS-KG-Named / KPS-KG-Masked / KPS-Name-KGMasked / KSAI
-  for LLMs; KPS-mol / KPS-KG for mol+KG-separable baselines.
+* :mod:`coldddi.diagnostics.indicators` — LLM and baseline indicators.
 """
 
 from __future__ import annotations
@@ -74,7 +50,7 @@ from coldddi.diagnostics.indicators import (
     compute_ab_gap,
     compute_baseline_channel_indicators,
     compute_indicators,
-    # Paper-name aliases (A.6.2 walkthrough, "Diagnostic-Indicator Plugin"):
+    # Paper API aliases (Appendix A.6.2).
     compute_kps_f,
     compute_kps_channel,
     compute_ksai,
@@ -98,7 +74,6 @@ __all__ = [
     "compute_ab_gap",
     "compute_baseline_channel_indicators",
     "compute_indicators",
-    # Paper-name aliases (A.6.2):
     "compute_kps_f",
     "compute_kps_channel",
     "compute_ksai",

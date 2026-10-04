@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
-# One-command reproduction of paper §5.4 — KPS / KSAI table
-# (KPS-F always; KPS-mol / KPS-KG for mol+KG-separable baselines;
-# remaining NaN row blocks for single-modality baselines).
+# Paper §5.4: KPS / KSAI for 8 baselines across 3 seeds.
+# KPS-F applies to all; KPS-mol / KPS-KG require separable mol+KG inputs.
+# Unsupported single-modality indicators remain NaN.
 #
-# Trains all 8 baselines on 3 seeds with the L6 indicator step
-# enabled (this is the default in `evaluate.py` post-Step-2), then
-# rolls up `indicators_test_s2_seed<N>.csv` files across seeds via
-# `coldddi.eval.aggregate kps`.
+# evaluate.py writes L6 indicators by default; aggregate kps combines seeds.
 #
 # Usage:
 #   bash exps/sec5_kps.sh [SUBSET] [AB_PARQUET]
@@ -17,8 +14,8 @@
 #   runs/<method>/seed<N>/indicators_test_s2_seed<N>.csv
 #   runs/<method>/seed<N>/predictions_test_s2_seed<N>.csv
 #   runs/<method>/seed<N>/predictions_test_s2_mask_{mol,kg}_seed<N>.csv
-#                                                        (mol+kg only)
-#   runs/sec5_kps.csv                                  (final paper table)
+#     (masked predictions: mol+KG baselines only)
+#   runs/sec5_kps.csv  (mean ± std across seeds)
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

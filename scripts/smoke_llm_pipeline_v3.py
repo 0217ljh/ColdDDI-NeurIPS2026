@@ -1,24 +1,13 @@
-"""End-to-end LLM pipeline smoke v3 — full chain in ONE script.
+"""Smoke-test the L1-L6 pipeline on toy data with a tiny random Llama.
 
-Chains every stage of the LLM stack (L1-L6) on the toy fixture, using
-the tiny random Llama for mechanism verification:
+Load data and retrieval artifacts, render P4 prompts, fit LoRA with
+S0/S1/S2 validation, and select checkpoints using the saved fit settings.
+Build G2-restricted swaps before R0/R1/R2/R3 inference on the union of
+test_s2 and swap-target pairs. Print L6 indicators and A-B gaps with
+coverage warnings enabled.
 
-  Stage 1  Load PairDataset (seed=42) + build retrieval artifacts
-  Stage 2  Render P4 (OHS) prompts for FT samples
-  Stage 3  Train LoRA with multi-split val (S0/S1/S2)
-  Stage 4  Per-split best-ckpt selection (L5) — read yes/no token +
-           prompt_cfg from fit_info.json so L5 cannot diverge from L3
-  Stage 5  Build cold-start-preserving swap candidates (G2-restricted) —
-           **must run before inference** so Stage 6 knows which extra
-           swap-target pairs (qa_prime, qb) to score
-  Stage 6  Use best-S2 LoRA → run R0/R1/R2/R3 inference on the union
-           of test_s2 base pairs and swap-target pairs
-  Stage 7  Compute L6 indicators + A-B gap, with coverage warnings on
-
-Expected runtime: ~2 minutes on CPU.  Numerics are meaningless (random
-weights); the point is to verify every cross-stage handoff works:
-
-  L3.save_adapter → L5.parse → L5.score → L5.select → L2.predict → L6.indicators
+This checks cross-stage compatibility, not predictive quality: the model
+has random weights. Expected runtime is about two minutes on CPU.
 """
 
 from __future__ import annotations
@@ -45,9 +34,7 @@ def banner(s: str) -> None:
     print("=" * 78)
 
 
-# ══════════════════════════════════════════════════════════════════════════
 # Stage 1 — Dataset, retrieval, lookup tables
-# ══════════════════════════════════════════════════════════════════════════
 def stage1_setup():
     banner("STAGE 1  Load PairDataset + retrieval artifacts")
     from coldddi.data.dataset import PairDataset
@@ -91,9 +78,7 @@ def stage1_setup():
     return ds, sm, id2name, id2smi, ke_map, bucket_lookup
 
 
-# ══════════════════════════════════════════════════════════════════════════
 # Stage 2 — Build FT samples (P4 baseline) with multi-split val
-# ══════════════════════════════════════════════════════════════════════════
 def stage2_build_ft_samples(ds, id2name, id2smi):
     banner("STAGE 2  Build P4 FT samples + multi-split val")
     from coldddi.llm.prompts import PromptBuildConfig, build_binary_prompt
@@ -112,7 +97,7 @@ def stage2_build_ft_samples(ds, id2name, id2smi):
         pairs = pd.concat([pos, neg], ignore_index=True)
         labels = [1] * len(pos) + [0] * len(neg)
         samples = to_llm_samples(pairs, labels, ds=ds, subgraph_map=sm)
-        # Render full FT prompts with the answer token at end.
+        # FT prompts include the answer token.
         feats = []
         for s in samples:
             text = build_binary_prompt(
@@ -140,9 +125,7 @@ def stage2_build_ft_samples(ds, id2name, id2smi):
     return train_feats, val_dict, cfg_p4
 
 
-# ══════════════════════════════════════════════════════════════════════════
 # Stage 3 — Run LoRA fit (multi-split eval) — L3
-# ══════════════════════════════════════════════════════════════════════════
 def stage3_fit(train_feats, val_dict, cfg_p4):
     banner("STAGE 3  LoRA fit with S0/S1/S2 multi-split eval")
     from coldddi.llm.trainer import LLMTrainerConfig, LoRATrainer
@@ -168,8 +151,7 @@ def stage3_fit(train_feats, val_dict, cfg_p4):
     print(f"  LoRA r/alpha     : {cfg.lora.r} / {cfg.lora.alpha}")
     print(f"  val splits       : {sorted(val_dict)}")
 
-    # Pass cfg_p4 through so fit_info.json records the prompt method
-    # the LoRA was trained on; L5 will then enforce/warn on mismatch.
+    # Save the training prompt settings for L5 compatibility checks.
     trainer = LoRATrainer(cfg)
     info = trainer.fit(
         train_samples=train_feats, val_samples=val_dict,
@@ -186,9 +168,7 @@ def stage3_fit(train_feats, val_dict, cfg_p4):
     return cfg, info
 
 
-# ══════════════════════════════════════════════════════════════════════════
 # Stage 4 — Per-split best-ckpt selection (L5)
-# ══════════════════════════════════════════════════════════════════════════
 def stage4_select(cfg, ds, sm, cfg_p4, val_dict):
     banner("STAGE 4  Per-split best-ckpt selection (L5)")
     from coldddi.llm.prompts import PromptBuildConfig
@@ -200,10 +180,7 @@ def stage4_select(cfg, ds, sm, cfg_p4, val_dict):
         select_best,
     )
 
-    # Reconstruct training contract from fit_info.json so the runner
-    # config used here cannot drift from the one the LoRA was trained
-    # under — yes_token / no_token / prompt method are persisted by
-    # LoRATrainer.fit() expressly for this handoff.
+    # Reuse saved yes/no tokens and verify the training prompt settings.
     fit_info = read_fit_info(cfg.output_dir)
     print(f"  fit_info.yes_token : {fit_info['yes_token']!r}")
     print(f"  fit_info.no_token  : {fit_info['no_token']!r}")
@@ -238,12 +215,7 @@ def stage4_select(cfg, ds, sm, cfg_p4, val_dict):
     return manifest
 
 
-# ══════════════════════════════════════════════════════════════════════════
-# Stage 5 — Cold-start swap candidates (L6 swap) — MUST run before
-# inference so Stage 6 knows which (qa_prime, qb) pairs to score.
-# Without this, KPS-F silently undercounts every triple whose swap
-# target wasn't already in the test_s2 base pair list.
-# ══════════════════════════════════════════════════════════════════════════
+# Stage 5 — Build cold-start swaps before inference to cover all KPS-F targets.
 def stage5_swap_candidates(ds):
     banner("STAGE 5  Build swap candidates (G2-restricted, both directions)")
     from coldddi.diagnostics import build_swap_candidates
@@ -264,9 +236,7 @@ def stage5_swap_candidates(ds):
     return swap
 
 
-# ══════════════════════════════════════════════════════════════════════════
 # Stage 6 — R0/R1/R2/R3 inference using best-S2 LoRA (L2)
-# ══════════════════════════════════════════════════════════════════════════
 def stage6_inference(manifest, swap, ds, sm, id2name, id2smi, ke_map):
     banner("STAGE 6  R0/R1/R2/R3 inference (best-S2 LoRA, union pair set)")
     from coldddi.llm.inference import LLMInferenceRunner, LLMRunnerConfig
@@ -277,15 +247,11 @@ def stage6_inference(manifest, swap, ds, sm, id2name, id2smi, ke_map):
     best_s2 = manifest["S2"]["best_ckpt"]
     print(f"  adapter : {best_s2}")
 
-    # Reconstruct yes/no token from the trainer's fit_info — the
-    # checkpoint dir does not carry adapter_info.json under HF
-    # Trainer's save_strategy="steps", so use the run-dir-level file.
+    # Step checkpoints lack adapter_info.json; use run-level fit_info tokens.
     run_dir = Path(best_s2).parent
     fit_info = read_fit_info(run_dir)
 
-    # Pair set = test_s2 base ∪ swap-target pairs (qa_prime, qb).
-    # Without the swap-target union, every KPS-F triple referencing a
-    # qa_prime that's not in test_s2 silently drops (codex blocker #1).
+    # Score test_s2 ∪ swap targets (qa_prime, qb) to avoid KPS-F undercounting.
     test_s2_pos = ds.splits.test_s2[["drug_a_id", "drug_b_id"]]
     test_s2_neg = ds.get_negatives("test_s2")[["drug_a_id", "drug_b_id"]]
     base_pairs = pd.concat([test_s2_pos, test_s2_neg], ignore_index=True)
@@ -318,8 +284,7 @@ def stage6_inference(manifest, swap, ds, sm, id2name, id2smi, ke_map):
     }
     predictions: dict[str, dict] = {}
     for cond, method in method_by_cond.items():
-        # Use the trained model_name so the chat-template family
-        # stays identical between train and inference.
+        # Keep the chat-template family consistent with training.
         cfg = PromptBuildConfig(
             task_name="Binary_cls",
             method=method,
@@ -338,8 +303,7 @@ def stage6_inference(manifest, swap, ds, sm, id2name, id2smi, ke_map):
         print(f"  {cond} ({method:<28}) → {len(predictions[cond])} preds  "
               f"in [0,1]={all_in_range}")
 
-    # Hard assert: every swap target has an R0 prediction. If this
-    # ever fails, the union above is wrong and KPS-F will undercount.
+    # Missing R0 swap-target predictions would undercount KPS-F.
     miss = [
         (t.qa_prime, t.qb) for t in swap
         if (str(t.qa_prime), str(t.qb)) not in predictions["R0"]
@@ -353,9 +317,7 @@ def stage6_inference(manifest, swap, ds, sm, id2name, id2smi, ke_map):
     return predictions
 
 
-# ══════════════════════════════════════════════════════════════════════════
 # Stage 7 — Compute L6 indicators + A-B gap
-# ══════════════════════════════════════════════════════════════════════════
 def stage7_indicators(predictions, swap, bucket_lookup):
     banner("STAGE 7  Compute L6 indicators (LLM full 7-indicator panel)")
     from coldddi.diagnostics import compute_ab_gap, compute_indicators

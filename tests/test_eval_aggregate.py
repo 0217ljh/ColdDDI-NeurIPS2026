@@ -1,13 +1,4 @@
-"""Aggregator and exps/ shell-script tests for Step 5.
-
-Backs the paper-promised ``exps/sec5_{overall,stratified,kps,
-masking}.sh`` one-command reproduction scripts.  Tests:
-
-1. ``coldddi.eval.aggregate`` rolls up synthetic ``runs/`` trees
-   correctly (per-method mean ± std across seeds).
-2. The CLI dispatcher writes the right CSV at the right path.
-3. Each shipped ``exps/sec5_*.sh`` exists, is executable, and
-   passes ``bash -n`` syntax validation.
+"""Test seed aggregation, CLI CSV output, and exps/sec5_*.sh script syntax.
 """
 
 from __future__ import annotations
@@ -28,7 +19,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-# ─── Synthetic runs/ tree helpers ────────────────────────────────────
+# Synthetic runs/ tree helpers
 
 def _make_predictions_csv(
     out_dir: Path,
@@ -62,7 +53,7 @@ def _make_indicators_csv(
     return path
 
 
-# ─── aggregate_overall ──────────────────────────────────────────────
+# aggregate_overall
 
 class TestAggregateOverall:
     def test_three_seeds_yield_mean_std(self, tmp_path):
@@ -111,10 +102,7 @@ class TestAggregateOverall:
             assert col in df.columns
 
     def test_single_class_split_yields_nan_safely(self, tmp_path):
-        """Tiny smoke fixtures sometimes produce a fully-positive or
-        fully-negative split.  AUROC is undefined there; aggregator
-        should silently drop those seeds from the mean instead of
-        crashing the whole table."""
+        """Exclude single-class seeds from AUROC means, since AUROC is undefined."""
         from coldddi.eval.aggregate import aggregate_overall
 
         # 2 seeds with 2 classes (AUROC valid) + 1 seed with only positives.
@@ -135,7 +123,7 @@ class TestAggregateOverall:
         assert auroc["seeds"] == "42,43"
 
 
-# ─── aggregate_stratified ────────────────────────────────────────────
+# aggregate_stratified
 
 class TestAggregateStratified:
     def test_per_bucket_means(self, tmp_path):
@@ -176,7 +164,7 @@ class TestAggregateStratified:
             assert row["mean"] == pytest.approx(1.0)
 
 
-# ─── aggregate_kps ───────────────────────────────────────────────────
+# aggregate_kps
 
 class TestAggregateKps:
     def test_mean_std_per_indicator_bucket(self, tmp_path):
@@ -204,10 +192,7 @@ class TestAggregateKps:
         assert all_kpsf["n_seeds"] == 3
 
     def test_all_nan_indicator_block_propagated(self, tmp_path):
-        """Single-modality baseline KPS-mol/KPS-KG rows are all NaN
-        per the diagnostics contract.  Aggregator must propagate one
-        NaN row per (method, indicator, bucket) so the final paper
-        table prints "—" cells uniformly."""
+        """Preserve NaN channel rows for single-modality baselines in paper tables."""
         from coldddi.eval.aggregate import aggregate_kps
 
         for seed in (42, 43, 44):
@@ -231,7 +216,7 @@ class TestAggregateKps:
             assert row["n_seeds"] == 0
 
 
-# ─── CLI dispatcher ─────────────────────────────────────────────────
+# CLI dispatcher
 
 class TestAggregateCli:
     def test_kps_cli_writes_csv(self, tmp_path):
@@ -296,16 +281,12 @@ class TestAggregateCli:
         assert (tmp_path / "sec5_kps.csv").is_file()
 
 
-# ─── Shell-script sanity ────────────────────────────────────────────
+# Shell-script sanity
 
-# ─── Flat-mode aggregator (LLM masking path) ────────────────────────
+# Flat-mode aggregator (LLM masking path)
 
 class TestFlatModeAggregator:
-    """The LLM masking output tree is ``runs/<model>/<prompt>/seed<N>/``
-    — one level deeper than the baseline ``runs/<method>/seed<N>/``
-    layout.  The ``flat_method`` kwarg lets the aggregator treat the
-    cell directory as the seed-dir parent and tag everything with a
-    synthetic composite method label."""
+    """flat_method aggregates seed dirs inside runs/<model>/<prompt>/ under one label."""
 
     def test_kps_flat_method_picks_up_seed_dirs_directly(self, tmp_path):
         from coldddi.eval.aggregate import aggregate_kps
@@ -358,9 +339,7 @@ class TestFlatModeAggregator:
         assert (out["method"] == "llama-1b_P4").all()
 
     def test_method_and_methods_are_mutually_exclusive(self, tmp_path):
-        """--method (singular, flat-mode label) and --methods (plural,
-        nested-mode subset filter) are different concepts.  Mixing
-        them is almost certainly a CLI typo, so reject up front."""
+        """Reject mixing --method's flat label with --methods' nested subset filter."""
         from coldddi.eval.aggregate import main
 
         with pytest.raises(SystemExit):
