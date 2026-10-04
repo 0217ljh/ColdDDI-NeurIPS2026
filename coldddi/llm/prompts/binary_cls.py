@@ -60,6 +60,37 @@ _OHS_KG_INSTRUCTION = (
     "mechanisms.\n"
 )
 
+_OHS_KG_DESC_INSTRUCTION = (
+    "This inference is augmented by external biomedical knowledge combined "
+    "with a per-drug clinical pharmacology description. "
+    "Structured Knowledge Graph facts regarding each drug have been linearized "
+    "into coherent sentences grouping biological associations by category "
+    "(e.g., whose targets are xxx, xxx, and xxx). "
+    "In addition, each drug is accompanied by a 150-200 word clinical "
+    "description covering pharmacological class, primary indications, "
+    "physiological (organ / tissue-level) mechanism of action, dosing, "
+    "common adverse effects, and contraindications. "
+    "The description is generated independently of the Knowledge Graph and "
+    "does not restate protein-level facts already present in the graph. "
+    "Utilize both the graph facts and the clinical description together to "
+    "identify potential interaction mechanisms.\n"
+)
+
+_DESC_ONLY_INSTRUCTION = (
+    "This inference is augmented by a per-drug clinical pharmacology "
+    "description. Each drug is accompanied by a 150-200 word clinical "
+    "description covering pharmacological class, primary indications, "
+    "physiological (organ / tissue-level) mechanism of action, dosing, "
+    "common adverse effects, and contraindications. No structured "
+    "biomedical knowledge graph (targets, enzymes, transporters, "
+    "carriers, pathways) is provided. The description is generated "
+    "independently of any protein-level knowledge graph and does not "
+    "contain protein / enzyme / transporter / carrier or interacting-drug "
+    "names. Utilize this clinical description together with your internal "
+    "pharmacological knowledge to identify potential interaction "
+    "mechanisms.\n"
+)
+
 METHOD_PROMPT: dict[str, str] = {
     "zero_shot": (
         "This is a Zero-Shot inference mode. No external context, drug "
@@ -95,6 +126,8 @@ METHOD_PROMPT: dict[str, str] = {
     "ohs_full_mask_name":         _OHS_KG_INSTRUCTION,
     "ohs_full_mask_entity":       _OHS_KG_INSTRUCTION,
     "ohs_full_mask_name_entity":  _OHS_KG_INSTRUCTION,
+    "one_hop_subgraph_sequence_desc": _OHS_KG_DESC_INSTRUCTION,
+    "desc_only": _DESC_ONLY_INSTRUCTION,
     "few_shot_2hop": (
         "This task utilizes a Mechanism-Aware Few-Shot strategy. "
         "The provided reference examples are not selected randomly, they "
@@ -131,7 +164,7 @@ class PromptBuildConfig:
     task_name: str = "Binary_cls"
     method: str = "Zero_Shot_Sequence"
     model_name: str = ""
-    # Optional, kept for future extension; unused by the byte-exact paths
+    # P6/P7 use extra["drug_id2description"]; P1--P5 leave this empty.
     extra: dict[str, Any] = field(default_factory=dict)
 
 
@@ -143,6 +176,8 @@ _METHOD_ALIASES: dict[str, str] = {
     "Few_Shot_Similarity_SMILES":             "few_shot_similarity_smiles",
     "One_Hop_Subgraph_Single":                "one_hop_subgraph_single",
     "One_Hop_Subgraph_Sequence":              "one_hop_subgraph_sequence",
+    "One_Hop_Subgraph_Sequence_Desc":         "one_hop_subgraph_sequence_desc",
+    "Desc_Only":                              "desc_only",
     "One_Hop_Subgraph_Sequence_Mask_Name":    "one_hop_subgraph_sequence_mask_name",
     "exp_100d_One_Hop_Subgraph_Sequence_Mask_Name": "one_hop_subgraph_sequence_mask_name",
     "One_Hop_Subgraph_Sequence_Mask_PK":      "one_hop_subgraph_sequence_mask_pk",
@@ -336,6 +371,34 @@ def _format_pair(
             f"### [Prediction]:\n"
             f"{line_a}\n"
             f"{line_b}\n"
+            f"### Answer: "
+        )
+
+    if method == "one_hop_subgraph_sequence_desc":
+        raw = sample["subgraph_1hop"]
+        keys = list(raw["neighbors"].keys())
+        a_dict = {key: ", ".join(raw["neighbors"][key]["A"]) for key in keys}
+        b_dict = {key: ", ".join(raw["neighbors"][key]["B"]) for key in keys}
+        line_a = _build_line("Drug A: ", a_name, a_dict, keys)
+        line_b = _build_line("Drug B: ", b_name, b_dict, keys)
+        a_head, a_sep, a_tail = line_a.partition("\n")
+        b_head, b_sep, b_tail = line_b.partition("\n")
+        line_a = f"{a_head}\nClinical description: {sample['drug_a_description'].strip()}{a_sep}{a_tail}"
+        line_b = f"{b_head}\nClinical description: {sample['drug_b_description'].strip()}{b_sep}{b_tail}"
+        return (
+            f"### [Prediction]:\n"
+            f"{line_a}\n"
+            f"{line_b}\n"
+            f"### Answer: "
+        )
+
+    if method == "desc_only":
+        return (
+            f"### [Prediction]:\n"
+            f"Drug A: {a_name}\n"
+            f"Clinical description: {sample['drug_a_description'].strip()}\n"
+            f"Drug B: {b_name}\n"
+            f"Clinical description: {sample['drug_b_description'].strip()}\n"
             f"### Answer: "
         )
 
@@ -672,6 +735,18 @@ def build_binary_prompt(
     task = cfg.task_name or "Binary_cls"
     task_display = TASK_DISPLAY_NAME.get(task, task)
     method = canon_method(cfg.method)
+
+    if method in ("one_hop_subgraph_sequence_desc", "desc_only"):
+        # This path is shared by training, checkpoint scoring and inference.
+        sample = dict(sample)
+        descriptions = cfg.extra.get("drug_id2description", {})
+        for side in ("a", "b"):
+            drug_id = str(sample.get(f"drug_{side}_id", ""))
+            field_name = f"drug_{side}_description"
+            description = descriptions.get(drug_id, sample.get(field_name))
+            if not isinstance(description, str) or not description.strip():
+                raise ValueError(f"Missing clinical description for {drug_id!r} ({cfg.method}).")
+            sample[field_name] = description
 
     drug_id2name = drug_id2name or {}
     drug_id2smiles = drug_id2smiles or {}

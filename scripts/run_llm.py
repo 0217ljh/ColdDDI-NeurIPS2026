@@ -46,6 +46,7 @@ parquet.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -77,6 +78,8 @@ PROMPT_METHODS: dict[str, str] = {
     "P3": "One_Hop_Subgraph_Single",
     "P4": "One_Hop_Subgraph_Sequence",
     "P5": "Few_Shot_2hop",
+    "P6": "One_Hop_Subgraph_Sequence_Desc",
+    "P7": "Desc_Only",
 }
 
 
@@ -179,7 +182,9 @@ def make_cli() -> argparse.Namespace:
                         "'1900-drug', or a directory / .pkl path.")
     p.add_argument("--prompt", default="P4",
                    choices=tuple(PROMPT_METHODS),
-                   help="Prompt template family (P1-P5). Default P4 (OHS).")
+                   help="Prompt template family (P1-P7). Default P4 (OHS).")
+    p.add_argument("--desc-json", type=Path, default=None,
+                   help="P6/P7 descriptions: JSON object mapping drug IDs to text.")
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--output-dir", type=Path, default=None,
                    help="Override the auto-derived runs/<run_id>/ path.")
@@ -235,6 +240,42 @@ def _run_id(model_name: str, dataset_name: str, prompt: str, seed: int) -> str:
 
 # ─── Stage helpers (modular; one entry point each) ──────────────────
 
+def _load_description_map(args: argparse.Namespace) -> dict[str, str]:
+    """Load descriptions once for training, checkpoint scoring and inference."""
+    if args.prompt not in ("P6", "P7"):
+        if args.desc_json is not None:
+            raise ValueError("--desc-json is only used with --prompt P6 or P7.")
+        return {}
+    if args.desc_json is None:
+        raise ValueError(f"--prompt {args.prompt} requires --desc-json <path>.")
+    descriptions = json.loads(args.desc_json.read_text(encoding="utf-8"))
+    if not isinstance(descriptions, dict) or not descriptions:
+        raise ValueError("--desc-json must contain a nonempty object: {drug_id: text}.")
+    for drug_id, description in descriptions.items():
+        if not drug_id.strip() or not isinstance(description, str) or not description.strip():
+            raise ValueError(f"Invalid description for {drug_id!r}; expected nonempty text.")
+    return descriptions
+
+
+def _check_description_run(args: argparse.Namespace, output_dir: Path) -> None:
+    """Prevent reusing adapters or prediction caches with different descriptions."""
+    if args.prompt not in ("P6", "P7"):
+        return
+    digest = hashlib.sha256(json.dumps(
+        args.description_map, sort_keys=True, ensure_ascii=False,
+    ).encode("utf-8")).hexdigest()
+    contract = {"prompt": args.prompt, "descriptions_sha256": digest,
+                "description_count": len(args.description_map)}
+    path = output_dir / "description_input.json"
+    if path.exists():
+        if json.loads(path.read_text(encoding="utf-8")) != contract:
+            raise ValueError("Description input changed; choose a new --output-dir.")
+    elif any(output_dir.iterdir()):
+        raise ValueError("Existing P6/P7 output has no description contract; choose a new --output-dir.")
+    else:
+        path.write_text(json.dumps(contract, indent=2) + "\n", encoding="utf-8")
+
+
 def load_dataset(args):
     from coldddi.data.dataset import PairDataset
     from coldddi.llm.retrieval import build_subgraph_map
@@ -272,6 +313,7 @@ def build_ft_samples(args, ds, sm, id2name, id2smi, prompt_method: str):
     model_full = _resolve_model(args.model)
     cfg = PromptBuildConfig(
         task_name="Binary_cls", method=prompt_method, model_name=model_full,
+        extra={"drug_id2description": args.description_map} if args.prompt in ("P6", "P7") else {},
     )
 
     def _samples(pos_df, neg_df):
@@ -403,6 +445,7 @@ def run_test(args, manifest, fit_info, ds, sm, id2name, id2smi,
     cfg_p = PromptBuildConfig(
         task_name="Binary_cls", method=prompt_method,
         model_name=fit_info["model_name"],
+        extra={"drug_id2description": args.description_map} if args.prompt in ("P6", "P7") else {},
     )
     runner = LLMInferenceRunner(LLMRunnerConfig(
         model_name=fit_info["model_name"],
@@ -445,6 +488,7 @@ def run_test(args, manifest, fit_info, ds, sm, id2name, id2smi,
 
 def main() -> int:
     args = make_cli()
+    args.description_map = _load_description_map(args)
     prompt_method = PROMPT_METHODS[args.prompt]
     model_full = _resolve_model(args.model)
 
@@ -463,6 +507,19 @@ def main() -> int:
     print("#" * 78 + "\n", flush=True)
 
     ds, sm, id2name, id2smi = load_dataset(args)
+
+    if args.prompt in ("P6", "P7"):
+        required_ids: set[str] = set()
+        for split_name, positives in ds.splits.items():
+            negatives = (ds.get_train_negatives(0) if split_name == "train"
+                         else ds.get_negatives(split_name))
+            for frame in (positives, negatives):
+                for column in ("drug_a_id", "drug_b_id"):
+                    required_ids.update(frame[column].astype(str))
+        missing = sorted(required_ids - args.description_map.keys())
+        if missing:
+            raise ValueError(f"Descriptions missing for {len(missing)} dataset drugs: {', '.join(missing[:10])}.")
+    _check_description_run(args, output_dir)
 
     if args.skip_ft:
         print("[main] --skip-ft set → zero-shot test inference path",

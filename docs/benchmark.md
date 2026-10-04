@@ -158,3 +158,55 @@ The new runner's 35 offline tests and 10 opt-in integration tests pass (45 total
 The new entry point has been exercised on Windows with Python 3.13.7, PyTorch 2.11.0+cu128, Transformers 4.57.1, PEFT 0.17.1, NumPy 2.1.2, pandas 3.0.2, and PyArrow 24.0.0. CPU checks use the tiny random Qwen model; a separate CUDA smoke run uses pretrained Qwen2.5-0.5B on an RTX 5090. Both produce all required R0–R3 predictions. The uncapped toy run uses all 874 training pairs and 198 / 1,152 / 356 S0 / S1 / S2 test pairs. These checks do not establish full-scale DrugBank performance or hardware requirements.
 
 The existing diagnostic, split, and prompt/retrieval regression subset reports 438 passed and 18 skipped in this environment. A separate run of the existing L2/L3/L5 tests reports 26 passed, 3 skipped, and 6 failed: the older tiny-Llama fixture tokenizes `" Yes"` and `" No"` as two tokens, conflicting with the scorer contract. Those existing tests and the underlying training/scoring modules have not been modified. The new integration tests use the compatible tiny-Qwen fixture instead; the whole repository test suite is not claimed to be green.
+
+## Clinical descriptions: P6 and P7
+
+P6 adds clinical descriptions to P4's KG context. P7 uses drug names and the same descriptions without KG context. Both use `scripts/run_llm.py`; the P4 benchmark entry point is unchanged.
+
+The masked input used in the supplementary experiments is [drug800_desc_only.json](../data/public/drug800_desc_only.json), a mapping from 800 drug IDs to descriptions. The original [generation prompt and parameters](../prompts/drug_description_generation.md) and a [per-drug verification report](../annotations/drug800_desc_audit.json) accompany it. Generation is not part of these commands and requires no API key.
+
+Use a prepared dataset whose drug IDs are covered by the description JSON. The `800-drug` shorthand resolves the local reconstructed subset for the selected seed; an explicit intermediate directory or legacy `.pkl` can also be supplied. The runner checks coverage before training. A different selection of 800 drugs may require additional descriptions.
+
+```bash
+# P6: KG context + clinical descriptions
+python scripts/run_llm.py \
+  --model llama-1b \
+  --dataset 800-drug \
+  --prompt P6 \
+  --desc-json data/public/drug800_desc_only.json \
+  --seed 42 \
+  --num-epochs 1 --learning-rate 2e-4 \
+  --lora-r 16 --lora-alpha 16 \
+  --max-length 1280 --train-bs 8 --eval-bs 32 \
+  --save-steps 1000 --eval-steps 1000 \
+  --output-dir runs/p6_seed42
+
+# P7: clinical descriptions without KG context
+python scripts/run_llm.py \
+  --model llama-1b \
+  --dataset 800-drug \
+  --prompt P7 \
+  --desc-json data/public/drug800_desc_only.json \
+  --seed 42 \
+  --num-epochs 1 --learning-rate 2e-4 \
+  --lora-r 16 --lora-alpha 16 \
+  --max-length 1024 --train-bs 8 --eval-bs 32 \
+  --save-steps 1000 --eval-steps 1000 \
+  --output-dir runs/p7_seed42
+```
+
+These are the recorded P6/P7 training settings. Repeat with seeds 43 and 44 and separate output directories. The commands use CUDA and require access to the Llama model weights. For another dataset, replace `--dataset` and provide matching `--desc-json` content.
+
+Training, validation checkpoint scoring, and test inference share the same descriptions. Each run records their content hash in `description_input.json`; changing descriptions requires a new output directory.
+
+### Verify the released descriptions
+
+```bash
+python scripts/audit_descriptions.py \
+  --input data/public/drug800_desc_only.json \
+  --output runs/description_audit.json
+```
+
+This verifies the released masked artifact: 800 descriptions, 51 containing masks, and 95 mask markers. It reports residual short-form entity and DDI-phrase matches per drug. The supplied artifact has no matches under those patterns. This report is a new verification, not the full historical before/after replacement log.
+
+For a local KG/name audit, additionally supply `--kg-entities` (`{drug_id: [entity names]}`) and `--drug-names` (`{drug_id: name}`). These checks are marked explicitly in the report; they are not performed when the corresponding inputs are omitted. Candidate matches require inspection. `--masked-output` optionally writes a separate description JSON using the historical entity-masking rules and records the substitutions; it never overwrites the input file.
