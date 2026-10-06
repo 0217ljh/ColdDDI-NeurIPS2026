@@ -10,13 +10,25 @@ abstract: >-
   and 13 LLMs across 5 prompt patterns, with diagnostic metrics quantifying
   knowledge utilization.
 authors:
-  - family-names: Anonymous
-    given-names: Authors
+  - family-names: Liang
+    given-names: Jiheng
+  - family-names: Zhao
+    given-names: Chen
+  - family-names: Wu
+    given-names: Di
+  - family-names: Bu
+    given-names: Chenyang
+  - family-names: Hong
+    given-names: Yunpeng
+  - family-names: Zhu
+    given-names: Xingquan
+  - family-names: He
+    given-names: Yi
 type: software
 version: "0.1.0-pre"
 date-released: "2026-05-06"
 license: MIT
-repository-code: "https://github.com/0217ljh/ColdDDI"
+repository-code: "https://github.com/0217ljh/ColdDDI-NeurIPS2026"
 keywords:
   - drug-drug interaction
   - benchmark
@@ -25,10 +37,24 @@ keywords:
   - knowledge graphs
   - pharmacology
 preferred-citation:
-  type: article
+  type: conference-paper
   title: "ColdDDI: Evaluating Knowledge Utilization in Cold-Start Drug-Drug Interaction Prediction"
   authors:
-    - family-names: Anonymous
-      given-names: Authors
+    - family-names: Liang
+      given-names: Jiheng
+    - family-names: Zhao
+      given-names: Chen
+    - family-names: Wu
+      given-names: Di
+    - family-names: Bu
+      given-names: Chenyang
+    - family-names: Hong
+      given-names: Yunpeng
+    - family-names: Zhu
+      given-names: Xingquan
+    - family-names: He
+      given-names: Yi
+  collection-title: "NeurIPS 2026 Evaluations & Datasets Track"
   year: 2026
-  notes: "Under review at NeurIPS 2026 Evaluations & Datasets Track."
+  url: "https://arxiv.org/abs/2610.05590"
+  notes: "Accepted at NeurIPS 2026 (poster). arXiv:2610.05590."

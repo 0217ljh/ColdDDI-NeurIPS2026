@@ -1,7 +1,7 @@
 # ColdDDI
 
 ![NeurIPS 2026](https://img.shields.io/badge/NeurIPS-2026-8a2be2?style=flat)
-![arXiv Preprint](https://img.shields.io/badge/arXiv-Preprint-b31b1b?style=flat)
+[![arXiv 2610.05590](https://img.shields.io/badge/arXiv-2610.05590-b31b1b?style=flat)](https://arxiv.org/abs/2610.05590)
 ![OpenReview Paper](https://img.shields.io/badge/OpenReview-Paper-0969da?style=flat)
 [![Code License MIT](https://img.shields.io/badge/Code_License-MIT-4c9c2a?style=flat)](LICENSE)
 
@@ -258,6 +258,10 @@ tests/               # pytest suite
   author = {Jiheng Liang and Chen Zhao and Di Wu and Chenyang Bu and Yunpeng Hong and Xingquan Zhu and Yi He},
   title  = {{ColdDDI}: Evaluating Knowledge Utilization in Cold-Start Drug-Drug Interaction Prediction},
   booktitle = {NeurIPS 2026 Evaluations \& Datasets Track},
-  year   = {2026}
+  year   = {2026},
+  eprint = {2610.05590},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.LG},
+  url    = {https://arxiv.org/abs/2610.05590}
 }
 ```
