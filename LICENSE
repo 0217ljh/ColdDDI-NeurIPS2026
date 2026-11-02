@@ -36,5 +36,7 @@ benchmark, users must independently obtain DrugBank academic access at:
 The mechanism annotations (PK/PD labels, A/B labels, mediating-entity
 assignments) and the drug-wise split index sets released in this repository
 are derivative artifacts that do not contain DrugBank's underlying records,
-and are released under the Creative Commons Attribution 4.0 International
-(CC BY 4.0) license.
+and are released under the Creative Commons Attribution-ShareAlike 4.0
+International (CC BY-SA 4.0) license:
+
+    https://creativecommons.org/licenses/by-sa/4.0/
